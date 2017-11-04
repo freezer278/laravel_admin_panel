@@ -1,0 +1,30 @@
+{
+    "name": "vmorozov/laravel_admin_generator",
+    "type": "library",
+    "description": "This package is made to speed up development of admin panel for your laravel project",
+    "keywords": ["laravel", "admin panel generation", "administration", "generators"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Vladimir Morozov",
+            "email": "freezer278@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.0",
+        "illuminate/http": "^5.2",
+        "illuminate/support": "^5.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Vmorozov\\LaravelAdminGenerator\\": "src/app"
+        }
+    },
+    "autoload-dev": {
+
+    },
+    "minimum-stability": "stable"
+}
