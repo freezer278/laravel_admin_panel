@@ -8,7 +8,7 @@
                 <img src="https://placehold.it/160x160/00a65a/ffffff/&text=u" class="img-circle" alt="User Image">
             </div>
             <div class="pull-left info">
-                <p>{{ Auth::user()->name }}</p>
+                <p>{{ Auth::user()->name or '' }}</p>
                 <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
             </div>
         </div>

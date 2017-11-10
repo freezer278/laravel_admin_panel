@@ -41,11 +41,11 @@
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
 
-    @include('admin.layouts.header')
+@include(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::layouts.header')
 
-    @include('admin.layouts.sidebar')
+@include(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::layouts.sidebar')
 
-    <!-- Content Wrapper. Contains page content -->
+<!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
@@ -72,7 +72,7 @@
 
     <footer class="main-footer">
         {{--<div class="pull-right hidden-xs">--}}
-            {{--<b>Version</b> 2.4.0--}}
+        {{--<b>Version</b> 2.4.0--}}
         {{--</div>--}}
         {{--<strong>Copyright &copy; 2014-2016 <a href="https://adminlte.io">Almsaeed Studio</a>.</strong> All rights--}}
         {{--reserved.--}}

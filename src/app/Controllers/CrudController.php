@@ -4,6 +4,7 @@ namespace Vmorozov\LaravelAdminGenerator\App\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider;
 
 abstract class CrudController extends Controller
 {
@@ -34,7 +35,7 @@ abstract class CrudController extends Controller
         $entities = [];
         $columns = [];
 
-        return view('laravel_admin_generator::list.list')->with(compact('columns', 'entities'));
+        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::list.list')->with(compact('columns', 'entities'));
     }
 
     /**
