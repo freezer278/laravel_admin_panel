@@ -5,9 +5,13 @@ namespace Vmorozov\LaravelAdminGenerator\App\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider;
+use Vmorozov\LaravelAdminGenerator\App\Utils\ColumnsExtractor;
+use Vmorozov\LaravelAdminGenerator\App\Utils\EntitiesExtractor;
 
 abstract class CrudController extends Controller
 {
+    protected $model;
+
     protected $url = '';
 
     protected $titleSingular = '';
@@ -24,6 +28,8 @@ abstract class CrudController extends Controller
 
     }
 
+    protected abstract function setModelClass(string $model);
+
 
     /**
      * Display a listing of the resource.
@@ -32,8 +38,11 @@ abstract class CrudController extends Controller
      */
     public function index()
     {
-        $entities = [];
-        $columns = [];
+        $columnsExtractor = new ColumnsExtractor($this->model);
+        $entitiesExtractor = new EntitiesExtractor($columnsExtractor);
+
+        $columns = $columnsExtractor->getActiveListColumns();
+        $entities = $entitiesExtractor->getEntities();
 
         return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::list.list')->with(compact('columns', 'entities'));
     }

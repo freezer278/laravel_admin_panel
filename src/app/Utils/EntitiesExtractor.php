@@ -9,22 +9,24 @@ class EntitiesExtractor
     /**
      * @var Model
      */
-    private $modelClass;
+    private $model;
 
     /**
      * @var array
      */
-    private $columnParams;
+    private $columnsExtractor;
 
 
-    public function __construct(string $modelClass, ColumnsExtractor $columnParams)
+    public function __construct(ColumnsExtractor $columnsExtractor)
     {
-        $this->modelClass = $modelClass;
-        $this->columnParams = $columnParams;
+        $this->model = $columnsExtractor->getModelClass();
+        $this->columnsExtractor = $columnsExtractor;
     }
 
     public function getEntities(array $params = [])
     {
+        $entities = call_user_func($this->model.'::paginate');
 
+        return $entities;
     }
 }
