@@ -9,13 +9,6 @@ class AdminGeneratorServiceProvider extends ServiceProvider
     const VIEWS_NAME = 'laravel_admin_generator';
 
     /**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
-    protected $defer = true;
-
-    /**
      * Perform post-registration booting of services.
      *
      * @return void
@@ -23,6 +16,18 @@ class AdminGeneratorServiceProvider extends ServiceProvider
     public function boot()
     {
 
+        $this->loadViewsFrom(resource_path('views/vendor/vmorozov/laravel_admin_generator'), self::VIEWS_NAME);
+
+//        $this->loadViewsFrom(realpath(__DIR__.'../resources/views'), self::VIEWS_NAME);
+
+
+//        $this->publishFiles();
+
+        $this->publishes([__DIR__.'../resources/views' => resource_path('views/vendor/vmorozov/laravel_admin_generator')], 'views');
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([]);
+        }
     }
 
     /**
@@ -35,14 +40,10 @@ class AdminGeneratorServiceProvider extends ServiceProvider
 
     }
 
-    /**
-     * Get the services provided by the provider.
-     *
-     * @return array
-     */
-    public function provides()
+    private function publishFiles()
     {
-
+        // publish views
+        $this->publishes([__DIR__.'../resources/views' => resource_path('views/vendor/vmorozov/laravel_admin_generator')], 'views');
     }
 
 }
