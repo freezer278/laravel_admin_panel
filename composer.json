@@ -24,7 +24,7 @@
     "autoload": {
         "psr-4": {
             "Vmorozov\\LaravelAdminGenerator\\": "src",
-            "Vmorozov\\LaravelAdminGenerator\\App": "src/app"
+            "Vmorozov\\LaravelAdminGenerator\\App\\": "src/app"
         }
     },
     "autoload-dev": {
