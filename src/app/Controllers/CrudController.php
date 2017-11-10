@@ -1,11 +1,35 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Vmorozov\LaravelAdminGenerator\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 
 class CrudController extends Controller
 {
+    private $url = '';
+
+    private $titleSingular = '';
+
+    private $titlePlural = '';
+
+
+//    public function __construct(string $url = '', string $titleSingular = '', string $titlePlural = '')
+    public function __construct()
+    {
+//        $this->url = $url;
+//        $this->titleSingular = $titleSingular;
+//        $this->titlePlural = $titlePlural;
+
+        $this->setup();
+    }
+
+    protected function setup()
+    {
+
+    }
+
+
     /**
      * Display a listing of the resource.
      *
@@ -13,7 +37,10 @@ class CrudController extends Controller
      */
     public function index()
     {
-        //
+        $entities = [];
+        $columns = [];
+
+        return view('laravel_admin_generator::list.list')->with(compact('columns', 'entities'));
     }
 
     /**

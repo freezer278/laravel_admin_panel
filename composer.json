@@ -13,7 +13,10 @@
     "require": {
         "php": ">=7.0",
         "illuminate/http": "^5.2",
-        "illuminate/support": "^5.2"
+        "illuminate/routing": "^5.2",
+        "illuminate/support": "^5.2",
+        "illuminate/database": "^5.2",
+        "almasaeed2010/AdminLTE": "2.4.*"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.1"
