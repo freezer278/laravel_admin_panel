@@ -5,22 +5,16 @@ namespace Vmorozov\LaravelAdminGenerator\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
-class CrudController extends Controller
+abstract class CrudController extends Controller
 {
-    private $url = '';
+    protected $url = '';
 
-    private $titleSingular = '';
+    protected $titleSingular = '';
 
-    private $titlePlural = '';
+    protected $titlePlural = '';
 
-
-//    public function __construct(string $url = '', string $titleSingular = '', string $titlePlural = '')
     public function __construct()
     {
-//        $this->url = $url;
-//        $this->titleSingular = $titleSingular;
-//        $this->titlePlural = $titlePlural;
-
         $this->setup();
     }
 
