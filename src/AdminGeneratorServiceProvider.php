@@ -25,7 +25,8 @@ class AdminGeneratorServiceProvider extends ServiceProvider
 
         $this->publishes([__DIR__.'/resources/views' => resource_path('views/vendor/vmorozov/laravel_admin_generator')], 'views');
 
-        $this->publishes([base_path('vendor/almasaeed2010/adminlte') => public_path('adminlte')], 'adminlte');
+        $this->publishes([base_path('vendor/almasaeed2010/adminlte/dist') => public_path('adminlte')], 'adminlte');
+        $this->publishes([base_path('vendor/almasaeed2010/adminlte/bower_components') => public_path('adminlte/bower_components')], 'adminlte');
 
         if ($this->app->runningInConsole()) {
             $this->commands([]);
