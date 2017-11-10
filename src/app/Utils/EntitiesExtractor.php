@@ -1,6 +1,6 @@
 <?php
 
-namespace Vmorozov\LaravelAdminGenerator\Utils;
+namespace Vmorozov\LaravelAdminGenerator\App\Utils;
 
 use Illuminate\Database\Eloquent\Model;
 

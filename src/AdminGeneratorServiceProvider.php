@@ -23,7 +23,7 @@ class AdminGeneratorServiceProvider extends ServiceProvider
 
 //        $this->publishFiles();
 
-        $this->publishes([__DIR__.'../resources/views' => resource_path('views/vendor/vmorozov/laravel_admin_generator')], 'views');
+        $this->publishes(['resources/views' => resource_path('views/vendor/vmorozov/laravel_admin_generator')], 'views');
 
         if ($this->app->runningInConsole()) {
             $this->commands([]);

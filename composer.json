@@ -23,7 +23,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Vmorozov\\LaravelAdminGenerator\\": "src/app"
+            "Vmorozov\\LaravelAdminGenerator\\": "src",
+            "Vmorozov\\LaravelAdminGenerator\\App": "src/app"
         }
     },
     "autoload-dev": {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Vmorozov\LaravelAdminGenerator\Controllers;
+namespace Vmorozov\LaravelAdminGenerator\App\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
