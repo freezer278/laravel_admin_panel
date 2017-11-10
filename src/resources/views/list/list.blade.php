@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::layouts.app')
 
 @section('content')
     <div class="box">
