@@ -28,9 +28,6 @@ abstract class CrudController extends Controller
 
     }
 
-    protected abstract function setModelClass(string $model);
-
-
     /**
      * Display a listing of the resource.
      *
@@ -44,7 +41,9 @@ abstract class CrudController extends Controller
         $columns = $columnsExtractor->getActiveListColumns();
         $entities = $entitiesExtractor->getEntities();
 
-        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::list.list')->with(compact('columns', 'entities'));
+        $controller = $this;
+
+        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::list.list')->with(compact('columns', 'entities', 'controller'));
     }
 
     /**

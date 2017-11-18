@@ -40,7 +40,7 @@ class ColumnsExtractor
         $activeColumns = [];
 
         foreach ($columns as $key => $column) {
-            if ($column['displayInList'] == true)
+            if (isset($column['displayInList']) && $column['displayInList'] == true)
                 $activeColumns[$key] = $column;
         }
 
@@ -53,7 +53,7 @@ class ColumnsExtractor
         $activeColumns = [];
 
         foreach ($columns as $key => $column) {
-            if ($column['displayInForm'] == true)
+            if (isset($column['displayInForm']) && $column['displayInForm'] == true)
                 $activeColumns[$key] = $column;
         }
 

@@ -3,14 +3,14 @@
 @section('content')
     <div class="box">
         <div class="box-header with-border">
-            <h3 class="box-title">Bordered Table</h3>
+            <h3 class="box-title">{{ $controller->titlePlural or '' }}</h3>
         </div>
         <!-- /.box-header -->
         <div class="box-body">
             <table class="table table-bordered">
                 <tr>
                     @foreach($columns as $column)
-                        <th>{{ $column->label }}</th>
+                        <th>{{ $column['label'] }}</th>
                     @endforeach
                     <th>Controls</th>
                 </tr>
