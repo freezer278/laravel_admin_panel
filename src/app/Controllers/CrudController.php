@@ -79,7 +79,7 @@ abstract class CrudController extends Controller
      */
     public function create()
     {
-        $columns = $this->columnsExtractor->getActiveListColumns();
+        $columns = $this->columnsExtractor->getActiveAddEditFields();
 
         $title = $this->titlePlural;
         $url = $this->url;
@@ -123,7 +123,7 @@ abstract class CrudController extends Controller
      */
     public function edit($id)
     {
-        $columns = $this->columnsExtractor->getActiveListColumns();
+        $columns = $this->columnsExtractor->getActiveAddEditFields();
         $entity = $this->getEntity($id);
 
         $title = $this->titlePlural;

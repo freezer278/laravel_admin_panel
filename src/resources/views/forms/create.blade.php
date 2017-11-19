@@ -32,6 +32,14 @@
                     </div>
                     <div class="box-body row">
 
+                        @foreach($columns as $key => $column)
+                            <div class="form-group col-md-12">
+                                <label for="{{ $key }}">{{ $column['label'] }}</label>
+
+                                <input type="text" name="{{ $key }}" id="{{ $key }}" value="{{ old($key) }}" class="form-control">
+                            </div>
+                        @endforeach
+
                     </div><!-- /.box-body -->
                     <div class="box-footer">
 
@@ -58,7 +66,7 @@
 
                             {{--</div>--}}
 
-                            <button type="submit" form="#entity_form">Submit</button>
+                            <button class="btn btn-success" type="submit" form="#entity_form">Submit</button>
 
                             <a href="{{ \Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager::listRoute($url) }}" class="btn btn-default"><span class="fa fa-ban"></span> Cancel</a>
                         </div>
