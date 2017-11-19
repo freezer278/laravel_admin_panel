@@ -73,10 +73,11 @@ abstract class CrudController extends Controller
         $columns = $this->columnsExtractor->getActiveListColumns();
         $entities = $this->entitiesExtractor->getEntities();
 
-        $title = $this->titlePlural;
+        $titleSingular = $this->titleSingular;
+        $titlePlural = $this->titlePlural;
         $url = $this->url;
 
-        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::list.list')->with(compact('columns', 'entities', 'title', 'url'));
+        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::list.list')->with(compact('columns', 'entities', 'titleSingular', 'titlePlural', 'url'));
     }
 
     /**
@@ -88,10 +89,11 @@ abstract class CrudController extends Controller
     {
         $columns = $this->columnsExtractor->getActiveAddEditFields();
 
-        $title = $this->titlePlural;
+        $titleSingular = $this->titleSingular;
+        $titlePlural = $this->titlePlural;
         $url = $this->url;
 
-        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.create')->with(compact('columns', 'title', 'url'));
+        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.create')->with(compact('columns', 'titleSingular', 'titlePlural', 'url'));
     }
 
     /**
@@ -145,10 +147,11 @@ abstract class CrudController extends Controller
         $columns = $this->columnsExtractor->getActiveAddEditFields();
         $entity = $this->getEntity($id);
 
-        $title = $this->titlePlural;
+        $titleSingular = $this->titleSingular;
+        $titlePlural = $this->titlePlural;
         $url = $this->url;
 
-        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.edit')->with(compact('columns', 'entity', 'title', 'url'));
+        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.edit')->with(compact('columns', 'entity', 'titleSingular', 'titlePlural', 'url'));
     }
 
     /**

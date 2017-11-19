@@ -4,14 +4,14 @@
 
 @endsection
 
-@section('title', 'Edit ' . $title)
+@section('title', 'Edit ' . $titleSingular)
 
 @section('content')
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <!-- Default box -->
             <a href="{{ \Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager::listRoute($url) }}">
-                <i class="fa fa-angle-double-left"></i> Back to list <span>{{ $title or '' }}</span>
+                <i class="fa fa-angle-double-left"></i> Back to list <span>{{ $titlePlural }}</span>
             </a>
 
             <br>
@@ -28,7 +28,7 @@
                 <div class="box">
 
                     <div class="box-header with-border">
-                        <h3 class="box-title">Edit {{ $title or '' }}</h3>
+                        <h3 class="box-title">Edit {{ $titleSingular }}</h3>
                     </div>
                     <div class="box-body row">
                         @foreach($columns as $key => $column)
