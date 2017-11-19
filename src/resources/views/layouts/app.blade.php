@@ -37,6 +37,7 @@
 
     <!-- Google Font -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    @yield('styles')
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
@@ -114,5 +115,6 @@
 <script src="{{ url('adminlte/bower_components/fastclick/lib/fastclick.js') }}"></script>
 <!-- AdminLTE App -->
 <script src="{{ url('adminlte/js/adminlte.min.js') }}"></script>
+@yield('scripts')
 </body>
 </html>

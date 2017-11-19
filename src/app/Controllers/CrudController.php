@@ -2,11 +2,13 @@
 
 namespace Vmorozov\LaravelAdminGenerator\App\Controllers;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider;
 use Vmorozov\LaravelAdminGenerator\App\Utils\ColumnsExtractor;
 use Vmorozov\LaravelAdminGenerator\App\Utils\EntitiesExtractor;
+use Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager;
 
 abstract class CrudController extends Controller
 {
@@ -29,6 +31,13 @@ abstract class CrudController extends Controller
     }
 
     /**
+     * Get validation rules for create and edit actions.
+     *
+     * @return array
+     */
+    protected abstract function getValidationRules(): array;
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -41,11 +50,10 @@ abstract class CrudController extends Controller
         $columns = $columnsExtractor->getActiveListColumns();
         $entities = $entitiesExtractor->getEntities();
 
-        $titlePlural = $this->titlePlural;
-        $titleSingular = $this->titleSingular;
+        $title = $this->titlePlural;
         $url = $this->url;
 
-        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::list.list')->with(compact('columns', 'entities', 'titlePlural', 'titleSingular', 'url'));
+        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::list.list')->with(compact('columns', 'entities', 'title', 'url'));
     }
 
     /**
@@ -55,7 +63,14 @@ abstract class CrudController extends Controller
      */
     public function create()
     {
-        //
+        $columnsExtractor = new ColumnsExtractor($this->model);
+
+        $columns = $columnsExtractor->getActiveListColumns();
+
+        $title = $this->titlePlural;
+        $url = $this->url;
+
+        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.create')->with(compact('columns', 'title', 'url'));
     }
 
     /**
@@ -66,7 +81,13 @@ abstract class CrudController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $this->validate($request, $this->getValidationRules());
+
+        $entity = call_user_func($this->model.'::create', $data);
+
+        session()->flash('message', 'Entity created successfully');
+
+        return redirect(UrlManager::listRoute($this->url));
     }
 
     /**
@@ -88,7 +109,15 @@ abstract class CrudController extends Controller
      */
     public function edit($id)
     {
-        //
+        $columnsExtractor = new ColumnsExtractor($this->model);
+
+        $columns = $columnsExtractor->getActiveListColumns();
+        $entity = call_user_func($this->model.'::find', $id);
+
+        $title = $this->titlePlural;
+        $url = $this->url;
+
+        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.edit')->with(compact('columns', 'entity', 'title', 'url'));
     }
 
     /**
@@ -100,7 +129,20 @@ abstract class CrudController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $entity = call_user_func($this->model.'::find', $id);
+
+        if ($entity !== null) {
+            throw new ModelNotFoundException();
+        }
+        else {
+            $data = $this->validate($request, $this->getValidationRules());
+
+            $entity->update($data);
+
+            session()->flash('message', 'Entity changed successfully');
+
+            return redirect(UrlManager::listRoute($this->url));
+        }
     }
 
     /**
@@ -111,6 +153,8 @@ abstract class CrudController extends Controller
      */
     public function destroy($id)
     {
-        //
+        call_user_func($this->model.'::delete', $id);
+
+        return redirect(UrlManager::listRoute($this->url));
     }
 }
