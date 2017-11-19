@@ -29,11 +29,13 @@ abstract class CrudController extends Controller
 
     protected $titlePlural = '';
 
+    protected $columnParams = [];
+
     public function __construct()
     {
         $this->setup();
 
-        $this->columnsExtractor = new ColumnsExtractor($this->model);
+        $this->columnsExtractor = new ColumnsExtractor($this->model, $this->columnParams);
         $this->entitiesExtractor = new EntitiesExtractor($this->columnsExtractor);
     }
 
@@ -102,11 +104,23 @@ abstract class CrudController extends Controller
     {
         $data = $this->validate($request, $this->getValidationRules());
 
+        $this->beforeCreate();
         $entity = call_user_func($this->model.'::create', $data);
+        $this->afterCreate();
 
         session()->flash('message', 'Entity created successfully');
 
         return redirect(UrlManager::listRoute($this->url));
+    }
+
+    protected function beforeCreate()
+    {
+
+    }
+
+    protected function afterCreate()
+    {
+
     }
 
     /**
@@ -150,11 +164,23 @@ abstract class CrudController extends Controller
 
         $data = $this->validate($request, $this->getValidationRules());
 
+        $this->beforeUpdate();
         $entity->update($data);
+        $this->afterUpdate();
 
         session()->flash('message', 'Entity changed successfully');
 
         return redirect(UrlManager::listRoute($this->url));
+    }
+
+    protected function beforeUpdate()
+    {
+
+    }
+
+    protected function afterUpdate()
+    {
+
     }
 
     /**
