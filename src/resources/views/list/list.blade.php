@@ -1,6 +1,6 @@
 @extends(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::layouts.app')
 
-@section('title', ($title or ''))
+@section('title', $title)
 
 @section('content')
     <div class="box">
