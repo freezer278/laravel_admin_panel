@@ -2,6 +2,7 @@
 
 namespace Vmorozov\LaravelAdminGenerator\App\Controllers;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -12,6 +13,9 @@ use Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager;
 
 abstract class CrudController extends Controller
 {
+    protected $columnsExtractor;
+    protected $entitiesExtractor;
+
     protected $model;
 
     protected $url = '';
@@ -23,6 +27,9 @@ abstract class CrudController extends Controller
     public function __construct()
     {
         $this->setup();
+
+        $this->columnsExtractor = new ColumnsExtractor($this->model);
+        $this->entitiesExtractor = new EntitiesExtractor($this->columnsExtractor);
     }
 
     protected function setup()
@@ -37,6 +44,18 @@ abstract class CrudController extends Controller
      */
     protected abstract function getValidationRules(): array;
 
+
+    protected function getEntity(int $id): Model
+    {
+        $entity = $this->entitiesExtractor->getSingleEntity($id);
+
+        if ($entity === null) {
+            throw new ModelNotFoundException();
+        }
+
+        return $entity;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -44,11 +63,8 @@ abstract class CrudController extends Controller
      */
     public function index()
     {
-        $columnsExtractor = new ColumnsExtractor($this->model);
-        $entitiesExtractor = new EntitiesExtractor($columnsExtractor);
-
-        $columns = $columnsExtractor->getActiveListColumns();
-        $entities = $entitiesExtractor->getEntities();
+        $columns = $this->columnsExtractor->getActiveListColumns();
+        $entities = $this->entitiesExtractor->getEntities();
 
         $title = $this->titlePlural;
         $url = $this->url;
@@ -63,9 +79,7 @@ abstract class CrudController extends Controller
      */
     public function create()
     {
-        $columnsExtractor = new ColumnsExtractor($this->model);
-
-        $columns = $columnsExtractor->getActiveListColumns();
+        $columns = $this->columnsExtractor->getActiveListColumns();
 
         $title = $this->titlePlural;
         $url = $this->url;
@@ -109,10 +123,8 @@ abstract class CrudController extends Controller
      */
     public function edit($id)
     {
-        $columnsExtractor = new ColumnsExtractor($this->model);
-
-        $columns = $columnsExtractor->getActiveListColumns();
-        $entity = call_user_func($this->model.'::find', $id);
+        $columns = $this->columnsExtractor->getActiveListColumns();
+        $entity = $this->getEntity($id);
 
         $title = $this->titlePlural;
         $url = $this->url;
@@ -129,20 +141,15 @@ abstract class CrudController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $entity = call_user_func($this->model.'::find', $id);
+        $entity = $this->getEntity($id);
 
-        if ($entity !== null) {
-            throw new ModelNotFoundException();
-        }
-        else {
-            $data = $this->validate($request, $this->getValidationRules());
+        $data = $this->validate($request, $this->getValidationRules());
 
-            $entity->update($data);
+        $entity->update($data);
 
-            session()->flash('message', 'Entity changed successfully');
+        session()->flash('message', 'Entity changed successfully');
 
-            return redirect(UrlManager::listRoute($this->url));
-        }
+        return redirect(UrlManager::listRoute($this->url));
     }
 
     /**
@@ -153,7 +160,10 @@ abstract class CrudController extends Controller
      */
     public function destroy($id)
     {
-        call_user_func($this->model.'::delete', $id);
+        $entity = $this->getEntity($id);
+        $entity->delete();
+
+        session()->flash('message', 'Entity deleted successfully');
 
         return redirect(UrlManager::listRoute($this->url));
     }

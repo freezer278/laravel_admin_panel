@@ -29,4 +29,11 @@ class EntitiesExtractor
 
         return $entities;
     }
+
+    public function getSingleEntity(int $id)
+    {
+        $entity = call_user_func($this->model.'::find', $id);
+
+        return $entity;
+    }
 }
