@@ -63,6 +63,8 @@
         <!-- Main content -->
         <section class="content">
 
+            @include(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::layouts.messages_place')
+
             @yield('content')
 
         </section>
