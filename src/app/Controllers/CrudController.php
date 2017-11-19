@@ -41,9 +41,11 @@ abstract class CrudController extends Controller
         $columns = $columnsExtractor->getActiveListColumns();
         $entities = $entitiesExtractor->getEntities();
 
-        $controller = $this;
+        $titlePlural = $this->titlePlural;
+        $titleSingular = $this->titleSingular;
+        $url = $this->url;
 
-        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::list.list')->with(compact('columns', 'entities', 'controller'));
+        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::list.list')->with(compact('columns', 'entities', 'titlePlural', 'titleSingular', 'url'));
     }
 
     /**

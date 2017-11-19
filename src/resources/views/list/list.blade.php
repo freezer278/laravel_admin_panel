@@ -1,9 +1,15 @@
 @extends(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::layouts.app')
 
+@section('title', $titlePlural or '')
+
 @section('content')
     <div class="box">
         <div class="box-header with-border">
-            <h3 class="box-title">{{ $controller->titlePlural or '' }}</h3>
+            <h3 class="box-title">
+                {{--Todo: add here search bar--}}
+                <a href="{{ \Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager::createRoute($url) }}" class="btn btn-success">Create</a>
+                {{--{{ $titlePlural or '' }}--}}
+            </h3>
         </div>
         <!-- /.box-header -->
         <div class="box-body">
@@ -21,8 +27,8 @@
                             <td>{{ $entity->$key }}</td>
                         @endforeach
                         <td>
-                            <a href="" class="btn btn-warning">edit</a>
-                            <a href="" class="btn btn-danger">delete</a>
+                            <a href="{{ \Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager::editRoute($url, $entity->id) }}" class="btn btn-warning">edit</a>
+                            <a href="{{ \Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager::deleteRoute($url, $entity->id) }}" class="btn btn-danger">delete</a>
                             {{--Todo: add displaying buttons and their links here--}}
                         </td>
                     </tr>
