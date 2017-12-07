@@ -11,7 +11,7 @@
         <div class="col-md-8 col-md-offset-2">
             <!-- Default box -->
             <a href="{{ \Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager::listRoute($url) }}">
-                <i class="fa fa-angle-double-left"></i> Back to list <span>{{ $titlePlural }}</span>
+                <i class="fa fa-angle-double-left"></i> {{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.back_to_list') }} <span>{{ $titlePlural }}</span>
             </a>
 
             <br>
@@ -28,7 +28,7 @@
                 <div class="box">
 
                     <div class="box-header with-border">
-                        <h3 class="box-title">Edit {{ $titleSingular }}</h3>
+                        <h3 class="box-title">{{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.edit_title') }} {{ $titleSingular }}</h3>
                     </div>
                     <div class="box-body row">
                         @foreach($columns as $key => $column)
@@ -69,9 +69,9 @@
 
                             {{--</div>--}}
 
-                            <button class="btn btn-success" type="submit" form="#entity_form">Submit</button>
+                            <button class="btn btn-success" type="submit">{{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.save') }}</button>
 
-                            <a href="{{ \Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager::listRoute($url) }}" class="btn btn-default"><span class="fa fa-ban"></span> Cancel</a>
+                            <a href="{{ \Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager::listRoute($url) }}" class="btn btn-default"><span class="fa fa-ban"></span> {{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.cancel') }}</a>
                         </div>
                     </div><!-- /.box-footer-->
 
