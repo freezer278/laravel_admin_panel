@@ -49,7 +49,10 @@ abstract class CrudController extends Controller
      *
      * @return array
      */
-    protected abstract function getValidationRules(): array;
+    protected function getValidationRules(): array
+    {
+        return $this->columnsExtractor->getValidationRules();
+    }
 
 
     protected function getEntity(int $id): Model

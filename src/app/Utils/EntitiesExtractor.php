@@ -26,6 +26,7 @@ class EntitiesExtractor
     public function getEntities(array $params = [])
     {
         $entities = call_user_func($this->model.'::paginate');
+        $entities->appends($params);
 
         return $entities;
     }

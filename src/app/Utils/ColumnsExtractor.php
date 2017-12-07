@@ -34,7 +34,7 @@ class ColumnsExtractor
         return $this->modelClass;
     }
 
-    public function getActiveListColumns(array $columnParams = [])
+    public function getActiveListColumns(array $columnParams = []): array
     {
         $columns = $this->model->adminFields;
         $activeColumns = [];
@@ -47,7 +47,7 @@ class ColumnsExtractor
         return $activeColumns;
     }
 
-    public function getActiveAddEditFields(array $columnParams = [])
+    public function getActiveAddEditFields(array $columnParams = []): array
     {
         $columns = $this->model->adminFields;
         $activeColumns = [];
@@ -58,5 +58,39 @@ class ColumnsExtractor
         }
 
         return $activeColumns;
+    }
+
+    public function getValidationRules(array $validationRules = []): array
+    {
+        $columns = $this->model->adminFields;
+        $validationRules = [];
+
+        foreach ($columns as $key => $column) {
+            $validationRules[$key] = '';
+
+            foreach ($column as $paramName => $paramValue) {
+                switch ($paramName) {
+                    case 'min':
+                    case 'max':
+                        $validationRules[$key] .= $paramName.':'.$paramValue.'|';
+                        break;
+                }
+            }
+        }
+
+        return $validationRules;
+    }
+
+    public function getSearchableColumns(): array
+    {
+        $columns = $this->model->adminFields;
+        $searchable = [];
+
+        foreach ($columns as $key => $column) {
+            if (isset($column['searchable']) && $column['searchable'] == true)
+                $searchable[] = $key;
+        }
+
+        return $searchable;
     }
 }
