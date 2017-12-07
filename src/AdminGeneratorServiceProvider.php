@@ -18,7 +18,7 @@ class AdminGeneratorServiceProvider extends ServiceProvider
 
         $this->loadViewsFrom(resource_path('views/vendor/vmorozov/laravel_admin_generator'), self::VIEWS_NAME);
 
-        $this->loadTranslationsFrom('langs/vendor/vmorozov/laravel_admin_generator', self::VIEWS_NAME);
+        $this->loadTranslationsFrom(resource_path('lang/vendor/vmorozov/laravel_admin_generator'), self::VIEWS_NAME);
 
 //        $this->loadViewsFrom(realpath(__DIR__.'../resources/views'), self::VIEWS_NAME);
 

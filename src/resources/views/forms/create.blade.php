@@ -4,7 +4,7 @@
 
 @endsection
 
-@section('title', 'Create new ' . $titleSingular)
+@section('title', __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.create_title') . $titleSingular)
 
 @section('content')
     <div class="row">
