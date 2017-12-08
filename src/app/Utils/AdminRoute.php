@@ -4,6 +4,7 @@ namespace Vmorozov\LaravelAdminGenerator\App\Utils;
 
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\Debug\Exception\ClassNotFoundException;
+use Vmorozov\LaravelAdminGenerator\App\Controllers\AdminHomeController;
 
 class AdminRoute
 {
@@ -23,5 +24,10 @@ class AdminRoute
 
         Route::get($route.'/{id}/edit', $controller.'@edit');
         Route::post($route.'/{id}/edit', $controller.'@update');
+    }
+
+    public static function home(string $prefix = '', string $controller = AdminHomeController::class)
+    {
+        Route::get($prefix.'/dashboard', $controller.'@');
     }
 }

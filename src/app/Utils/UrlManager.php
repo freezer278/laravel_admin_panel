@@ -5,6 +5,11 @@ namespace Vmorozov\LaravelAdminGenerator\App\Utils;
 
 class UrlManager
 {
+    public static function dashboardRoute(string $prefix = ''): string
+    {
+        return url($prefix.'/dashboard');
+    }
+
     public static function listRoute(string $route): string
     {
         return url($route);
