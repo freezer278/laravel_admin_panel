@@ -28,6 +28,6 @@ class AdminRoute
 
     public static function home(string $prefix = '', string $controller = AdminHomeController::class)
     {
-        Route::get($prefix.'/dashboard', $controller.'@');
+        Route::get($prefix.'/dashboard', $controller.'@showDashboard');
     }
 }
