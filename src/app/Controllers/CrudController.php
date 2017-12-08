@@ -31,6 +31,8 @@ abstract class CrudController extends Controller
 
     protected $columnParams = [];
 
+    protected $listItemButtons = [];
+
     public function __construct()
     {
         $this->setup();
@@ -42,6 +44,18 @@ abstract class CrudController extends Controller
     protected function setup()
     {
 
+    }
+
+    protected function addListItemButton(string $url, string $text, string $classes = '')
+    {
+        if ($classes === '')
+            $classes = 'btn btn-default';
+
+        $this->listItemButtons[] = [
+            'url' => $url,
+            'text' => $text,
+            'classes' => $classes,
+        ];
     }
 
     /**
@@ -84,8 +98,9 @@ abstract class CrudController extends Controller
         $url = $this->url;
 
         $search = (isset($requestParams['search']) ? $requestParams['search'] : '');
+        $listItemButtons = $this->listItemButtons;
 
-        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::list.list')->with(compact('columns', 'entities', 'titleSingular', 'titlePlural', 'url', 'search'));
+        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::list.list')->with(compact('columns', 'entities', 'titleSingular', 'titlePlural', 'url', 'search', 'listItemButtons'));
     }
 
     /**
