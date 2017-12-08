@@ -83,7 +83,9 @@ abstract class CrudController extends Controller
         $titlePlural = $this->titlePlural;
         $url = $this->url;
 
-        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::list.list')->with(compact('columns', 'entities', 'titleSingular', 'titlePlural', 'url'));
+        $search = (isset($requestParams['search']) ? $requestParams['search'] : '');
+
+        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::list.list')->with(compact('columns', 'entities', 'titleSingular', 'titlePlural', 'url', 'search'));
     }
 
     /**

@@ -5,11 +5,19 @@
 @section('content')
     <div class="box">
         <div class="box-header with-border">
-            <h3 class="box-title">
-                {{--Todo: add here search bar--}}
-                <a href="{{ \Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager::createRoute($url) }}" class="btn btn-success">{{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.create') }}</a>
-                {{--{{ $titlePlural or '' }}--}}
-            </h3>
+            {{--<h3 class="box-title">--}}
+
+            <a href="{{ \Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager::createRoute($url) }}" class="btn btn-success col-md-3">{{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.create') }}</a>
+            <form action="{{ \Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager::listRoute($url) }}" method="GET" class="col-md-6 col-md-offset-3">
+                <div class="col-md-10">
+                    <input type="search" name="search" placeholder="{{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.search') }}" class="form-control" value="{{ $search }}">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary">{{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.search') }}</button>
+                </div>
+            </form>
+            {{--{{ $titlePlural or '' }}--}}
+            {{--</h3>--}}
         </div>
         <!-- /.box-header -->
         <div class="box-body">

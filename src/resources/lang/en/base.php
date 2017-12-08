@@ -19,6 +19,7 @@ return [
 
     'controls' => 'Controls',
 
+    'search' => 'Search',
     'create' => 'Create',
     'edit' => 'Edit',
     'delete' => 'Delete',
