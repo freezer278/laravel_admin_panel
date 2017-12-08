@@ -46,15 +46,16 @@ abstract class CrudController extends Controller
 
     }
 
-    protected function addListItemButton(string $url, string $text, string $classes = '')
+    protected function addListItemButton(string $url, string $text, string $classes = '', array $htmlAttributes = [])
     {
         if ($classes === '')
             $classes = 'btn btn-default';
 
         $this->listItemButtons[] = [
-            'url' => $url,
+            'url' => url($url),
             'text' => $text,
             'classes' => $classes,
+            'htmlAttributes' => $htmlAttributes,
         ];
     }
 
