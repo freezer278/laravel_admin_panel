@@ -69,12 +69,15 @@ abstract class CrudController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $requestParams = $request->all();
+
         $columns = $this->columnsExtractor->getActiveListColumns();
-        $entities = $this->entitiesExtractor->getEntities();
+        $entities = $this->entitiesExtractor->getEntities($requestParams);
 
         $titleSingular = $this->titleSingular;
         $titlePlural = $this->titlePlural;
