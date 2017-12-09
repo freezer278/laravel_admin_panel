@@ -31,11 +31,19 @@ class EntitiesExtractor
     private $orderByClauses = [];
 
 
-    public function __construct(ColumnsExtractor $columnsExtractor)
+    public function __construct(ColumnsExtractor $columnsExtractor, int $perPage = 0)
     {
         $this->modelClass = $columnsExtractor->getModelClass();
         $this->model = new $this->modelClass;
         $this->columnsExtractor = $columnsExtractor;
+
+        $this->setPerPage($perPage);
+    }
+
+    public function setPerPage(int $perPage)
+    {
+        if ($perPage > 0)
+            $this->model->setPerPage($perPage);
     }
 
     public function getEntities(array $params = [], $pageParam = 'page')
