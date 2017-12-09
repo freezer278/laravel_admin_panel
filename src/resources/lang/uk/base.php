@@ -12,21 +12,20 @@ return [
 
     'dashboard_title' => 'Dashboard',
 
-    'login_title' => 'Вхід',
+    'auth' => [
+        'login' => 'Вхід',
 
-    'login' => [
         'email' => 'Email',
         'password' => 'Пароль',
         'remember_me' => 'Запам\'ятати мене',
         'forgot_your_password' => 'Забули пароль?',
+
+        'logout' => 'Вихід',
     ],
 
     'back_to_list' => 'Назад до списку',
     'create_title' => 'Створити ',
     'edit_title' => 'Редагувати ',
-
-    'logout' => 'Вихід',
-
 
 
     'controls' => 'Налаштування',

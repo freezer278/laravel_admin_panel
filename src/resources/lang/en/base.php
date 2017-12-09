@@ -12,19 +12,21 @@ return [
 
     'dashboard_title' => 'Dashboard',
 
-    'login_title' => 'Login',
-    'login' => [
+
+    'auth' => [
+        'login' => 'Login',
+
         'email' => 'Email',
         'password' => 'Password',
         'remember_me' => 'Remember Me',
         'forgot_your_password' => 'Forgot your password?',
+
+        'logout' => 'Logout',
     ],
 
     'back_to_list' => 'Back to list',
     'create_title' => 'Create new',
     'edit_title' => 'Edit ',
-
-    'logout' => 'Logout',
 
 
 
