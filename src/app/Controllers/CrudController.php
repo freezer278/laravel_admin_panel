@@ -46,6 +46,14 @@ abstract class CrudController extends Controller
 
     }
 
+    /**
+     * @return string
+     */
+    public function getUrl(): string
+    {
+        return $this->url;
+    }
+
     protected function addListItemButton(string $url, string $text, string $classes = '', array $htmlAttributes = [])
     {
         if ($classes === '')

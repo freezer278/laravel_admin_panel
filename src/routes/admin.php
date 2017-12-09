@@ -15,7 +15,7 @@ use Vmorozov\LaravelAdminGenerator\App\Utils\AdminRoute;
 
 $routePrefix = AdminRoute::getRoutePrefix();
 
-Route::group(['prefix' => $routePrefix], function () {
+Route::group(['prefix' => $routePrefix, 'middleware' => ['web']], function () {
 
     AdminRoute::home();
 

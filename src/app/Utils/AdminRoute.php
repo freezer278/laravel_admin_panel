@@ -5,6 +5,7 @@ namespace Vmorozov\LaravelAdminGenerator\App\Utils;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\Debug\Exception\ClassNotFoundException;
 use Vmorozov\LaravelAdminGenerator\App\Controllers\AdminHomeController;
+use Vmorozov\LaravelAdminGenerator\App\Controllers\CrudController;
 
 class AdminRoute
 {
@@ -13,11 +14,14 @@ class AdminRoute
         return config('laravel_admin.route_prefix', 'admin');
     }
 
-    public static function resource(string $route, string $controller)
+    public static function resource(string $controller)
     {
 //        if (!class_exists($controller)) {
 //            throw new ClassNotFoundException('class '.$controller.' was not found!', new \ErrorException());
 //        }
+
+        $controllerInstance = new $controller();
+        $route = $controllerInstance->getUrl();
 
         Route::get($route, $controller.'@index');
 
