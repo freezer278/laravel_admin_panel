@@ -26,8 +26,8 @@ class AdminRoute
         Route::post($route.'/{id}/edit', $controller.'@update');
     }
 
-    public static function home(string $prefix = '', string $controller = AdminHomeController::class)
+    public static function home(string $controller = AdminHomeController::class)
     {
-        Route::get($prefix.'/dashboard', $controller.'@showDashboard');
+        Route::get('/dashboard', $controller.'@showDashboard');
     }
 }

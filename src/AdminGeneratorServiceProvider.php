@@ -20,13 +20,17 @@ class AdminGeneratorServiceProvider extends ServiceProvider
 
         $this->loadTranslationsFrom(resource_path('lang/vendor/vmorozov/laravel_admin_generator'), self::VIEWS_NAME);
 
-//        $this->loadViewsFrom(realpath(__DIR__.'../resources/views'), self::VIEWS_NAME);
+        if (file_exists(base_path('/routes/admin.php')))
+            $this->loadRoutesFrom(base_path('/routes/admin.php'));
+        else
+            $this->loadRoutesFrom(__DIR__.'/routes/admin.php');
 
 
 //        $this->publishFiles();
 
         $this->publishes([__DIR__.'/resources/views' => resource_path('views/vendor/vmorozov/laravel_admin_generator')], 'views');
         $this->publishes([__DIR__.'/resources/lang' => resource_path('lang/vendor/vmorozov/laravel_admin_generator')], 'lang');
+        $this->publishes([__DIR__.'/routes' => base_path('/routes')], 'routes');
 
         $this->publishes([base_path('vendor/almasaeed2010/adminlte/dist') => public_path('adminlte')], 'adminlte');
         $this->publishes([base_path('vendor/almasaeed2010/adminlte/bower_components') => public_path('adminlte/bower_components')], 'adminlte');
