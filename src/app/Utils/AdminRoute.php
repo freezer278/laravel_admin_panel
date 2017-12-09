@@ -8,6 +8,11 @@ use Vmorozov\LaravelAdminGenerator\App\Controllers\AdminHomeController;
 
 class AdminRoute
 {
+    public static function getRoutePrefix(): string
+    {
+        return config('laravel_admin.route_prefix', 'admin');
+    }
+
     public static function resource(string $route, string $controller)
     {
 //        if (!class_exists($controller)) {

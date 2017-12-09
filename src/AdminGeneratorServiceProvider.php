@@ -28,6 +28,7 @@ class AdminGeneratorServiceProvider extends ServiceProvider
 
 //        $this->publishFiles();
 
+        $this->publishes([__DIR__.'/config' => config_path()], 'config');
         $this->publishes([__DIR__.'/resources/views' => resource_path('views/vendor/vmorozov/laravel_admin_generator')], 'views');
         $this->publishes([__DIR__.'/resources/lang' => resource_path('lang/vendor/vmorozov/laravel_admin_generator')], 'lang');
         $this->publishes([__DIR__.'/routes' => base_path('/routes')], 'routes');

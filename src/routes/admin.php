@@ -13,7 +13,7 @@
 
 use Vmorozov\LaravelAdminGenerator\App\Utils\AdminRoute;
 
-$routePrefix = 'admin';
+$routePrefix = AdminRoute::getRoutePrefix();
 
 Route::group(['prefix' => $routePrefix], function () {
 
