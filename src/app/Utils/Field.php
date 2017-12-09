@@ -10,6 +10,8 @@ class Field
 {
     const DEFAULT_TYPE = 'text';
 
+    protected $relationTypes = ['select'];
+
     protected $fieldName = '';
 
     protected $params = [];
@@ -18,12 +20,18 @@ class Field
 
     protected $viewParams;
 
+    protected $viewType;
+
     protected function getAvailableTypes(): array
     {
         return [
             'text' => [
                 'column' => AdminGeneratorServiceProvider::VIEWS_NAME.'::list.column_types.text',
                 'field' => AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.field_types.text',
+            ],
+            'select' => [
+                'column' => AdminGeneratorServiceProvider::VIEWS_NAME.'::list.column_types.text',
+                'field' => AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.field_types.select',
             ],
 //            'file' => [
 //                'column' => '',
@@ -39,19 +47,27 @@ class Field
         $this->fieldName = $fieldName;
         $this->params = $params;
 
-        $type = isset($this->params['field_type']) ? $this->params['field_type'] : self::DEFAULT_TYPE;
-        $this->viewParams = $this->availableTypes[$type] ?: $this->availableTypes[self::DEFAULT_TYPE];
+        $this->viewType = isset($this->params['field_type']) ? $this->params['field_type'] : self::DEFAULT_TYPE;
+        $this->viewParams = $this->availableTypes[$this->viewType] ?: $this->availableTypes[self::DEFAULT_TYPE];
     }
 
     public function renderField(Model $model = null)
     {
         $viewName = $this->viewParams['field'];
+        $relationModels = collect([]);
+        $relationModelFieldName = isset($this->viewParams['relation_display_attribute']) ? $this->viewParams['relation_display_attribute'] : '';
+
+        if (in_array($this->viewType, $this->relationTypes)) {
+            $relationModels = (new $this->viewParams['relation_model']())->all();
+        }
 
         return view($viewName)->with([
             'params' => $this->params,
             'fieldName' => $this->fieldName,
             'entity' => $model,
             'field' => $this,
+            'relationModels' => $relationModels,
+            'relationModelFieldName' => $relationModelFieldName,
         ]);
     }
 
