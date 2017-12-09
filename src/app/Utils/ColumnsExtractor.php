@@ -94,6 +94,9 @@ class ColumnsExtractor
                     case 'max':
                         $validationRules[$key] .= $paramName.':'.$paramValue.'|';
                         break;
+                    case 'required':
+                        $validationRules[$key] .= 'required|';
+                        break;
                 }
             }
         }
