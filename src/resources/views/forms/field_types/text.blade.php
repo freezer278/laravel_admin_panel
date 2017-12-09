@@ -7,8 +7,8 @@
            value="{{ $entity->$fieldName or old($fieldName) }}"
            class="form-control"
            {{ $field->required() ? 'required' : '' }}
-           {{ isset($params['min']) ? 'minlength="'.$params['min'].'"' : '' }}
-           {{ isset($params['max']) ? 'maxlength="'.$params['max'].'"' : '' }}
+           minlength="{{ isset($params['min']) ? $params['min'] : '' }}"
+           maxlength="{{ isset($params['max']) ? $params['max'] : '' }}"
     >
 
     @if ($errors->has($fieldName))
