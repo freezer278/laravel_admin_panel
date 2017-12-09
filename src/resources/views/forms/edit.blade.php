@@ -31,17 +31,8 @@
                         <h3 class="box-title">{{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.edit_title') }} {{ $titleSingular }}</h3>
                     </div>
                     <div class="box-body row">
-                        @foreach($columns as $key => $column)
-                            <div class="form-group col-md-12 {{ $errors->has($key) ? 'has-error' : '' }}">
-                                <label for="{{ $key }}">{{ $column['label'] or title_case($key) }}</label>
-
-                                <input type="text" name="{{ $key }}" id="{{ $key }}" value="{{ $entity->$key or old($key) }}" class="form-control">
-                                @if ($errors->has($key))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first($key) }}</strong>
-                                    </span>
-                                @endif
-                            </div>
+                        @foreach($columns as $column)
+                            {!! $column->renderField($entity) !!}
                         @endforeach
                     </div><!-- /.box-body -->
                     <div class="box-footer">

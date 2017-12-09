@@ -16,8 +16,6 @@ class Field
 
     protected $availableTypes = [];
 
-    protected $fieldType;
-
     protected $viewParams;
 
     protected function getAvailableTypes(): array
@@ -25,7 +23,7 @@ class Field
         return [
             'text' => [
                 'column' => AdminGeneratorServiceProvider::VIEWS_NAME.'::list.column_types.text',
-                'field' => AdminGeneratorServiceProvider::VIEWS_NAME.'::list.field_types.text',
+                'field' => AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.field_types.text',
             ],
 //            'file' => [
 //                'column' => '',
@@ -41,11 +39,11 @@ class Field
         $this->fieldName = $fieldName;
         $this->params = $params;
 
-        $type = $this->params['field_type'] ?: self::DEFAULT_TYPE;
+        $type = isset($this->params['field_type']) ? $this->params['field_type'] : self::DEFAULT_TYPE;
         $this->viewParams = $this->availableTypes[$type] ?: $this->availableTypes[self::DEFAULT_TYPE];
     }
 
-    public function renderField(Model $model)
+    public function renderField(Model $model = null)
     {
         $viewName = $this->viewParams['field'];
 

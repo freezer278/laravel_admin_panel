@@ -4,7 +4,7 @@
     <input type="text"
            name="{{ $fieldName }}"
            id="{{ $fieldName }}"
-           value="{{ old($fieldName) }}"
+           value="{{ $entity->$fieldName or old($fieldName) }}"
            class="form-control"
            {{ $field->required() ? 'required' : '' }}
            {{ isset($params['min']) ? 'minlength="'.$params['min'].'"' : '' }}
