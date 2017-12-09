@@ -57,7 +57,7 @@ class Field
 
     public function renderColumn(Model $model)
     {
-        $viewName = $this->viewParams['field'];
+        $viewName = $this->viewParams['column'];
 
         return view($viewName)->with([
             'params' => $this->params,
@@ -70,5 +70,10 @@ class Field
     public function required(): bool
     {
         return isset($this->params['required']) && $this->params['required'] === true;
+    }
+
+    public function getLabel(): string
+    {
+        return isset($this->params['label']) ? $this->params['label'] : title_case($this->fieldName);
     }
 }

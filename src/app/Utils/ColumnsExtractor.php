@@ -63,7 +63,7 @@ class ColumnsExtractor
 
         foreach ($this->columnParams as $key => $column) {
             if (isset($column['displayInList']) && $column['displayInList'] == true)
-                $activeColumns[$key] = $column;
+                $activeColumns[] = new Field($key, $column);
         }
 
         return $activeColumns;

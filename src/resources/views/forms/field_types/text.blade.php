@@ -1,5 +1,5 @@
 <div class="form-group col-md-12 {{ $errors->has($fieldName) ? 'has-error' : '' }}">
-    <label for="{{ $fieldName }}">{{ $params['label'] or title_case($fieldName) }}</label>
+    <label for="{{ $fieldName }}">{{ $field->getLabel() }}</label>
 
     <input type="text"
            name="{{ $fieldName }}"
