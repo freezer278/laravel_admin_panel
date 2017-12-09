@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class EntitiesExtractor
 {
     /**
+     * @var string
+     */
+    protected $modelClass;
+    /**
      * @var Model
      */
     protected $model;
@@ -29,13 +33,14 @@ class EntitiesExtractor
 
     public function __construct(ColumnsExtractor $columnsExtractor)
     {
-        $this->model = $columnsExtractor->getModelClass();
+        $this->modelClass = $columnsExtractor->getModelClass();
+        $this->model = new $this->modelClass;
         $this->columnsExtractor = $columnsExtractor;
     }
 
     public function getEntities(array $params = [], $pageParam = 'page')
     {
-        $entities = new $this->model();
+        $entities = $this->model;
 
         if (isset($params['search']) && $params['search'] !== null  && $params['search'] !== '')
             $entities = $this->addSearchQuery($entities, $params['search']);
@@ -96,7 +101,7 @@ class EntitiesExtractor
 
     public function getSingleEntity(int $id)
     {
-        $entity = call_user_func($this->model.'::find', $id);
+        $entity = $this->model->find($id);
 
         return $entity;
     }

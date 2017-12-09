@@ -26,7 +26,30 @@ class ColumnsExtractor
         $this->model = new $this->modelClass;
 
         if ($columnParams !== [])
-            $this->columnParams = $columnParams;
+            $this->setColumnParams($columnParams);
+        else
+            $this->setColumnParamsFromModel();
+    }
+
+    protected function setColumnParamsFromModel()
+    {
+        $this->columnParams = $this->model->adminFields;
+
+        if ($this->columnParams === null) {
+            $columns = $this->model->getFillable();
+
+            foreach ($columns as $column) {
+                $this->columnParams[$column] = [
+                    'displayInForm' => true,
+                    'displayInList' => true,
+                ];
+            }
+        }
+    }
+
+    public function setColumnParams(array $columnParams)
+    {
+        $this->columnParams = $columnParams;
     }
 
     public function getModelClass(): string
@@ -36,10 +59,9 @@ class ColumnsExtractor
 
     public function getActiveListColumns(array $columnParams = []): array
     {
-        $columns = $this->model->adminFields;
         $activeColumns = [];
 
-        foreach ($columns as $key => $column) {
+        foreach ($this->columnParams as $key => $column) {
             if (isset($column['displayInList']) && $column['displayInList'] == true)
                 $activeColumns[$key] = $column;
         }
@@ -49,10 +71,9 @@ class ColumnsExtractor
 
     public function getActiveAddEditFields(array $columnParams = []): array
     {
-        $columns = $this->model->adminFields;
         $activeColumns = [];
 
-        foreach ($columns as $key => $column) {
+        foreach ($this->columnParams as $key => $column) {
             if (isset($column['displayInForm']) && $column['displayInForm'] == true)
                 $activeColumns[$key] = $column;
         }
@@ -62,10 +83,9 @@ class ColumnsExtractor
 
     public function getValidationRules(array $validationRules = []): array
     {
-        $columns = $this->model->adminFields;
         $validationRules = [];
 
-        foreach ($columns as $key => $column) {
+        foreach ($this->columnParams as $key => $column) {
             $validationRules[$key] = '';
 
             foreach ($column as $paramName => $paramValue) {
@@ -83,10 +103,9 @@ class ColumnsExtractor
 
     public function getSearchableColumns(): array
     {
-        $columns = $this->model->adminFields;
         $searchable = [];
 
-        foreach ($columns as $key => $column) {
+        foreach ($this->columnParams as $key => $column) {
             if (isset($column['searchable']) && $column['searchable'] == true)
                 $searchable[] = $key;
         }

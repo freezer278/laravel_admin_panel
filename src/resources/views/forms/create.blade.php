@@ -34,7 +34,7 @@
 
                         @foreach($columns as $key => $column)
                             <div class="form-group col-md-12 {{ $errors->has($key) ? 'has-error' : '' }}">
-                                <label for="{{ $key }}">{{ $column['label'] }}</label>
+                                <label for="{{ $key }}">{{ $column['label'] or title_case($key) }}</label>
 
                                 <input type="text" name="{{ $key }}" id="{{ $key }}" value="{{ old($key) }}" class="form-control">
                                 @if ($errors->has($key))
