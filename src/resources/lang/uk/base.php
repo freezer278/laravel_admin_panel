@@ -15,6 +15,8 @@ return [
     'create_title' => 'Створити ',
     'edit_title' => 'Редагувати ',
 
+    'logout' => 'Вихід',
+
 
 
     'controls' => 'Налаштування',

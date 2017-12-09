@@ -15,6 +15,8 @@ return [
     'create_title' => 'Create new',
     'edit_title' => 'Edit ',
 
+    'logout' => 'Logout',
+
 
 
     'controls' => 'Controls',

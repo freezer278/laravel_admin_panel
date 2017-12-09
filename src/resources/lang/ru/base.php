@@ -15,6 +15,8 @@ return [
     'create_title' => 'Создать ',
     'edit_title' => 'Редактировать ',
 
+    'logout' => 'Выход',
+
 
 
     'controls' => 'Настройки',
