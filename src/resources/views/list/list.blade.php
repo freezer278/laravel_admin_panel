@@ -24,7 +24,7 @@
             <table class="table table-bordered">
                 <tr>
                     @foreach($columns as $column)
-                        <th>{{ $column['label'] }}</th>
+                        <th>{{ $column['label'] or title_case($key) }}</th>
                     @endforeach
                     <th>{{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.controls') }}</th>
                 </tr>
