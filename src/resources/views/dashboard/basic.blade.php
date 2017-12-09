@@ -7,7 +7,7 @@
 @section('content')
     <div class="box">
         <div class="box-header with-border">
-            <div class="box-title">@yield('title', '')</div>
+            <div class="box-title">{{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.dashboard_title') }}</div>
 
         </div>
         <!-- /.box-header -->

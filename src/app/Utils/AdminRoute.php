@@ -5,7 +5,7 @@ namespace Vmorozov\LaravelAdminGenerator\App\Utils;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\Debug\Exception\ClassNotFoundException;
 use Vmorozov\LaravelAdminGenerator\App\Controllers\AdminHomeController;
-use Vmorozov\LaravelAdminGenerator\App\Controllers\CrudController;
+use Vmorozov\LaravelAdminGenerator\App\Controllers\Auth\AdminAuthController;
 
 class AdminRoute
 {
@@ -38,5 +38,11 @@ class AdminRoute
     public static function home(string $controller = AdminHomeController::class)
     {
         Route::get('/dashboard', $controller.'@showDashboard');
+    }
+
+    public static function auth(string $controller = AdminAuthController::class)
+    {
+        Route::get('/login', $controller.'@showLoginForm')->name('admin_login');
+        Route::post('/login', $controller.'@login')->name('post_admin_login');
     }
 }

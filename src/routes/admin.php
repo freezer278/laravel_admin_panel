@@ -18,6 +18,7 @@ $routePrefix = AdminRoute::getRoutePrefix();
 Route::group(['prefix' => $routePrefix, 'middleware' => ['web']], function () {
 
     AdminRoute::home();
+    AdminRoute::auth();
 
     //    Todo: add your admin panel routes here
 
