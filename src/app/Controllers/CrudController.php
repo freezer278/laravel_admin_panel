@@ -35,10 +35,10 @@ abstract class CrudController extends Controller
 
     public function __construct()
     {
-        $this->setup();
-
         $this->columnsExtractor = new ColumnsExtractor($this->model, $this->columnParams);
         $this->entitiesExtractor = new EntitiesExtractor($this->columnsExtractor);
+
+        $this->setup();
     }
 
     protected function setup()
@@ -57,6 +57,11 @@ abstract class CrudController extends Controller
             'classes' => $classes,
             'htmlAttributes' => $htmlAttributes,
         ];
+    }
+
+    protected function addDefaultWhereClause(string $column, string $operator, $value)
+    {
+        $this->entitiesExtractor->addWhereClause($column, $operator,$value);
     }
 
     /**
