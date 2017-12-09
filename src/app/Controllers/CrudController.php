@@ -61,7 +61,12 @@ abstract class CrudController extends Controller
 
     protected function addDefaultWhereClause(string $column, string $operator, $value)
     {
-        $this->entitiesExtractor->addWhereClause($column, $operator,$value);
+        $this->entitiesExtractor->addWhereClause($column, $operator, $value);
+    }
+
+    protected function addDefaultOrderByClause(string $column, string $direction)
+    {
+        $this->entitiesExtractor->addOrderByClause($column, $direction);
     }
 
     /**

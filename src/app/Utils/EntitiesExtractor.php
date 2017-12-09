@@ -21,6 +21,11 @@ class EntitiesExtractor
      */
     private $clauses = [];
 
+    /**
+     * @var array
+     */
+    private $orderByClauses = [];
+
 
     public function __construct(ColumnsExtractor $columnsExtractor)
     {
@@ -30,7 +35,7 @@ class EntitiesExtractor
 
     public function getEntities(array $params = [], $pageParam = 'page')
     {
-        $entities = call_user_func($this->model.'::orderBy', 'id', 'desc');
+        $entities = new $this->model();
 
         if (isset($params['search']) && $params['search'] !== null  && $params['search'] !== '')
             $entities = $this->addSearchQuery($entities, $params['search']);
@@ -69,12 +74,24 @@ class EntitiesExtractor
             $q->where($this->clauses);
         });
 
+        foreach ($this->orderByClauses as $clause) {
+            $query = $query->orderBy($clause['column'], $clause['direction']);
+        }
+
         return $query;
     }
 
     public function addWhereClause(string $column, string $operator, $value)
     {
         $this->clauses[] = [$column, $operator, $value];
+    }
+
+    public function addOrderByClause(string $column, string $direction)
+    {
+        $this->orderByClauses[] = [
+            'column' => $column,
+            'direction' => $direction
+        ];
     }
 
     public function getSingleEntity(int $id)
