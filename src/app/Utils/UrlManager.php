@@ -5,28 +5,28 @@ namespace Vmorozov\LaravelAdminGenerator\App\Utils;
 
 class UrlManager
 {
-    public static function dashboardRoute(string $prefix = ''): string
+    public static function dashboardRoute(): string
     {
-        return url($prefix.'/dashboard');
+        return url(AdminRoute::getRoutePrefix().'/dashboard');
     }
 
     public static function listRoute(string $route): string
     {
-        return url($route);
+        return url(AdminRoute::getRoutePrefix().str_start($route, '/'));
     }
 
     public static function createRoute(string $route): string
     {
-        return url($route.'/create');
+        return url(AdminRoute::getRoutePrefix().str_start($route, '/').'/create');
     }
 
     public static function editRoute(string $route, int $id): string
     {
-        return url($route.'/'.$id.'/edit');
+        return url(AdminRoute::getRoutePrefix().str_start($route, '/').'/'.$id.'/edit');
     }
 
     public static function deleteRoute(string $route, int $id): string
     {
-        return url($route.'/'.$id.'/delete');
+        return url(AdminRoute::getRoutePrefix().str_start($route, '/').'/'.$id.'/delete');
     }
 }
