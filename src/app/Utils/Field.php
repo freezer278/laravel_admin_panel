@@ -2,7 +2,6 @@
 
 namespace Vmorozov\LaravelAdminGenerator\App\Utils;
 
-
 use Illuminate\Database\Eloquent\Model;
 use Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider;
 
@@ -54,11 +53,12 @@ class Field
     public function renderField(Model $model = null)
     {
         $viewName = $this->viewParams['field'];
-        $relationModels = collect([]);
-        $relationModelFieldName = isset($this->viewParams['relation_display_attribute']) ? $this->viewParams['relation_display_attribute'] : '';
-
         if (in_array($this->viewType, $this->relationTypes)) {
-            $relationModels = (new $this->viewParams['relation_model']())->all();
+            $relationResolver = new RelationResolver($model);
+
+            $relationModels = $relationResolver->retrieveRelated($this->fieldName);
+            $relationModelFieldName = $relationResolver->getRelatedModelDisplayField($this->params);
+
         }
 
         return view($viewName)->with([
@@ -66,8 +66,8 @@ class Field
             'fieldName' => $this->fieldName,
             'entity' => $model,
             'field' => $this,
-            'relationModels' => $relationModels,
-            'relationModelFieldName' => $relationModelFieldName,
+            'relationModels' => $relationModels ?? collect([]),
+            'relationModelFieldName' => $relationModelFieldName ?? '',
         ]);
     }
 
