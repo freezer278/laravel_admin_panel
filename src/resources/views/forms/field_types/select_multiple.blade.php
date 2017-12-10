@@ -1,14 +1,15 @@
 <div class="form-group col-md-12 {{ $errors->has($fieldName) ? 'has-error' : '' }}">
     <label for="{{ $fieldName }}">{{ $field->getLabel() }}</label>
 
-    <select name="{{ $fieldName }}"
+    <select name="{{ str_finish($fieldName, '[]') }}"
             id="{{ $fieldName }}"
             class="form-control"
             {{ $field->required() ? 'required' : '' }}
             multiple
     >
         @foreach($relationModels as $relationModel)
-            <option value="{{ $relationModel->getKey() }}" {{ $entity->$fieldName == $relationModel->getKey() ? 'selected' : '' }}>
+            {{--Todo: add displaying selected entities--}}
+            <option value="{{ $relationModel->getKey() }}">
                 {{ $relationModel->$relationModelFieldName }}
             </option>
         @endforeach

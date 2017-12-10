@@ -51,7 +51,7 @@ class Field
         $this->params = $params;
 
         $this->viewType = isset($this->params['field_type']) ? $this->params['field_type'] : self::DEFAULT_TYPE;
-        $this->viewParams = $this->availableTypes[$this->viewType] ?: $this->availableTypes[self::DEFAULT_TYPE];
+        $this->viewParams = $this->availableTypes[$this->viewType] ?? $this->availableTypes[self::DEFAULT_TYPE];
     }
 
     public function renderField(Model $model = null)

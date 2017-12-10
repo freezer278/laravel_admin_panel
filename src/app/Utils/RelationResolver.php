@@ -61,8 +61,10 @@ class RelationResolver
     public function setRelated(string $column, array $relatedIds)
     {
         $method = $this->getRelationMethod($column);
+        $relation = $this->model->$method();
 
-        $this->model->$method()->sync($relatedIds);
+        if (method_exists($relation, 'sync'))
+            $relation->sync($relatedIds);
     }
 
     public function checkFieldHasRelation()
@@ -76,7 +78,7 @@ class RelationResolver
         $result = [];
 
         foreach ($params as $key => $param) {
-            $intersects = array_intersect_key($param, self::RELATION_MARKERS);
+            $intersects = array_intersect(array_keys($param), self::RELATION_MARKERS);
             if (count($intersects) > 0)
                 $result[] = $key;
         }
@@ -88,9 +90,10 @@ class RelationResolver
     {
         $relationColumns = $this->getAllColumnsWithRelations();
         $request = $request->all($relationColumns);
+//        $request = array_intersect_key($request, $relationColumns);
 
         foreach ($request as $key => $item) {
-            $this->setRelated($key, $item);
+            $this->setRelated($key, (array) $item);
         }
     }
 
