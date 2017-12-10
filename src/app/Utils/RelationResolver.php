@@ -3,9 +3,12 @@
 namespace Vmorozov\LaravelAdminGenerator\App\Utils;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 
 class RelationResolver
 {
+    const RELATION_MARKERS = ['relation', 'relation_display_attribute'];
+
     protected $model;
     protected $columnParams;
 
@@ -32,9 +35,16 @@ class RelationResolver
         return $params['relation_model'];
     }
 
-    public function getRelatedModelDisplayField(array $params = []): string
+    public function getRelatedModelDisplayField(array $params): string
     {
         return $params['relation_display_attribute'];
+    }
+
+    protected function getRelationMethod(string $column): string
+    {
+        $params = $this->getColumnParamsByName($column);
+
+        return $params['relation'];
     }
 
     public function retrieveRelated(string $column)
@@ -50,7 +60,38 @@ class RelationResolver
 
     public function setRelated(string $column, array $relatedIds)
     {
+        $method = $this->getRelationMethod($column);
 
+        $this->model->$method()->sync($relatedIds);
+    }
+
+    public function checkFieldHasRelation()
+    {
+
+    }
+
+    public function getAllColumnsWithRelations(): array
+    {
+        $params = $this->columnParams;
+        $result = [];
+
+        foreach ($params as $key => $param) {
+            $intersects = array_intersect_key($param, self::RELATION_MARKERS);
+            if (count($intersects) > 0)
+                $result[] = $key;
+        }
+
+        return $result;
+    }
+
+    public function saveAllRelations(Request $request)
+    {
+        $relationColumns = $this->getAllColumnsWithRelations();
+        $request = $request->all($relationColumns);
+
+        foreach ($request as $key => $item) {
+            $this->setRelated($key, $item);
+        }
     }
 
 }

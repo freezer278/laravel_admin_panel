@@ -9,7 +9,7 @@ class Field
 {
     const DEFAULT_TYPE = 'text';
 
-    protected $relationTypes = ['select'];
+    protected $relationTypes = ['select', 'select_multiple'];
 
     protected $fieldName = '';
 
@@ -31,6 +31,10 @@ class Field
             'select' => [
                 'column' => AdminGeneratorServiceProvider::VIEWS_NAME.'::list.column_types.text',
                 'field' => AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.field_types.select',
+            ],
+            'select_multiple' => [
+                'column' => AdminGeneratorServiceProvider::VIEWS_NAME.'::list.column_types.text',
+                'field' => AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.field_types.select_multiple',
             ],
 //            'file' => [
 //                'column' => '',
