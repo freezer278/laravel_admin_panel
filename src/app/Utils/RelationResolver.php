@@ -4,6 +4,7 @@ namespace Vmorozov\LaravelAdminGenerator\App\Utils;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class RelationResolver
 {
@@ -65,6 +66,18 @@ class RelationResolver
 
         if (method_exists($relation, 'sync'))
             $relation->sync($relatedIds);
+    }
+
+    public function getRelatedModelsIds(string $column): Collection
+    {
+        $method = $this->getRelationMethod($column);
+
+        $relationModel = $this->getRelatedModelClassName($this->getColumnParamsByName($column));
+        $relationModel = new $relationModel();
+
+        $related = $this->model->$method()->get(['id']);
+
+        return $related->pluck('id');
     }
 
     public function checkFieldHasRelation()

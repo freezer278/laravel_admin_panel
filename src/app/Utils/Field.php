@@ -60,6 +60,7 @@ class Field
         if (in_array($this->viewType, $this->relationTypes)) {
             $relationResolver = new RelationResolver($model);
 
+            $relatedIds = $relationResolver->getRelatedModelsIds($this->fieldName);
             $relationModels = $relationResolver->retrieveRelated($this->fieldName);
             $relationModelFieldName = $relationResolver->getRelatedModelDisplayField($this->params);
 
@@ -71,6 +72,7 @@ class Field
             'entity' => $model,
             'field' => $this,
             'relationModels' => $relationModels ?? collect([]),
+            'relatedIds' => $relatedIds ?? collect([]),
             'relationModelFieldName' => $relationModelFieldName ?? '',
         ]);
     }

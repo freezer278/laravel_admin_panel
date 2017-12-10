@@ -8,8 +8,9 @@
             multiple
     >
         @foreach($relationModels as $relationModel)
-            {{--Todo: add displaying selected entities--}}
-            <option value="{{ $relationModel->getKey() }}">
+            <option value="{{ $relationModel->getKey() }}"
+                    {{ $relatedIds->has($relationModel->getKey()) !== false ? 'selected' : '' }}
+            >
                 {{ $relationModel->$relationModelFieldName }}
             </option>
         @endforeach
