@@ -28,6 +28,10 @@ class Field
                 'column' => AdminGeneratorServiceProvider::VIEWS_NAME.'::list.column_types.text',
                 'field' => AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.field_types.text',
             ],
+            'textarea' => [
+                'column' => AdminGeneratorServiceProvider::VIEWS_NAME.'::list.column_types.text',
+                'field' => AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.field_types.textarea',
+            ],
             'select' => [
                 'column' => AdminGeneratorServiceProvider::VIEWS_NAME.'::list.column_types.text',
                 'field' => AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.field_types.select',
