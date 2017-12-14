@@ -24,15 +24,15 @@
             <table class="table table-bordered">
                 <tr>
                     @foreach($columns as $column)
-                        <th>{{ $column['label'] or title_case($key) }}</th>
+                        <th>{{ $column->getLabel() }}</th>
                     @endforeach
                     <th>{{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.controls') }}</th>
                 </tr>
 
                 @foreach($entities as $entity)
                     <tr>
-                        @foreach($columns as $key => $column)
-                            <td>{{ $entity->$key }}</td>
+                        @foreach($columns as $column)
+                            {!! $column->renderColumn($entity) !!}
                         @endforeach
                         <td>
                             <a href="{{ \Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager::editRoute($url, $entity->id) }}" class="btn btn-warning">{{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.edit') }}</a>

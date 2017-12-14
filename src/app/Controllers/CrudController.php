@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider;
 use Vmorozov\LaravelAdminGenerator\App\Utils\ColumnsExtractor;
 use Vmorozov\LaravelAdminGenerator\App\Utils\EntitiesExtractor;
+use Vmorozov\LaravelAdminGenerator\App\Utils\RelationResolver;
 use Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager;
 
 abstract class CrudController extends Controller
@@ -143,7 +144,12 @@ abstract class CrudController extends Controller
         $data = $this->validate($request, $this->getValidationRules());
 
         $this->beforeCreate();
-        $entity = call_user_func($this->model.'::create', $data);
+
+        $entity = (new $this->model($data))->save();
+
+        $relationsResolver = new RelationResolver($entity);
+        $relationsResolver->saveAllRelations($request);
+
         $this->afterCreate();
 
         session()->flash('message', 'Entity created successfully');
@@ -204,7 +210,12 @@ abstract class CrudController extends Controller
         $data = $this->validate($request, $this->getValidationRules());
 
         $this->beforeUpdate();
+
         $entity->update($data);
+
+        $relationsResolver = new RelationResolver($entity);
+        $relationsResolver->saveAllRelations($request);
+
         $this->afterUpdate();
 
         session()->flash('message', 'Entity changed successfully');

@@ -32,17 +32,8 @@
                     </div>
                     <div class="box-body row">
 
-                        @foreach($columns as $key => $column)
-                            <div class="form-group col-md-12 {{ $errors->has($key) ? 'has-error' : '' }}">
-                                <label for="{{ $key }}">{{ $column['label'] or title_case($key) }}</label>
-
-                                <input type="text" name="{{ $key }}" id="{{ $key }}" value="{{ old($key) }}" class="form-control">
-                                @if ($errors->has($key))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first($key) }}</strong>
-                                    </span>
-                                @endif
-                            </div>
+                        @foreach($columns as $column)
+                            {!! $column->renderField() !!}
                         @endforeach
 
                     </div><!-- /.box-body -->
