@@ -44,6 +44,10 @@
 
             {{--<li><a href="#"><i class="fa fa-circle-o text-yellow"></i> <span>Warning</span></a></li>--}}
             {{--<li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>Information</span></a></li>--}}
+
+            @if(Auth::check())
+                {{--Todo: define your menu links here--}}
+            @endif
         </ul>
     </section>
     <!-- /.sidebar -->
