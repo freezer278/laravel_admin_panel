@@ -42,6 +42,7 @@ class ColumnsExtractor
                 $this->columnParams[$column] = [
                     'displayInForm' => true,
                     'displayInList' => true,
+                    'searchable' => true,
                 ];
             }
         }
