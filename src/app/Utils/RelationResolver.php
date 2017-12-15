@@ -90,7 +90,7 @@ class RelationResolver
         $params = $this->columnParams;
         $result = [];
 
-        foreach ($params as $key => $param) {
+        foreach (($params ?? []) as $key => $param) {
             $intersects = array_intersect(array_keys($param), self::RELATION_MARKERS);
             if (count($intersects) > 0)
                 $result[] = $key;
@@ -102,8 +102,7 @@ class RelationResolver
     public function saveAllRelations(Request $request)
     {
         $relationColumns = $this->getAllColumnsWithRelations();
-        $request = $request->all($relationColumns);
-//        $request = array_intersect_key($request, $relationColumns);
+        $request = $request->only($relationColumns);
 
         foreach ($request as $key => $item) {
             $this->setRelated($key, (array) $item);

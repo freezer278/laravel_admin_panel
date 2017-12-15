@@ -145,7 +145,8 @@ abstract class CrudController extends Controller
 
         $this->beforeCreate();
 
-        $entity = (new $this->model($data))->save();
+        $entity = (new $this->model($data));
+        $entity->save();
 
         $relationsResolver = new RelationResolver($entity);
         $relationsResolver->saveAllRelations($request);
