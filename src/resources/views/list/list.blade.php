@@ -18,7 +18,7 @@
             </form>
 
             <div class="pull-left text-right" style="margin-top:1%;">
-                <span>Export: </span>
+                <span>{{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.export') }}: </span>
                 <div class="dt-buttons btn-group">
                     <a class="btn btn-default buttons-copy buttons-html5 btn-sm"
                        href="{{ \Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager::exportXlsRoute($url) }}">
