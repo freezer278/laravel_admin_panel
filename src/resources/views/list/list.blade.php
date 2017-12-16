@@ -16,8 +16,21 @@
                     <button type="submit" class="btn btn-primary">{{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.search') }}</button>
                 </div>
             </form>
-            {{--{{ $titlePlural or '' }}--}}
-            {{--</h3>--}}
+
+            <div class="pull-left text-right" style="margin-top:1%;">
+                <span>Export: </span>
+                <div class="dt-buttons btn-group">
+                    <a class="btn btn-default buttons-copy buttons-html5 btn-sm"
+                       href="{{ \Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager::exportXlsRoute($url) }}">
+                        <span>Excel</span>
+                    </a>
+                    <a class="btn btn-default buttons-copy buttons-html5 btn-sm"
+                       href="{{ \Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager::exportCsvRoute($url) }}">
+                        <span>CSV</span>
+                    </a>
+                </div>
+            </div>
+
         </div>
         <!-- /.box-header -->
         <div class="box-body">
