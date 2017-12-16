@@ -2,19 +2,19 @@
 
 namespace Vmorozov\LaravelAdminGenerator\App\Utils\Export\Strategies;
 
-
-use Maatwebsite\Excel\Facades\Excel;
+use Box\Spout\Writer\WriterFactory;
+use Box\Spout\Common\Type;
 
 class XlsCsvStrategy implements ExportStrategy
 {
     private $acceptableFormats = [
-        'xlsx', 'xls', 'csv'
+        Type::XLSX, Type::CSV, Type::ODS
     ];
 
     private $format;
     private $modelClass;
 
-    public function __construct(string $modelClass, string $format = 'xlsx')
+    public function __construct(string $modelClass, string $format = Type::XLSX)
     {
         $this->modelClass = $modelClass;
 
@@ -27,50 +27,21 @@ class XlsCsvStrategy implements ExportStrategy
     public function export()
     {
         ini_set('memory_limit', '512M');
-        ini_set('max_execution_time', '300');
+        set_time_limit(0);
 
+        $writer = WriterFactory::create($this->format);
+        $writer->openToBrowser('Export.'.$this->format); // stream data directly to the browser
 
-        Excel::create('Test', function($excel) {
+        (new $this->modelClass())->select($this->getColumns())->chunk(500, function ($models) use (&$writer) {
+            $writer->addRows($models->toArray());
+            unset($models);
+        });
 
-            $excel->sheet('Export', function($sheet) {
-                $sheet->appendRow($this->getColumns());
-
-                (new $this->modelClass())->select($this->getColumns())->limit(5000)->chunk(1000, function ($models) use (&$sheet) {
-                    foreach ($models as &$model) {
-                        $sheet->appendRow($model->toArray());
-                    }
-                    unset($models);
-                });
-            });
-
-
-        })->export($this->format);
+        $writer->close();
     }
 
     protected function getColumns(): array
     {
         return (new $this->modelClass())->getFillable();
-    }
-
-    private function checkMemoryLimit(): bool
-    {
-        $memory_limit = ini_get('memory_limit');
-
-        $val = trim($memory_limit);
-        $last = strtolower($val[strlen($val)-1]);
-        $val = (int) $val;
-        switch($last) {
-            // The 'G' modifier is available since PHP 5.1.0
-            case 'g':
-                $val *= 1024;
-            case 'm':
-                $val *= 1024;
-            case 'k':
-                $val *= 1024;
-        }
-
-        $memory_limit = $val;
-
-        return memory_get_usage() < $memory_limit - 10000;
     }
 }
