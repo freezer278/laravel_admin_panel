@@ -39,6 +39,8 @@ return [
     'save' => 'Save',
     'cancel' => 'Cancel',
 
+    'export' => 'Export',
+
 
 
 ];

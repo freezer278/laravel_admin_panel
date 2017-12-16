@@ -34,4 +34,14 @@ class UrlManager
     {
         return url(self::getUrlPrefix().str_start($route, '/').'/'.$id.'/delete');
     }
+
+    public static function exportXlsRoute(string $route): string
+    {
+        return url(self::getUrlPrefix().str_start($route, '/').'/export/xls');
+    }
+
+    public static function exportCsvRoute(string $route): string
+    {
+        return url(self::getUrlPrefix().str_start($route, '/').'/export/csv');
+    }
 }
