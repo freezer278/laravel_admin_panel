@@ -29,10 +29,10 @@ class XlsCsvStrategy implements ExportStrategy
         $model = new $this->modelClass();
         $models = $model->all();
 
-        Excel::create('Test', function($excel) use ($model) {
+        Excel::create('Export', function($excel) use ($models) {
 
-            $excel->sheet('Export', function($sheet) use ($model) {
-                $sheet->fromModel($model);
+            $excel->sheet('Export', function($sheet) use ($models) {
+                $sheet->fromModel($models);
             });
 
         })->download($this->format);

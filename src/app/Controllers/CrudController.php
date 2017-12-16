@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider;
 use Vmorozov\LaravelAdminGenerator\App\Utils\ColumnsExtractor;
 use Vmorozov\LaravelAdminGenerator\App\Utils\EntitiesExtractor;
+use Vmorozov\LaravelAdminGenerator\App\Utils\Export\DataExporter;
+use Vmorozov\LaravelAdminGenerator\App\Utils\Export\Strategies\XlsCsvStrategy;
 use Vmorozov\LaravelAdminGenerator\App\Utils\RelationResolver;
 use Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager;
 
@@ -248,5 +250,21 @@ abstract class CrudController extends Controller
         session()->flash('message', 'Entity deleted successfully');
 
         return redirect(UrlManager::listRoute($this->url));
+    }
+
+
+    public function downloadExcel()
+    {
+        $exporter = new DataExporter($this->model, new XlsCsvStrategy($this->model));
+
+        return $exporter->export();
+    }
+
+
+    public function downloadCsv()
+    {
+        $exporter = new DataExporter($this->model, new XlsCsvStrategy($this->model, 'csv'));
+
+        return $exporter->export();
     }
 }

@@ -28,6 +28,9 @@ class AdminRoute
         Route::get($route.'/create', $controller.'@create');
         Route::post($route.'/create', $controller.'@store');
 
+        Route::get($route.'/export/xls', $controller.'@downloadExcel');
+        Route::get($route.'/export/csv', $controller.'@downloadCsv');
+
         Route::get($route.'/{id}', $controller.'@show');
         Route::get($route.'/{id}/delete', $controller.'@destroy');
 
