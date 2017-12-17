@@ -50,7 +50,9 @@ class ColumnsExtractor
 
     public function setColumnParams(array $columnParams)
     {
-        $this->columnParams = $columnParams;
+        $this->setColumnParamsFromModel();
+
+        $this->columnParams = array_merge($this->columnParams, $columnParams);
     }
 
     public function getModelClass(): string
