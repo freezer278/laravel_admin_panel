@@ -51,6 +51,15 @@ abstract class CrudController extends Controller
         return $this->url;
     }
 
+    /**
+     * Add button to the list with given params.
+     * To put entity id to the url you can simply set '{id}' instead of it and entity id will be automatically set there.
+     *
+     * @param string $url
+     * @param string $text
+     * @param string $classes
+     * @param array $htmlAttributes
+     */
     protected function addListItemButton(string $url, string $text, string $classes = '', array $htmlAttributes = [])
     {
         if ($classes === '')

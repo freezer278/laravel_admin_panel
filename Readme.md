@@ -100,6 +100,11 @@ protected function setup()
 ```php
 protected function setup()
 {
-    $this->addListItemButton(url('/test_button'), '<i class="fa fa-check" aria-hidden="true"></i> test button', 'btn btn-success', ['target' => '_blank']);
+    // without putting entity id to the url
+    $this->addListItemButton(url('/test_button'), 'test button');
+    
+    // with putting entity id to the url
+    $this->addListItemButton(url('/test_button/{id}'), '<i class="fa fa-check" aria-hidden="true"></i> test button', 'btn btn-success', ['target' => '_blank']);
+
 }
 ```
