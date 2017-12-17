@@ -83,7 +83,46 @@ public $adminFields = [
 * text - for simple input type="text"
 * textarea - for simple textarea
 * select - for one-to-one relationship via select
-* select_multiple - for many-to-many relationships via select multiple 
+* select_multiple - for many-to-many relationships via select multiple
+
+#### You can also set column params in the controller to use them only in it
+```php
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Product;
+use Vmorozov\LaravelAdminGenerator\App\Controllers\CrudController;
+
+class ProductsController extends CrudController
+{
+    protected $model = Product::class;
+    protected $url = 'products';
+    protected $titlePlural = 'Товары';
+    protected $titleSingular = 'Товар';
+    protected $columnParams = [
+        'name' => [
+                    'label' => 'Name',
+                    'displayInForm' => true,
+                    'displayInList' => true,
+                    'searchable' => true,
+                    'min' => 2,
+                    'max' => 50,
+        
+                ],
+                'description' => [
+                    'label' => 'Description',
+                    'displayInForm' => true,
+                    'displayInList' => true,
+                    'searchable' => false,
+                    'min' => 2,
+                    'max' => 5000,
+        
+                ],
+    ];
+}
+```
+ 
 
 ## Advanced Usage
 
