@@ -9,6 +9,8 @@ class Field
 {
     const DEFAULT_TYPE = 'text';
 
+    protected $modelClass;
+
     protected $relationTypes = ['select', 'select_multiple'];
 
     protected $fieldName = '';
@@ -27,6 +29,10 @@ class Field
             'text' => [
                 'column' => AdminGeneratorServiceProvider::VIEWS_NAME.'::list.column_types.text',
                 'field' => AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.field_types.text',
+            ],
+            'number' => [
+                'column' => AdminGeneratorServiceProvider::VIEWS_NAME.'::list.column_types.text',
+                'field' => AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.field_types.number',
             ],
             'textarea' => [
                 'column' => AdminGeneratorServiceProvider::VIEWS_NAME.'::list.column_types.text',
@@ -48,8 +54,10 @@ class Field
         ];
     }
 
-    public function __construct(string $fieldName, array $params)
+    public function __construct(string $modelClass, string $fieldName, array $params)
     {
+        $this->modelClass = $modelClass;
+
         $this->availableTypes = $this->getAvailableTypes();
         $this->fieldName = $fieldName;
         $this->params = $params;
@@ -60,7 +68,10 @@ class Field
 
     public function renderField(Model $model = null)
     {
+        $model = $model ?? new $this->modelClass();
+
         $viewName = $this->viewParams['field'];
+
         if (in_array($this->viewType, $this->relationTypes)) {
             $relationResolver = new RelationResolver($model);
 

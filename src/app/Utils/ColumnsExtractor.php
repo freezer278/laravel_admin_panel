@@ -66,7 +66,7 @@ class ColumnsExtractor
 
         foreach ($this->columnParams as $key => $column) {
             if (isset($column['displayInList']) && $column['displayInList'] == true)
-                $activeColumns[] = new Field($key, $column);
+                $activeColumns[] = new Field($this->modelClass, $key, $column);
         }
 
         return $activeColumns;
@@ -78,7 +78,7 @@ class ColumnsExtractor
 
         foreach ($this->columnParams as $key => $column) {
             if (isset($column['displayInForm']) && $column['displayInForm'] == true)
-                $activeColumns[] = new Field($key, $column);
+                $activeColumns[] = new Field($this->modelClass, $key, $column);
         }
 
         return $activeColumns;
