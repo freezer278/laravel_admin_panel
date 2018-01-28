@@ -152,7 +152,9 @@ abstract class CrudController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $this->validate($request, $this->getValidationRules());
+        $this->validate($request, $this->getValidationRules());
+
+        $data = $request->all();
 
         $this->beforeCreate();
 
@@ -219,7 +221,9 @@ abstract class CrudController extends Controller
     {
         $entity = $this->getEntity($id);
 
-        $data = $this->validate($request, $this->getValidationRules());
+        $this->validate($request, $this->getValidationRules());
+
+        $data = $request->all();
 
         $this->beforeUpdate();
 

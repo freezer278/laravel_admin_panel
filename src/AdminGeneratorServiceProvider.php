@@ -35,6 +35,7 @@ class AdminGeneratorServiceProvider extends ServiceProvider
 
         $this->publishes([base_path('vendor/almasaeed2010/adminlte/dist') => public_path('adminlte')], 'adminlte');
         $this->publishes([base_path('vendor/almasaeed2010/adminlte/bower_components') => public_path('adminlte/bower_components')], 'adminlte');
+        $this->publishes([base_path('vendor/almasaeed2010/adminlte/plugins') => public_path('adminlte/plugins')], 'adminlte');
 
         if ($this->app->runningInConsole()) {
             $this->commands([]);

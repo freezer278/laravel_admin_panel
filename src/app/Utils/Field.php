@@ -38,6 +38,12 @@ class Field
                 'column' => AdminGeneratorServiceProvider::VIEWS_NAME.'::list.column_types.text',
                 'field' => AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.field_types.textarea',
             ],
+            'email' => [
+                'column' => AdminGeneratorServiceProvider::VIEWS_NAME.'::list.column_types.text',
+                'field' => AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.field_types.email',
+            ],
+
+
             'select' => [
                 'column' => AdminGeneratorServiceProvider::VIEWS_NAME.'::list.column_types.text',
                 'field' => AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.field_types.select',
@@ -46,6 +52,18 @@ class Field
                 'column' => AdminGeneratorServiceProvider::VIEWS_NAME.'::list.column_types.text',
                 'field' => AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.field_types.select_multiple',
             ],
+
+
+            'date' => [
+                'column' => AdminGeneratorServiceProvider::VIEWS_NAME.'::list.column_types.text',
+                'field' => AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.field_types.date',
+            ],
+
+            'date_time' => [
+                'column' => AdminGeneratorServiceProvider::VIEWS_NAME.'::list.column_types.text',
+                'field' => AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.field_types.date_time',
+            ],
+
 //            'file' => [
 //                'column' => '',
 //                'field' => '',
