@@ -44,6 +44,13 @@ class FilesSaver
         $this->model->update($modelUpdateParams);
     }
 
+    public function deleteAllModelFiles()
+    {
+        foreach ($this->fileFields as $fileField => $params) {
+            Uploader::deleteFile($this->model->$fileField);
+        }
+    }
+
     public function deleteFile(string $field)
     {
         $fieldType = $this->fileFields[$field]['type'] ?? '';

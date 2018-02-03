@@ -265,6 +265,10 @@ abstract class CrudController extends Controller
     public function destroy($id)
     {
         $entity = $this->getEntity($id);
+
+        $filesSaver = new FilesSaver($entity, $this->columnsExtractor, request());
+        $filesSaver->deleteAllModelFiles();
+
         $entity->delete();
 
         session()->flash('message', 'Entity deleted successfully');
