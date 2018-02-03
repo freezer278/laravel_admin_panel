@@ -1,7 +1,7 @@
 <div class="form-group col-md-12 {{ $errors->has($fieldName) ? 'has-error' : '' }}">
     <label for="{{ $fieldName }}">{{ $field->getLabel() }}</label>
 
-    {{--Todo: add here displaying previous file name--}}
+    {{--Todo: add here displaying previous file name with delete by ajax link--}}
 
     <input type="file"
            name="{{ $fieldName }}"

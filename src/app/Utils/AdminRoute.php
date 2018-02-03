@@ -36,6 +36,8 @@ class AdminRoute
 
         Route::get($route.'/{id}/edit', $controller.'@edit');
         Route::post($route.'/{id}/edit', $controller.'@update');
+
+        Route::get($route.'/{id}/delete_file/{field}', $controller.'@deleteFile');
     }
 
     public static function home(string $controller = AdminHomeController::class)

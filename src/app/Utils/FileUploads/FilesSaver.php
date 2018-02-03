@@ -37,9 +37,20 @@ class FilesSaver
 
             if ($file !== null) {
                 $modelUpdateParams[$fileField] = Uploader::uploadFile($file, $params['upload_folder'] ?? '');
+                $this->deleteFile($fileField);
             }
         }
 
         $this->model->update($modelUpdateParams);
+    }
+
+    public function deleteFile(string $field)
+    {
+        $fieldType = $this->fileFields[$field]['type'] ?? '';
+
+        if ($fieldType === 'file_upload_to_db_field') {
+            Uploader::deleteFile($this->model->$field);
+            $this->model->update([$field => null]);
+        }
     }
 }
