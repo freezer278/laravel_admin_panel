@@ -9,9 +9,10 @@ class Field
 {
     const DEFAULT_TYPE = 'text';
 
-    protected $modelClass;
+    const RELATIONAL_TYPES = ['select', 'select_multiple'];
+    const FILE_UPLOAD_TYPES = ['file_upload_to_db_field'];
 
-    protected $relationTypes = ['select', 'select_multiple'];
+    protected $modelClass;
 
     protected $fieldName = '';
 
@@ -64,6 +65,11 @@ class Field
                 'field' => AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.field_types.date_time',
             ],
 
+
+            'file_upload_to_db_field' => [
+                'column' => AdminGeneratorServiceProvider::VIEWS_NAME.'::list.column_types.text',
+                'field' => AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.field_types.single_file_upload',
+            ],
 //            'file' => [
 //                'column' => '',
 //                'field' => '',
@@ -90,7 +96,7 @@ class Field
 
         $viewName = $this->viewParams['field'];
 
-        if (in_array($this->viewType, $this->relationTypes)) {
+        if (in_array($this->viewType, self::RELATIONAL_TYPES)) {
             $relationResolver = new RelationResolver($model);
 
             $relatedIds = $relationResolver->getRelatedModelsIds($this->fieldName);

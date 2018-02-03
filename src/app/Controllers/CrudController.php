@@ -10,6 +10,7 @@ use Vmorozov\LaravelAdminGenerator\App\Utils\ColumnsExtractor;
 use Vmorozov\LaravelAdminGenerator\App\Utils\EntitiesExtractor;
 use Vmorozov\LaravelAdminGenerator\App\Utils\Export\DataExporter;
 use Vmorozov\LaravelAdminGenerator\App\Utils\Export\Strategies\XlsCsvStrategy;
+use Vmorozov\LaravelAdminGenerator\App\Utils\FileUploads\FilesSaver;
 use Vmorozov\LaravelAdminGenerator\App\Utils\RelationResolver;
 use Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager;
 
@@ -164,6 +165,9 @@ abstract class CrudController extends Controller
         $relationsResolver = new RelationResolver($entity);
         $relationsResolver->saveAllRelations($request);
 
+        $filesSaver = new FilesSaver($entity, $this->columnsExtractor, $request);
+        $filesSaver->saveFiles();
+
         $this->afterCreate();
 
         session()->flash('message', 'Entity created successfully');
@@ -232,6 +236,9 @@ abstract class CrudController extends Controller
         $relationsResolver = new RelationResolver($entity);
         $relationsResolver->saveAllRelations($request);
 
+        $filesSaver = new FilesSaver($entity, $this->columnsExtractor, $request);
+        $filesSaver->saveFiles();
+
         $this->afterUpdate();
 
         session()->flash('message', 'Entity changed successfully');
@@ -258,6 +265,10 @@ abstract class CrudController extends Controller
     public function destroy($id)
     {
         $entity = $this->getEntity($id);
+
+        $filesSaver = new FilesSaver($entity, $this->columnsExtractor, request());
+        $filesSaver->deleteAllModelFiles();
+
         $entity->delete();
 
         session()->flash('message', 'Entity deleted successfully');
@@ -279,5 +290,14 @@ abstract class CrudController extends Controller
         $exporter = new DataExporter($this->model, new XlsCsvStrategy($this->model, 'csv'));
 
         return $exporter->export();
+    }
+
+    public function deleteFile($id, $field)
+    {
+        $entity = $this->getEntity($id);
+
+        $filesSaver = new FilesSaver($entity, $this->columnsExtractor, request());
+
+        $filesSaver->deleteFile($field);
     }
 }

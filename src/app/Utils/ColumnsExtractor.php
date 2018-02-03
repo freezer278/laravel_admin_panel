@@ -118,4 +118,21 @@ class ColumnsExtractor
 
         return $searchable;
     }
+
+    public function getFileUploadColumns(): array
+    {
+        $results = [];
+
+        foreach ($this->columnParams as $key => $column) {
+            if (isset($column['field_type']) && in_array($column['field_type'], Field::FILE_UPLOAD_TYPES) == true)
+                $results[] = $key;
+        }
+
+        return $results;
+    }
+
+    public function getColumnParams(string $column): array
+    {
+        return $this->columnParams[$column] ?? [];
+    }
 }

@@ -18,7 +18,8 @@
         "illuminate/database": "^5.2",
         "almasaeed2010/AdminLTE": "2.4.*",
         "maatwebsite/excel": "^2.1",
-        "box/spout": "^2.7"
+        "box/spout": "^2.7",
+        "vmorozov/laravel-file-uploads": "^1.1"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.1"
