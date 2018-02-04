@@ -7,8 +7,8 @@
            value="{{ $entity->$fieldName or old($fieldName) }}"
            class="form-control"
            {{ $field->required() ? 'required' : '' }}
-           minlength="{{ isset($params['min']) ? $params['min'] : '' }}"
-           maxlength="{{ isset($params['max']) ? $params['max'] : '' }}"
+           minlength="{{ isset($params[\Vmorozov\LaravelAdminGenerator\App\Utils\Field::PARAM_KEY_MIN]) ? $params[\Vmorozov\LaravelAdminGenerator\App\Utils\Field::PARAM_KEY_MIN] : '' }}"
+           maxlength="{{ isset($params[\Vmorozov\LaravelAdminGenerator\App\Utils\Field::PARAM_KEY_MAX]) ? $params[\Vmorozov\LaravelAdminGenerator\App\Utils\Field::PARAM_KEY_MAX] : '' }}"
     >
 
     @if ($errors->has($fieldName))

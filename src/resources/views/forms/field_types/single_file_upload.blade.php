@@ -8,8 +8,8 @@
            id="{{ $fieldName }}"
            class="form-control"
            {{ $field->required() ? 'required' : '' }}
-           max="{{ $params['max'] ?? '' }}"
-           accept="{{ $params['accept_mime_type'] ?? '*/*' }}"
+           max="{{ $params[\Vmorozov\LaravelAdminGenerator\App\Utils\Field::PARAM_KEY_MAX] ?? '' }}"
+           accept="{{ $params[\Vmorozov\LaravelAdminGenerator\App\Utils\Field::PARAM_ACCEPT_MIME_TYPE] ?? '*/*' }}"
     >
 
     @if ($errors->has($fieldName))

@@ -7,8 +7,8 @@
            value="{{ $entity->$fieldName->format('Y-m-d\TH:i') ?? old($fieldName) }}"
            class="form-control"
            {{ $field->required() ? 'required' : '' }}
-           min="{{ isset($params['min']) ? \Carbon\Carbon::parse($params['min'])->format('Y-m-d\TH:i') : '' }}"
-           max="{{ isset($params['max']) ? \Carbon\Carbon::parse($params['max'])->format('Y-m-d\TH:i') : '' }}"
+           min="{{ isset($params[\Vmorozov\LaravelAdminGenerator\App\Utils\Field::PARAM_KEY_MIN]) ? \Carbon\Carbon::parse($params[\Vmorozov\LaravelAdminGenerator\App\Utils\Field::PARAM_KEY_MIN])->format('Y-m-d\TH:i') : '' }}"
+           max="{{ isset($params[\Vmorozov\LaravelAdminGenerator\App\Utils\Field::PARAM_KEY_MAX]) ? \Carbon\Carbon::parse($params[\Vmorozov\LaravelAdminGenerator\App\Utils\Field::PARAM_KEY_MAX])->format('Y-m-d\TH:i') : '' }}"
     >
 
     @if ($errors->has($fieldName))

@@ -124,7 +124,7 @@ class ColumnsExtractor
         $results = [];
 
         foreach ($this->columnParams as $key => $column) {
-            if (isset($column['field_type']) && in_array($column['field_type'], Field::FILE_UPLOAD_TYPES) == true)
+            if (isset($column[Field::PARAM_KEY_FIELD_TYPE]) && in_array($column[Field::PARAM_KEY_FIELD_TYPE], Field::FILE_UPLOAD_TYPES) == true)
                 $results[] = $key;
         }
 
