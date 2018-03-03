@@ -123,7 +123,7 @@ abstract class CrudController extends Controller
 
         $titleSingular = $this->titleSingular;
         $titlePlural = $this->titlePlural;
-        $url = $this->url;
+        $url = $this->getUrl();
 
         $search = (isset($requestParams['search']) ? $requestParams['search'] : '');
         $listItemButtons = $this->listItemButtons;
@@ -142,7 +142,7 @@ abstract class CrudController extends Controller
 
         $titleSingular = $this->titleSingular;
         $titlePlural = $this->titlePlural;
-        $url = $this->url;
+        $url = $this->getUrl();
 
         return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.create')->with(compact('columns', 'titleSingular', 'titlePlural', 'url'));
     }
@@ -211,7 +211,7 @@ abstract class CrudController extends Controller
 
         $titleSingular = $this->titleSingular;
         $titlePlural = $this->titlePlural;
-        $url = $this->url;
+        $url = $this->getUrl();
 
         return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.edit')->with(compact('columns', 'entity', 'titleSingular', 'titlePlural', 'url'));
     }
@@ -304,11 +304,13 @@ abstract class CrudController extends Controller
     }
 
 
-    public function uploadMedialibraryFile(Model $model, Request $request)
+    public function uploadMedialibraryFile($id, Request $request)
     {
         $this->validate($request, [
             'file' => 'file'
         ]);
+
+        $model = $this->getEntity($id);
 
         $model->addMedia($request->file('file'))
             ->withCustomProperties(['load_confirmed' => false])
@@ -319,21 +321,20 @@ abstract class CrudController extends Controller
         return response()->json([
             'id' => $media->id,
             'url' => $media->getUrl(),
-//            Todo: change this url
-            'delete_url' => SubdomainUrlHelper::generateUrl('media_file_delete', ['media' => $media->id]),
+            'delete_url' => UrlManager::deleteMedialibraryFileRoute($this->getUrl(), $media),
         ]);
     }
 
-    public function deleteMedialibraryFile(Media $media)
+    public function deleteMedialibraryFile($id, Media $media)
     {
         MediaSaver::deleteMedia($media);
 
         return response()->json();
     }
 
-    public function clearMedialibraryCollection(Model $model, string $collection)
+    public function clearMedialibraryCollection($id, string $collection)
     {
-        $mediaSaver = new MediaSaver($model);
+        $mediaSaver = new MediaSaver($this->getEntity($id));
         $mediaSaver->clearMediaCollection($collection);
 
         return response()->json();

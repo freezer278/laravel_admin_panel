@@ -4,7 +4,7 @@ namespace Vmorozov\LaravelAdminGenerator\App\Utils\FileUploads\Medialibrary;
 
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\Media as BaseMedia;
-use Vmorozov\UrlHelpers\SubdomainUrlHelper;
+use Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager;
 
 class Media extends BaseMedia
 {
@@ -19,8 +19,7 @@ class Media extends BaseMedia
 
     public function getDeleteUrlAttribute(): string
     {
-//        Todo: change this url
-        return SubdomainUrlHelper::generateUrl('media_file_delete', ['media' => $this->id]);
+        return UrlManager::deleteMedialibraryFileRoute($this->getUrl(), $this);
     }
 
 

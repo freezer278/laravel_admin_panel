@@ -38,6 +38,10 @@ class AdminRoute
         Route::post($route.'/{id}/edit', $controller.'@update');
 
         Route::get($route.'/{id}/delete_file/{field}', $controller.'@deleteFile');
+
+        Route::get($route.'/{id}/upload_medialibrary_file', $controller.'@uploadMedialibraryFile');
+        Route::get($route.'/{id}/delete_medialibrary_file/{media}', $controller.'@deleteMedialibraryFile');
+        Route::get($route.'/{id}/clear_medialibrary_collection/{collection}', $controller.'@clearMedialibraryCollection');
     }
 
     public static function home(string $controller = AdminHomeController::class)
