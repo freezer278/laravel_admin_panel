@@ -1,7 +1,7 @@
 @extends(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::layouts.app')
 
 @section('styles')
-
+    <link rel="stylesheet" href="{{ url('/laravel_admin_generator/css/medialibrary.css') }}">
 @endsection
 
 @section('title', __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.edit_title') . $titleSingular)

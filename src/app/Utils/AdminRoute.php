@@ -39,7 +39,7 @@ class AdminRoute
 
         Route::get($route.'/{id}/delete_file/{field}', $controller.'@deleteFile');
 
-        Route::get($route.'/{id}/upload_medialibrary_file', $controller.'@uploadMedialibraryFile');
+        Route::post($route.'/{id}/upload_medialibrary_file/{collection}', $controller.'@uploadMedialibraryFile');
         Route::get($route.'/{id}/delete_medialibrary_file/{media}', $controller.'@deleteMedialibraryFile');
         Route::get($route.'/{id}/clear_medialibrary_collection/{collection}', $controller.'@clearMedialibraryCollection');
     }

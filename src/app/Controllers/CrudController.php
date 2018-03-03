@@ -308,7 +308,7 @@ abstract class CrudController extends Controller
     }
 
 
-    public function uploadMedialibraryFile($id, Request $request)
+    public function uploadMedialibraryFile($id, $collection = Media::TEMP_LOADED_FILES_COLLECTION_NAME, Request $request)
     {
         $this->validate($request, [
             'file' => 'file'
@@ -318,9 +318,9 @@ abstract class CrudController extends Controller
 
         $model->addMedia($request->file('file'))
             ->withCustomProperties(['load_confirmed' => false])
-            ->toMediaCollection(Media::TEMP_LOADED_FILES_COLLECTION_NAME);
+            ->toMediaCollection($collection);
 
-        $media = $model->getMedia(Media::TEMP_LOADED_FILES_COLLECTION_NAME)->last();
+        $media = $model->getMedia($collection)->last();
 
         return response()->json([
             'id' => $media->id,

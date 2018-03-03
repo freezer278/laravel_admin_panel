@@ -3,7 +3,7 @@
 namespace Vmorozov\LaravelAdminGenerator\App\Utils;
 
 
-use Vmorozov\LaravelAdminGenerator\App\Utils\FileUploads\Medialibrary\Media;
+use Spatie\MediaLibrary\Media;
 
 class UrlManager
 {
@@ -51,18 +51,18 @@ class UrlManager
     }
 
 
-    public static function uploadMedialibraryFileRoute(string $route): string
+    public static function uploadMedialibraryFileRoute(string $route, int $id, string $collection): string
     {
-        return url(self::getUrlPrefix().str_start($route, '/').'/upload_medialibrary_file');
+        return url(self::getUrlPrefix().str_start($route, '/').'/'.$id.'/upload_medialibrary_file/'.$collection);
     }
 
-    public static function deleteMedialibraryFileRoute(string $route, Media $media): string
+    public static function deleteMedialibraryFileRoute(string $route, int $id, Media $media): string
     {
-        return url(self::getUrlPrefix().str_start($route, '/').'/delete_medialibrary_file/'.$media->id);
+        return url(self::getUrlPrefix().str_start($route, '/').'/'.$id.'/delete_medialibrary_file/'.$media->id);
     }
 
-    public static function clearMedialibraryCollectionRoute(string $route, string $collection): string
+    public static function clearMedialibraryCollectionRoute(string $route, int $id, string $collection): string
     {
-        return url(self::getUrlPrefix().str_start($route, '/').'/clear_medialibrary_collection/'.$collection);
+        return url(self::getUrlPrefix().str_start($route, '/').'/'.$id.'/clear_medialibrary_collection/'.$collection);
     }
 }
