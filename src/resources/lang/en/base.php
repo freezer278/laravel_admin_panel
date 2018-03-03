@@ -38,8 +38,14 @@ return [
     'delete' => 'Delete',
     'save' => 'Save',
     'cancel' => 'Cancel',
+    'upload' => 'Upload',
 
     'export' => 'Export',
+
+
+    'medialibrary' => [
+        'clear_all' => 'Clear all',
+    ],
 
 
 

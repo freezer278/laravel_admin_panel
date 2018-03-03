@@ -37,8 +37,14 @@ return [
     'delete' => 'Удалить',
     'save' => 'Сохранить',
     'cancel' => 'Отменить',
+    'upload' => 'Загрузить',
 
     'export' => 'Экспорт',
+
+
+    'medialibrary' => [
+        'clear_all' => 'Удалить все',
+    ],
 
 
 
