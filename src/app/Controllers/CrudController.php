@@ -12,6 +12,7 @@ use Vmorozov\LaravelAdminGenerator\App\Utils\Export\DataExporter;
 use Vmorozov\LaravelAdminGenerator\App\Utils\Export\Strategies\XlsCsvStrategy;
 use Vmorozov\LaravelAdminGenerator\App\Utils\FileUploads\FilesSaver;
 use Vmorozov\LaravelAdminGenerator\App\Utils\FileUploads\Medialibrary\Media;
+use Vmorozov\LaravelAdminGenerator\App\Utils\FileUploads\Medialibrary\MediaExtractor;
 use Vmorozov\LaravelAdminGenerator\App\Utils\FileUploads\Medialibrary\MediaSaver;
 use Vmorozov\LaravelAdminGenerator\App\Utils\RelationResolver;
 use Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager;
@@ -213,7 +214,10 @@ abstract class CrudController extends Controller
         $titlePlural = $this->titlePlural;
         $url = $this->getUrl();
 
-        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.edit')->with(compact('columns', 'entity', 'titleSingular', 'titlePlural', 'url'));
+        $mediaExtractor = new MediaExtractor($entity);
+
+        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.edit')
+            ->with(compact('columns', 'entity', 'titleSingular', 'titlePlural', 'url', 'mediaExtractor'));
     }
 
     /**
