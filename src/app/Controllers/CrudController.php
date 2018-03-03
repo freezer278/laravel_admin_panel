@@ -11,6 +11,8 @@ use Vmorozov\LaravelAdminGenerator\App\Utils\EntitiesExtractor;
 use Vmorozov\LaravelAdminGenerator\App\Utils\Export\DataExporter;
 use Vmorozov\LaravelAdminGenerator\App\Utils\Export\Strategies\XlsCsvStrategy;
 use Vmorozov\LaravelAdminGenerator\App\Utils\FileUploads\FilesSaver;
+use Vmorozov\LaravelAdminGenerator\App\Utils\FileUploads\Medialibrary\Media;
+use Vmorozov\LaravelAdminGenerator\App\Utils\FileUploads\Medialibrary\MediaSaver;
 use Vmorozov\LaravelAdminGenerator\App\Utils\RelationResolver;
 use Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager;
 
@@ -299,5 +301,41 @@ abstract class CrudController extends Controller
         $filesSaver = new FilesSaver($entity, $this->columnsExtractor, request());
 
         $filesSaver->deleteFile($field);
+    }
+
+
+    public function uploadMedialibraryFile(Model $model, Request $request)
+    {
+        $this->validate($request, [
+            'file' => 'file'
+        ]);
+
+        $model->addMedia($request->file('file'))
+            ->withCustomProperties(['load_confirmed' => false])
+            ->toMediaCollection(Media::TEMP_LOADED_FILES_COLLECTION_NAME);
+
+        $media = $model->getMedia(Media::TEMP_LOADED_FILES_COLLECTION_NAME)->last();
+
+        return response()->json([
+            'id' => $media->id,
+            'url' => $media->getUrl(),
+//            Todo: change this url
+            'delete_url' => SubdomainUrlHelper::generateUrl('media_file_delete', ['media' => $media->id]),
+        ]);
+    }
+
+    public function deleteMedialibraryFile(Media $media)
+    {
+        MediaSaver::deleteMedia($media);
+
+        return response()->json();
+    }
+
+    public function clearMedialibraryCollection(Model $model, string $collection)
+    {
+        $mediaSaver = new MediaSaver($model);
+        $mediaSaver->clearMediaCollection($collection);
+
+        return response()->json();
     }
 }

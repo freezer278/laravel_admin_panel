@@ -2,9 +2,7 @@
 
 namespace Vmorozov\LaravelAdminGenerator\App\Utils\FileUploads\Medialibrary;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use Spatie\MediaLibrary\Media;
 
 class MediaSaver extends MediaHandler
 {
@@ -16,13 +14,14 @@ class MediaSaver extends MediaHandler
         // Todo: implement this method
     }
 
-    public function deleteMedia(Media $media)
+    public static function deleteMedia(Media $media)
     {
         $media->delete();
     }
 
-    public function clearMediaCollection(Model $model, string $collection = self::DEFAULT_COLLECTION_NAME)
+    public function clearMediaCollection(string $collection = self::DEFAULT_COLLECTION_NAME)
     {
-        $model->clearMediaCollection($collection);
+        if ($this->hasMediaCollections())
+            $this->model->clearMediaCollection($collection);
     }
 }
