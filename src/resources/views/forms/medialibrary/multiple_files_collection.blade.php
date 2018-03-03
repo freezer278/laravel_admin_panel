@@ -13,9 +13,11 @@
         </div>
     @endforeach
 
-    <button class="btn btn-success" data-url="{{ \Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager::uploadMedialibraryFileRoute($url) }}">
-        {{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.upload') }}
-    </button>
+    {{--<button class="btn btn-success" data-url="{{ \Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager::uploadMedialibraryFileRoute($url) }}">--}}
+        {{--{{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.upload') }}--}}
+    {{--</button>--}}
+
+    <form action="{{ \Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager::uploadMedialibraryFileRoute($url) }}" class="dropzone"></form>
 
     <input type="hidden" name="media_collections[{{ $collection }}]" value="{{ $files->pluck('id') }}">
 </div>
