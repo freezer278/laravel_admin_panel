@@ -83,5 +83,5 @@
 @endsection
 
 @section('scripts')
-
+    <script src="{{ url('/laravel_admin_generator/js/medialibrary.js') }}"></script>
 @endsection

@@ -36,6 +36,7 @@ class AdminGeneratorServiceProvider extends ServiceProvider
         $this->publishes([base_path('vendor/almasaeed2010/adminlte/dist') => public_path('adminlte')], 'adminlte');
         $this->publishes([base_path('vendor/almasaeed2010/adminlte/bower_components') => public_path('adminlte/bower_components')], 'adminlte');
         $this->publishes([base_path('vendor/almasaeed2010/adminlte/plugins') => public_path('adminlte/plugins')], 'adminlte');
+        $this->publishes([base_path('vendor/laravel_admin_generator/src/resources/assest/js') => public_path('laravel_admin_generator/js')], 'js');
 
         if ($this->app->runningInConsole()) {
             $this->commands([]);
