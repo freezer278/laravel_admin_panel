@@ -21,6 +21,8 @@ class BaseTest extends TestCase
     private $columnsExtractor;
     private $entitiesExtractor;
 
+    private $testPaginationOutput;
+
     const PER_PAGE = 25;
 
     public function setUp()
@@ -38,6 +40,8 @@ class BaseTest extends TestCase
 
         $this->columnsExtractor = new ColumnsExtractor($this->model);
         $this->entitiesExtractor = new EntitiesExtractor($this->columnsExtractor, self::PER_PAGE);
+
+        $this->testPaginationOutput = new Paginator(collect([$this->model, $this->model, $this->model, $this->model]), self::PER_PAGE, 1);
     }
 
     public function testSimpleGetEntities()
@@ -49,9 +53,9 @@ class BaseTest extends TestCase
             ->andReturn($this->model);
 
         $this->model->shouldReceive('paginate')
-            ->andReturn(new Paginator(collect([$this->model, $this->model, $this->model, $this->model]), self::PER_PAGE, 1));
+            ->andReturn($this->testPaginationOutput);
 
-        $this->entitiesExtractor->getEntities();
+        $this->assertEquals($this->entitiesExtractor->getEntities(), $this->testPaginationOutput);
     }
 
     public function testSearchGetEntities()
@@ -63,30 +67,27 @@ class BaseTest extends TestCase
             ->andReturn($this->model);
 
         $this->model->shouldReceive('paginate')
-            ->andReturn(new Paginator(collect([$this->model, $this->model, $this->model, $this->model]), self::PER_PAGE, 1));
+            ->andReturn($this->testPaginationOutput);
 
-        $this->entitiesExtractor->getEntities(['search' => 'search_query', 'page' => 1]);
+        $this->assertEquals($this->entitiesExtractor->getEntities(['search' => 'search_query', 'page' => 1]), $this->testPaginationOutput);
     }
 
     public function testAddOrderByClause()
     {
         $this->entitiesExtractor->addOrderByClause('title', 'asc');
+
+        $this->assertTrue(true);
     }
 
     public function testAddWhereClause()
     {
         $this->entitiesExtractor->addWhereClause('title', '=', 'test');
+
+        $this->assertTrue(true);
     }
 
-    /**
-     * @depends testAddOrderByClause
-     * @depends testAddWhereClause
-     */
     public function testGetEntitiesWithClauses()
     {
-        $this->testAddOrderByClause();
-        $this->testAddWhereClause();
-
         $this->model->shouldReceive('where')
             ->andReturn($this->model);
 
@@ -94,9 +95,12 @@ class BaseTest extends TestCase
             ->andReturn($this->model);
 
         $this->model->shouldReceive('paginate')
-            ->andReturn(new Paginator(collect([$this->model, $this->model, $this->model, $this->model]), self::PER_PAGE, 1));
+            ->andReturn($this->testPaginationOutput);
 
-        $this->entitiesExtractor->getEntities(['search' => 'search_query', 'page' => 1]);
+        $this->entitiesExtractor->addOrderByClause('title', 'asc');
+        $this->entitiesExtractor->addWhereClause('title', '=', 'test');
+
+        $this->assertEquals($this->entitiesExtractor->getEntities(['search' => 'search_query', 'page' => 1]), $this->testPaginationOutput);
     }
 
 
@@ -106,11 +110,6 @@ class BaseTest extends TestCase
         $this->model->shouldReceive('find')
             ->andReturn($this->model);
 
-        $this->entitiesExtractor->getSingleEntity(123);
+        $this->assertEquals($this->entitiesExtractor->getSingleEntity(123), $this->model);
     }
-
-//\Vmorozov\LaravelAdminGenerator\App\Utils\EntitiesExtractor::getEntities
-//\Vmorozov\LaravelAdminGenerator\App\Utils\EntitiesExtractor::useQueryClauses
-//\Vmorozov\LaravelAdminGenerator\App\Utils\EntitiesExtractor::addWhereClause
-//\Vmorozov\LaravelAdminGenerator\App\Utils\EntitiesExtractor::addOrderByClause
 }

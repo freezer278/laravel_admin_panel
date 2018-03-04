@@ -4,6 +4,7 @@ namespace Vmorozov\LaravelAdminGenerator\Tests;
 
 use Dotenv\Dotenv;
 use Illuminate\Database\Eloquent\Model;
+use Mockery;
 use \Orchestra\Testbench\TestCase as Orchestra;
 use Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider;
 
@@ -14,6 +15,11 @@ abstract class TestCase extends Orchestra
         $this->loadEnvironmentVariables();
         parent::setUp();
         $this->setUpDatabase($this->app);
+    }
+
+    public function tearDown()
+    {
+        Mockery::close();
     }
 
     protected function loadEnvironmentVariables()
@@ -62,51 +68,6 @@ abstract class TestCase extends Orchestra
 
     protected function getTestDummyModel(): Model
     {
-        return new class extends Model {
-            protected $fillable = [
-                'title',
-                'description',
-                'price',
-            ];
-
-            public $adminFields = [
-                'title' => [
-                    'label' => 'Title',
-                    'displayInForm' => true,
-                    'displayInList' => true,
-                    'searchable' => true,
-                    'min' => 2,
-                    'max' => 50,
-                    'required' => true,
-
-                ],
-                'description' => [
-                    'label' => 'Description',
-                    'displayInForm' => true,
-                    'displayInList' => true,
-                    'searchable' => false,
-                    'min' => 2,
-                    'max' => 5000,
-                    'field_type' => 'textarea',
-
-                ],
-                'price' => [
-                    'label' => 'Price',
-                    'displayInForm' => true,
-                    'displayInList' => true,
-                    'min' => 0,
-                    'max' => 100000,
-                    'field_type' => 'number',
-                ],
-                'file_upload' => [
-                    'label' => 'file_upload',
-                    'displayInForm' => true,
-                    'displayInList' => true,
-                    'min' => 0,
-                    'max' => 100000,
-                    'field_type' => 'file_upload_to_db_field',
-                ],
-            ];
-        };
+        return new TestModel();
     }
 }
