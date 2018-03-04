@@ -45,6 +45,7 @@ return [
 
     'medialibrary' => [
         'clear_all' => 'Clear all',
+        'not_available_until_model_created' => 'Uploading files is not available before model created',
     ],
 
 

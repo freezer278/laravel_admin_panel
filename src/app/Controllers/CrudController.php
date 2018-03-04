@@ -129,7 +129,8 @@ abstract class CrudController extends Controller
         $search = (isset($requestParams['search']) ? $requestParams['search'] : '');
         $listItemButtons = $this->listItemButtons;
 
-        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::list.list')->with(compact('columns', 'entities', 'titleSingular', 'titlePlural', 'url', 'search', 'listItemButtons'));
+        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::list.list')
+            ->with(compact('columns', 'entities', 'titleSingular', 'titlePlural', 'url', 'search', 'listItemButtons'));
     }
 
     /**
@@ -145,7 +146,10 @@ abstract class CrudController extends Controller
         $titlePlural = $this->titlePlural;
         $url = $this->getUrl();
 
-        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.create')->with(compact('columns', 'titleSingular', 'titlePlural', 'url'));
+        $mediaExtractor = new MediaExtractor(null);
+
+        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.create')
+            ->with(compact('columns', 'titleSingular', 'titlePlural', 'url', 'mediaExtractor'));
     }
 
     /**
