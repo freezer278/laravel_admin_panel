@@ -1,9 +1,28 @@
 # Laravel Admin Panel Generator
-This package is made for speeding up development of admin panel for your Laravel project.
+This package is made for speeding up development of admin panel for your Laravel project.  
+It helps you to handle common tasks in admin panel development for your project.
+
+![preview][preview]
+
+## Features
+1. Quick CRUD Generation
+1. Working with different field types
+1. Handling relationships
+1. Search
+1. Export Data to xls, csv file
+1. Using default Order By and Where conditions
+1. Ability to add additional buttons to each list item
+1. Files uploading to Model column
+1. Files uploading using spatie/laravel-medialibrary package 
+
+
+
 ## 1. Installation
 1. `composer require vmorozov/laravel_admin_generator`
-1. `php artisan vendor:publish` to publish all needed files for admin panel.
-## 2. Create Controller
+1. `php artisan vendor:publish` and select `Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider` to publish all needed files for admin panel.
+
+## 2. Setup
+### 1. Create Controller
 ```php
 <?php
 
@@ -20,14 +39,28 @@ class ProductsController extends CrudController
     protected $titleSingular = 'Товар';    
 }
 ```
-## 3. Add record to routes/admin.php
+### 2. Add record to routes/admin.php
 ```php
 ...
 
 AdminRoute::resource(\App\Http\Controllers\Admin\ProductsController::class);
 ```
 
-## 4. Setup fields in Model
+### 3. (Optional) Setup fields
+
+#### Available field types:
+* text - for simple input type="text"
+* textarea - for simple textarea
+* number - for input type="number"
+* email - for input type="email"
+* date - for input type="date"
+* datetime - for input type="datetime"
+* file - for input type="file"
+* select - for one-to-one relationship via select
+* select_multiple - for many-to-many relationships via select multiple
+
+
+#### in Model
 ```php
 public $adminFields = [
 
@@ -53,6 +86,7 @@ public $adminFields = [
             'label' => 'Price',
             'displayInForm' => true,
             'displayInList' => true,
+            'field_type' => 'number',
             'min' => 0,
             'max' => 100000,
         ],
@@ -77,15 +111,17 @@ public $adminFields = [
             'relation_model' => User::class,
             'relation_display_attribute' => 'name',
         ],
+        
+        'updated_at' => [
+            'displayInForm' => true,
+            'displayInList' => false,
+        
+            'field_type' => 'date_time',
+        ]
     ];
 ```
-##### Available field types:
-* text - for simple input type="text"
-* textarea - for simple textarea
-* select - for one-to-one relationship via select
-* select_multiple - for many-to-many relationships via select multiple
 
-#### You can also set column params in the controller to use them only in it
+#### In Controller
 ```php
 <?php
 
@@ -122,9 +158,12 @@ class ProductsController extends CrudController
     ];
 }
 ```
+
+### 3. Add link to the sidebar
+Open file resources/views/vendor/vmorozov/laravel_admin_generator/layouts/sidebar.blade.php and add your links to the generated admin panel endpoints.
  
 
-## Advanced Usage
+## 3. Advanced Usage
 
 ### Add default order by and where clauses to the list query
 ```php
@@ -147,3 +186,51 @@ protected function setup()
 
 }
 ```
+
+### Search
+To add search functionality you should just add searchable param to the field setup
+```php
+public $adminFields = [
+        'name' => [
+            'searchable' => true,
+        ],
+    ];
+```
+
+### Working with spatie/laravel-medialibrary
+To start using this package in admin panel [install package](https://docs.spatie.be/laravel-medialibrary/v6/installation-setup).  
+Than you should add additional setups to your model:
+```php
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Spatie\MediaLibrary\HasMedia\Interfaces\HasMedia;
+use Vmorozov\LaravelAdminGenerator\App\Utils\ModelTraits\AdminPanelTrait;
+
+class Product extends Model implements HasMedia
+{
+    use AdminPanelTrait;
+    use HasMediaTrait;
+
+    public $mediaCollections = [
+        'main_image' => [
+            'name' => 'Main image',
+            'single_file' => true
+        ],
+        'gallery' => [
+            'name' => 'Gallery'
+        ],
+    ];
+    
+//  Some other code here     
+}    
+```
+##### There are tho kinds of available collections setups
+1. Simple collection for multiple files
+2. Collection for single file (Such as avatar image of user, main image of product, etc).
+To make collection single use `'single_file' => true` parameter.
+
+[preview]: preview.png 
