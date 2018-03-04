@@ -28,7 +28,7 @@ class BaseTest extends TestCase
         $this->model->description = 'description value';
         $this->model->price = 'price value';
 
-        $this->columnsExtractor = new ColumnsExtractor(get_class($this->model));
+        $this->columnsExtractor = new ColumnsExtractor($this->model);
     }
 
     protected function createField(string $fieldName = 'title')
@@ -47,14 +47,14 @@ class BaseTest extends TestCase
     {
         $field = $this->createField('title');
 
-        $this->assertTrue($field->getLabel() == 'Title');
+        $this->assertEquals($field->getLabel(), 'Title');
     }
 
     public function testRenderColumn()
     {
         $field = $this->createField('title');
 
-        $this->assertTrue($field->renderColumn($this->model)->getName() === AdminGeneratorServiceProvider::VIEWS_NAME.'::list.column_types.text');
+        $this->assertEquals($field->renderColumn($this->model)->getName(), AdminGeneratorServiceProvider::VIEWS_NAME.'::list.column_types.text');
     }
 
 
@@ -62,7 +62,7 @@ class BaseTest extends TestCase
     {
         $field = $this->createField('title');
 
-        $this->assertTrue($field->renderField($this->model)->getName() === AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.field_types.text');
+        $this->assertEquals($field->renderField($this->model)->getName(), AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.field_types.text');
     }
 
 
@@ -70,6 +70,6 @@ class BaseTest extends TestCase
     {
         $field = $this->createField('description');
 
-        $this->assertTrue($field->renderField($this->model)->getName() === AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.field_types.textarea');
+        $this->assertEquals($field->renderField($this->model)->getName(), AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.field_types.textarea');
     }
 }

@@ -21,7 +21,7 @@ class BaseTest extends TestCase
 
         $this->model = $this->getTestDummyModel();
 
-        $this->columnsExtractor = new ColumnsExtractor(get_class($this->model));
+        $this->columnsExtractor = new ColumnsExtractor($this->model);
     }
 
 
@@ -66,7 +66,7 @@ class BaseTest extends TestCase
 
         $this->model->adminFields['title'];
 
-        $this->assertTrue($params === $this->model->adminFields['title']);
+        $this->assertEquals($params ,  $this->model->adminFields['title']);
     }
 
     public function testGetValidationRules()
@@ -80,7 +80,7 @@ class BaseTest extends TestCase
 
         $rules = $this->columnsExtractor->getValidationRules();
 
-        $this->assertTrue($expectedRules === $rules);
+        $this->assertEquals($expectedRules ,  $rules);
     }
 
 
@@ -100,11 +100,11 @@ class BaseTest extends TestCase
             'title' => $titleEditParams
         ]);
 
-        $this->assertTrue($titleEditParams === $this->columnsExtractor->getColumnParams('title'));
+        $this->assertEquals($titleEditParams ,  $this->columnsExtractor->getColumnParams('title'));
     }
 
     public function testGetModelClass()
     {
-        $this->assertTrue($this->columnsExtractor->getModelClass() === get_class($this->model));
+        $this->assertEquals($this->columnsExtractor->getModelClass() ,  get_class($this->model));
     }
 }

@@ -23,6 +23,7 @@ abstract class CrudController extends Controller
     protected $entitiesExtractor;
 
     protected $model;
+    protected $modelInstance;
 
     protected $url = '';
 
@@ -39,7 +40,9 @@ abstract class CrudController extends Controller
         if ($modelClass !== '')
             $this->model = $modelClass;
 
-        $this->columnsExtractor = new ColumnsExtractor($this->model, $this->columnParams);
+        $this->modelInstance = new $this->model;
+
+        $this->columnsExtractor = new ColumnsExtractor($this->modelInstance, $this->columnParams);
         $this->entitiesExtractor = new EntitiesExtractor($this->columnsExtractor);
 
         $this->setup();

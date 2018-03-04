@@ -27,7 +27,7 @@ class ModelFromControllerParamsTest extends TestCase
             ];
         };
 
-        $this->columnsExtractor = new ColumnsExtractor(get_class($this->model), [
+        $this->columnsExtractor = new ColumnsExtractor($this->model, [
             'title' => [
                 'displayInForm' => true,
                 'displayInList' => true,
@@ -52,9 +52,9 @@ class ModelFromControllerParamsTest extends TestCase
         $columns = $this->columnsExtractor->getActiveListColumns();
 
 //        $this->assertTrue(is_array($columns));
-        $this->assertTrue('title' == $columns[0]->getName());
-        $this->assertTrue('description' == $columns[1]->getName());
-        $this->assertTrue('price' == $columns[2]->getName());
+        $this->assertEquals('title' ,  $columns[0]->getName());
+        $this->assertEquals('description' ,  $columns[1]->getName());
+        $this->assertEquals('price' ,  $columns[2]->getName());
     }
 
 
@@ -63,23 +63,23 @@ class ModelFromControllerParamsTest extends TestCase
         $columns = $this->columnsExtractor->getActiveAddEditFields();
 
 //        $this->assertTrue(is_array($columns));
-        $this->assertTrue('title' == $columns[0]->getName());
-        $this->assertTrue('description' == $columns[1]->getName());
-        $this->assertTrue('price' == $columns[2]->getName());
+        $this->assertEquals('title' ,  $columns[0]->getName());
+        $this->assertEquals('description' ,  $columns[1]->getName());
+        $this->assertEquals('price' ,  $columns[2]->getName());
     }
 
     public function testGetSearchableColumns()
     {
         $columns = $this->columnsExtractor->getSearchableColumns();
 
-        $this->assertTrue(count($columns) === 3);
+        $this->assertEquals(count($columns) ,  3);
     }
 
     public function testGetFileUploadColumns()
     {
         $columns = $this->columnsExtractor->getFileUploadColumns();
 
-        $this->assertTrue(count($columns) === 0);
+        $this->assertEquals(count($columns) ,  0);
     }
 
     public function testGetColumnParams()
@@ -94,7 +94,7 @@ class ModelFromControllerParamsTest extends TestCase
 
         $this->model->adminFields['title'];
 
-        $this->assertTrue($params === $expectedParams);
+        $this->assertEquals($params ,  $expectedParams);
     }
 
     public function testGetValidationRules()
@@ -107,7 +107,7 @@ class ModelFromControllerParamsTest extends TestCase
 
         $rules = $this->columnsExtractor->getValidationRules();
 
-        $this->assertTrue($expectedRules === $rules);
+        $this->assertEquals($expectedRules ,  $rules);
     }
 
 
@@ -127,11 +127,11 @@ class ModelFromControllerParamsTest extends TestCase
             'title' => $titleEditParams
         ]);
 
-        $this->assertTrue($titleEditParams === $this->columnsExtractor->getColumnParams('title'));
+        $this->assertEquals($titleEditParams ,  $this->columnsExtractor->getColumnParams('title'));
     }
 
     public function testGetModelClass()
     {
-        $this->assertTrue($this->columnsExtractor->getModelClass() === get_class($this->model));
+        $this->assertEquals($this->columnsExtractor->getModelClass() ,  get_class($this->model));
     }
 }

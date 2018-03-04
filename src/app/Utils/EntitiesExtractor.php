@@ -34,7 +34,7 @@ class EntitiesExtractor
     public function __construct(ColumnsExtractor $columnsExtractor, int $perPage = 0)
     {
         $this->modelClass = $columnsExtractor->getModelClass();
-        $this->model = new $this->modelClass;
+        $this->model = $columnsExtractor->getModel();
         $this->columnsExtractor = $columnsExtractor;
 
         $this->setPerPage($perPage);
