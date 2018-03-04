@@ -14,13 +14,13 @@ class AdminRoute
         return config('laravel_admin.route_prefix', 'admin');
     }
 
-    public static function resource(string $controller)
+    public static function resource(string $controller, string $modelClass = '')
     {
 //        if (!class_exists($controller)) {
 //            throw new ClassNotFoundException('class '.$controller.' was not found!', new \ErrorException());
 //        }
 
-        $controllerInstance = new $controller();
+        $controllerInstance = new $controller($modelClass);
         $route = $controllerInstance->getUrl();
 
         Route::get($route, $controller.'@index');

@@ -34,8 +34,11 @@ abstract class CrudController extends Controller
 
     protected $listItemButtons = [];
 
-    public function __construct()
+    public function __construct(string $modelClass = '')
     {
+        if ($modelClass !== '')
+            $this->model = $modelClass;
+
         $this->columnsExtractor = new ColumnsExtractor($this->model, $this->columnParams);
         $this->entitiesExtractor = new EntitiesExtractor($this->columnsExtractor);
 
