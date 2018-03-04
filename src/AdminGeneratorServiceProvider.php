@@ -4,6 +4,11 @@ namespace Vmorozov\LaravelAdminGenerator;
 
 use Illuminate\Support\ServiceProvider;
 
+/**
+ * Class AdminGeneratorServiceProvider
+ * @package Vmorozov\LaravelAdminGenerator
+ * @codeCoverageIgnore
+ */
 class AdminGeneratorServiceProvider extends ServiceProvider
 {
     const VIEWS_NAME = 'laravel_admin_generator';
