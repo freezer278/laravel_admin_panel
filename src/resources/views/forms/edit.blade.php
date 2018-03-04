@@ -40,7 +40,11 @@
                     @if($mediaExtractor->hasMediaCollections())
                         <div class="box-body row">
                             @foreach($mediaExtractor->getAllMediaCollections() as $collection => $files)
-                                @include(__(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.medialibrary.multiple_files_collection'))
+                                @if($mediaExtractor->getMediaCollectionParam($collection, 'single_file', false))
+                                    @include(__(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.medialibrary.single_file_collection'))
+                                @else
+                                    @include(__(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.medialibrary.multiple_files_collection'))
+                                @endif
                             @endforeach
                         </div><!-- /.box-body -->
                     @endif

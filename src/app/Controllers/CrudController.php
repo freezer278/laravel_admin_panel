@@ -329,7 +329,7 @@ abstract class CrudController extends Controller
         return response()->json([
             'id' => $media->id,
             'url' => $media->getUrl(),
-            'delete_url' => UrlManager::deleteMedialibraryFileRoute($this->getUrl(), $media),
+            'delete_url' => UrlManager::deleteMedialibraryFileRoute($this->getUrl(), $model->id, $media),
         ]);
     }
 

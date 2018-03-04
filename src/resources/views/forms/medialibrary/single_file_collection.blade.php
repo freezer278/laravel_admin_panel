@@ -1,11 +1,11 @@
 <div class="col-md-12">
     <h3>{{ $mediaExtractor->getMediaCollectionParam($collection, 'name', title_case($collection)) }}</h3>
 
-    <a class="dz-clear-all" href="{{ \Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager::clearMedialibraryCollectionRoute($url, $entity->id, $collection) }}">
-        {{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.medialibrary.clear_all') }}
-    </a>
+    {{--<a class="dz-clear-all" href="{{ \Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager::clearMedialibraryCollectionRoute($url, $entity->id, $collection) }}">--}}
+        {{--{{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.medialibrary.clear_all') }}--}}
+    {{--</a>--}}
 
-    <div class="dropzone dropzone_multiple_files"
+    <div class="dropzone dropzone_single_file"
          action="{{ \Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager::uploadMedialibraryFileRoute($url, $entity->id, $collection) }}">
 
         @foreach($files as $file)
