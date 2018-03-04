@@ -9,7 +9,7 @@ use Vmorozov\LaravelAdminGenerator\Tests\TestCase;
 /**
  * @coversDefaultClass \Vmorozov\LaravelAdminGenerator\App\Utils\ColumnsExtractor
  */
-class BaseTest extends TestCase
+class ModelFromControllerParamsTest extends TestCase
 {
     private $model;
 
@@ -25,48 +25,25 @@ class BaseTest extends TestCase
                 'description',
                 'price',
             ];
-
-            public $adminFields = [
-                'title' => [
-                    'label' => 'Title',
-                    'displayInForm' => true,
-                    'displayInList' => true,
-                    'searchable' => true,
-                    'min' => 2,
-                    'max' => 50,
-                    'required' => true,
-
-                ],
-                'description' => [
-                    'label' => 'Description',
-                    'displayInForm' => true,
-                    'displayInList' => true,
-                    'searchable' => false,
-                    'min' => 2,
-                    'max' => 5000,
-                    'field_type' => 'textarea',
-
-                ],
-                'price' => [
-                    'label' => 'Price',
-                    'displayInForm' => true,
-                    'displayInList' => true,
-                    'min' => 0,
-                    'max' => 100000,
-                    'field_type' => 'number',
-                ],
-                'file_upload' => [
-                    'label' => 'file_upload',
-                    'displayInForm' => true,
-                    'displayInList' => true,
-                    'min' => 0,
-                    'max' => 100000,
-                    'field_type' => 'file_upload_to_db_field',
-                ],
-            ];
         };
 
-        $this->columnsExtractor = new ColumnsExtractor(get_class($this->model));
+        $this->columnsExtractor = new ColumnsExtractor(get_class($this->model), [
+            'title' => [
+                'displayInForm' => true,
+                'displayInList' => true,
+                'searchable' => true,
+            ],
+            'description' => [
+                'displayInForm' => true,
+                'displayInList' => true,
+                'searchable' => true,
+            ],
+            'price' => [
+                'displayInForm' => true,
+                'displayInList' => true,
+                'searchable' => true,
+            ],
+        ]);
     }
 
 
@@ -95,32 +72,37 @@ class BaseTest extends TestCase
     {
         $columns = $this->columnsExtractor->getSearchableColumns();
 
-        $this->assertTrue('title' == $columns[0] && count($columns) === 1);
+        $this->assertTrue(count($columns) === 3);
     }
 
     public function testGetFileUploadColumns()
     {
         $columns = $this->columnsExtractor->getFileUploadColumns();
 
-        $this->assertTrue('file_upload' == $columns[0] && count($columns) === 1);
+        $this->assertTrue(count($columns) === 0);
     }
 
     public function testGetColumnParams()
     {
         $params = $this->columnsExtractor->getColumnParams('title');
 
+        $expectedParams = [
+            'displayInForm' => true,
+            'displayInList' => true,
+            'searchable' => true,
+        ];
+
         $this->model->adminFields['title'];
 
-        $this->assertTrue($params === $this->model->adminFields['title']);
+        $this->assertTrue($params === $expectedParams);
     }
 
     public function testGetValidationRules()
     {
         $expectedRules = [
-            'title' => 'min:2|max:50|required|',
-            'description' => 'min:2|max:5000|',
-            'price' => 'min:0|max:100000|',
-            'file_upload' => 'min:0|max:100000|',
+            'title' => '',
+            'description' => '',
+            'price' => '',
         ];
 
         $rules = $this->columnsExtractor->getValidationRules();
