@@ -24,7 +24,7 @@ class AdminRouteTest extends TestCase
 
         $this->model = $this->getTestDummyModel();
 
-        $this->controller = new class(get_class($this->model)) extends CrudController {
+        $this->controller = new class($this->model) extends CrudController {
             protected $url = 'products';
             protected $titlePlural = 'Товары';
             protected $titleSingular = 'Товар';
@@ -34,7 +34,7 @@ class AdminRouteTest extends TestCase
 
     public function testResourceMethod()
     {
-        AdminRoute::resource(get_class($this->controller), get_class($this->model));
+        AdminRoute::resource(get_class($this->controller), $this->model);
         $this->assertTrue(true);
     }
 
