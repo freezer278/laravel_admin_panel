@@ -11,6 +11,9 @@ use Vmorozov\LaravelAdminGenerator\App\Utils\EntitiesExtractor;
 use Vmorozov\LaravelAdminGenerator\App\Utils\Export\DataExporter;
 use Vmorozov\LaravelAdminGenerator\App\Utils\Export\Strategies\XlsCsvStrategy;
 use Vmorozov\LaravelAdminGenerator\App\Utils\FileUploads\FilesSaver;
+use Vmorozov\LaravelAdminGenerator\App\Utils\FileUploads\Medialibrary\Media;
+use Vmorozov\LaravelAdminGenerator\App\Utils\FileUploads\Medialibrary\MediaExtractor;
+use Vmorozov\LaravelAdminGenerator\App\Utils\FileUploads\Medialibrary\MediaSaver;
 use Vmorozov\LaravelAdminGenerator\App\Utils\RelationResolver;
 use Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager;
 
@@ -121,12 +124,13 @@ abstract class CrudController extends Controller
 
         $titleSingular = $this->titleSingular;
         $titlePlural = $this->titlePlural;
-        $url = $this->url;
+        $url = $this->getUrl();
 
         $search = (isset($requestParams['search']) ? $requestParams['search'] : '');
         $listItemButtons = $this->listItemButtons;
 
-        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::list.list')->with(compact('columns', 'entities', 'titleSingular', 'titlePlural', 'url', 'search', 'listItemButtons'));
+        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::list.list')
+            ->with(compact('columns', 'entities', 'titleSingular', 'titlePlural', 'url', 'search', 'listItemButtons'));
     }
 
     /**
@@ -140,9 +144,12 @@ abstract class CrudController extends Controller
 
         $titleSingular = $this->titleSingular;
         $titlePlural = $this->titlePlural;
-        $url = $this->url;
+        $url = $this->getUrl();
 
-        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.create')->with(compact('columns', 'titleSingular', 'titlePlural', 'url'));
+        $mediaExtractor = new MediaExtractor(new $this->model());
+
+        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.create')
+            ->with(compact('columns', 'titleSingular', 'titlePlural', 'url', 'mediaExtractor'));
     }
 
     /**
@@ -209,9 +216,12 @@ abstract class CrudController extends Controller
 
         $titleSingular = $this->titleSingular;
         $titlePlural = $this->titlePlural;
-        $url = $this->url;
+        $url = $this->getUrl();
 
-        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.edit')->with(compact('columns', 'entity', 'titleSingular', 'titlePlural', 'url'));
+        $mediaExtractor = new MediaExtractor($entity);
+
+        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.edit')
+            ->with(compact('columns', 'entity', 'titleSingular', 'titlePlural', 'url', 'mediaExtractor'));
     }
 
     /**
@@ -299,5 +309,42 @@ abstract class CrudController extends Controller
         $filesSaver = new FilesSaver($entity, $this->columnsExtractor, request());
 
         $filesSaver->deleteFile($field);
+    }
+
+
+    public function uploadMedialibraryFile($id, $collection = Media::TEMP_LOADED_FILES_COLLECTION_NAME, Request $request)
+    {
+        $this->validate($request, [
+            'file' => 'file'
+        ]);
+
+        $model = $this->getEntity($id);
+
+        $model->addMedia($request->file('file'))
+            ->withCustomProperties(['load_confirmed' => false])
+            ->toMediaCollection($collection);
+
+        $media = $model->getMedia($collection)->last();
+
+        return response()->json([
+            'id' => $media->id,
+            'url' => $media->getUrl(),
+            'delete_url' => UrlManager::deleteMedialibraryFileRoute($this->getUrl(), $model->id, $media),
+        ]);
+    }
+
+    public function deleteMedialibraryFile($id, Media $media)
+    {
+        MediaSaver::deleteMedia($media);
+
+        return response()->json();
+    }
+
+    public function clearMedialibraryCollection($id, string $collection)
+    {
+        $mediaSaver = new MediaSaver($this->getEntity($id));
+        $mediaSaver->clearMediaCollection($collection);
+
+        return response()->json();
     }
 }

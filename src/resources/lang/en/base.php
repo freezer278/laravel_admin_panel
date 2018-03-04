@@ -38,8 +38,15 @@ return [
     'delete' => 'Delete',
     'save' => 'Save',
     'cancel' => 'Cancel',
+    'upload' => 'Upload',
 
     'export' => 'Export',
+
+
+    'medialibrary' => [
+        'clear_all' => 'Clear all',
+        'not_available_until_model_created' => 'Uploading files is not available before model created',
+    ],
 
 
 

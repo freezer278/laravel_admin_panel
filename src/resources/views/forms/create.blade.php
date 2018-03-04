@@ -31,12 +31,19 @@
                         <h3 class="box-title">{{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.create_title') }} {{ $titleSingular }}</h3>
                     </div>
                     <div class="box-body row">
-
                         @foreach($columns as $column)
                             {!! $column->renderField() !!}
                         @endforeach
-
                     </div><!-- /.box-body -->
+
+                    @if($mediaExtractor->hasMediaCollections())
+                        <div class="box-body row">
+                            @foreach($mediaExtractor->getAllMediaCollections() as $collection => $files)
+                                @include(__(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.medialibrary.not_available_until_model_created'))
+                            @endforeach
+                        </div><!-- /.box-body -->
+                    @endif
+
                     <div class="box-footer">
 
                         <div id="saveActions" class="form-group">

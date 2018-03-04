@@ -1,7 +1,7 @@
 @extends(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::layouts.app')
 
 @section('styles')
-
+    <link rel="stylesheet" href="{{ url('/laravel_admin_generator/css/medialibrary.css') }}">
 @endsection
 
 @section('title', __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.edit_title') . $titleSingular)
@@ -30,11 +30,25 @@
                     <div class="box-header with-border">
                         <h3 class="box-title">{{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.edit_title') }} {{ $titleSingular }}</h3>
                     </div>
+
                     <div class="box-body row">
                         @foreach($columns as $column)
                             {!! $column->renderField($entity) !!}
                         @endforeach
                     </div><!-- /.box-body -->
+
+                    @if($mediaExtractor->hasMediaCollections())
+                        <div class="box-body row">
+                            @foreach($mediaExtractor->getAllMediaCollections() as $collection => $files)
+                                @if($mediaExtractor->getMediaCollectionParam($collection, 'single_file', false))
+                                    @include(__(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.medialibrary.single_file_collection'))
+                                @else
+                                    @include(__(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.medialibrary.multiple_files_collection'))
+                                @endif
+                            @endforeach
+                        </div><!-- /.box-body -->
+                    @endif
+
                     <div class="box-footer">
 
                         <div id="saveActions" class="form-group">
@@ -73,5 +87,5 @@
 @endsection
 
 @section('scripts')
-
+    <script src="{{ url('/laravel_admin_generator/js/medialibrary.js') }}"></script>
 @endsection

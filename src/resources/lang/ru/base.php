@@ -37,8 +37,15 @@ return [
     'delete' => 'Удалить',
     'save' => 'Сохранить',
     'cancel' => 'Отменить',
+    'upload' => 'Загрузить',
 
     'export' => 'Экспорт',
+
+
+    'medialibrary' => [
+        'clear_all' => 'Удалить все',
+        'not_available_until_model_created' => 'Загрузка файлов не доступна пока модель не создана',
+    ],
 
 
 
