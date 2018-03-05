@@ -155,7 +155,7 @@ abstract class CrudController extends Controller
         $titlePlural = $this->titlePlural;
         $url = $this->getUrl();
 
-        $mediaExtractor = new MediaExtractor(new $this->model());
+        $mediaExtractor = new MediaExtractor($this->modelInstance);
 
         return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.create')
             ->with(compact('columns', 'titleSingular', 'titlePlural', 'url', 'mediaExtractor'));

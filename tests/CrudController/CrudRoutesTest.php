@@ -2,18 +2,11 @@
 
 namespace Vmorozov\LaravelAdminGenerator\Tests\CrudController;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
 use Illuminate\View\View;
 use Mockery;
-use Spatie\MediaLibrary\Media;
-use Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider;
-use Vmorozov\LaravelAdminGenerator\App\Controllers\CrudController;
-use Vmorozov\LaravelAdminGenerator\App\Utils\AdminRoute;
-use Vmorozov\LaravelAdminGenerator\App\Utils\ColumnsExtractor;
-use Vmorozov\LaravelAdminGenerator\App\Utils\EntitiesExtractor;
-use Vmorozov\LaravelAdminGenerator\App\Utils\Field;
-use Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager;
 use Vmorozov\LaravelAdminGenerator\Tests\TestCase;
 use Vmorozov\LaravelAdminGenerator\Tests\TestModel;
 
@@ -27,10 +20,7 @@ class CrudRoutesTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-    }
 
-    public function __construct()
-    {
         $this->mock = Mockery::mock(TestModel::class);
 
         $this->mock->shouldReceive('__construct');
@@ -51,6 +41,81 @@ class CrudRoutesTest extends TestCase
 
         $this->assertInstanceOf(View::class, $controller->index(request()));
     }
+
+    public function testShowCreateRoute()
+    {
+        $this->mock
+            ->shouldReceive('getAttribute');
+
+        $this->app->instance(TestModel::class, $this->mock);
+
+        $controller = new TestController($this->mock);
+
+        $this->assertInstanceOf(View::class, $controller->create(request()));
+    }
+
+    public function testShowEditRoute()
+    {
+        $this->mock
+            ->shouldReceive('getAttribute');
+
+        $this->app->instance(TestModel::class, $this->mock);
+
+        $controller = new TestController($this->mock);
+
+        $this->assertInstanceOf(View::class, $controller->edit(12));
+    }
+
+//    public function testDeleteRoute()
+//    {
+//        $this->mock
+//            ->shouldReceive('getAttribute')
+//            ->withArgs(['file_upload'])
+//            ->andReturn('test');
+//
+//        $this->mock
+//            ->shouldReceive('offsetExists');
+//
+//        $this->app->instance(TestModel::class, $this->mock);
+//
+//        $controller = new TestController($this->mock);
+//
+//        $this->assertInstanceOf(View::class, $controller->destroy(12));
+//    }
+
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
+    public function testStoreRoute()
+    {
+        $this->mock = $this->createMock(TestModel::class);
+        $request = Mockery::mock(Request::class);
+
+        $request->shouldReceive('all')
+            ->andReturn([
+                'title' => 'title',
+                'description' => 'description',
+                'price' => 'price',
+            ]);
+
+        $request->shouldReceive('only')
+            ->andReturn([]);
+
+        $request->shouldReceive('file')
+            ->andReturn(null);
+
+        $controller = new TestController($this->mock);
+
+        $this->assertInstanceOf(RedirectResponse::class, $controller->store($request));
+    }
+
+
+
+
+//\Vmorozov\LaravelAdminGenerator\App\Controllers\CrudController::show
+//\Vmorozov\LaravelAdminGenerator\App\Controllers\CrudController::store
+//\Vmorozov\LaravelAdminGenerator\App\Controllers\CrudController::update
 
 
 }
