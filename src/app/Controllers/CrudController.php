@@ -206,6 +206,7 @@ abstract class CrudController extends Controller
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
+     * @codeCoverageIgnore
      */
     public function show($id)
     {

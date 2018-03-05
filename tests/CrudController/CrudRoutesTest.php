@@ -66,22 +66,27 @@ class CrudRoutesTest extends TestCase
         $this->assertInstanceOf(View::class, $controller->edit(12));
     }
 
-//    public function testDeleteRoute()
-//    {
-//        $this->mock
-//            ->shouldReceive('getAttribute')
-//            ->withArgs(['file_upload'])
-//            ->andReturn('test');
-//
-//        $this->mock
-//            ->shouldReceive('offsetExists');
-//
-//        $this->app->instance(TestModel::class, $this->mock);
-//
-//        $controller = new TestController($this->mock);
-//
-//        $this->assertInstanceOf(View::class, $controller->destroy(12));
-//    }
+    public function testDeleteRoute()
+    {
+        $this->mock = $this->getMockBuilder(TestModel::class)
+            ->setMethods(['update', 'find'])
+            ->setConstructorArgs([['id' => 12]])
+            ->getMock();
+
+        $this->mock->expects($this->once())
+            ->method('find')
+            ->willReturn($this->mock);
+
+        $this->mock->id = 12;
+        $this->mock->file_upload = 'test';
+
+
+        $this->app->instance(TestModel::class, $this->mock);
+
+        $controller = new TestController($this->mock);
+
+        $this->assertInstanceOf(RedirectResponse::class, $controller->destroy(12));
+    }
 
     /**
      * @runInSeparateProcess
@@ -110,12 +115,37 @@ class CrudRoutesTest extends TestCase
         $this->assertInstanceOf(RedirectResponse::class, $controller->store($request));
     }
 
+    public function testUpdateRoute()
+    {
+        $this->mock = $this->getMockBuilder(TestModel::class)
+            ->setMethods(['update', 'find'])
+            ->setConstructorArgs([['id' => 12]])
+            ->getMock();
 
+        $this->mock->expects($this->once())
+            ->method('find')
+            ->willReturn($this->mock);
 
+        $this->mock->id = 12;
 
-//\Vmorozov\LaravelAdminGenerator\App\Controllers\CrudController::show
-//\Vmorozov\LaravelAdminGenerator\App\Controllers\CrudController::store
-//\Vmorozov\LaravelAdminGenerator\App\Controllers\CrudController::update
+        $request = Mockery::mock(Request::class);
 
+        $request->shouldReceive('all')
+            ->andReturn([
+                'title' => 'title',
+                'description' => 'description',
+                'price' => 'price',
+            ]);
+
+        $request->shouldReceive('only')
+            ->andReturn([]);
+
+        $request->shouldReceive('file')
+            ->andReturn(null);
+
+        $controller = new TestController($this->mock);
+
+        $this->assertInstanceOf(RedirectResponse::class, $controller->update($request, $this->mock->id));
+    }
 
 }
