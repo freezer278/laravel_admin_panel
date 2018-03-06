@@ -2,6 +2,7 @@
 
 namespace Vmorozov\LaravelAdminGenerator\Tests\CrudController;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
@@ -26,7 +27,6 @@ class CrudRoutesTest extends TestCase
         $this->mock->shouldReceive('__construct');
         $this->mock->shouldReceive('where')->andReturn($this->mock);
         $this->mock->shouldReceive('orderBy')->andReturn($this->mock);
-        $this->mock->shouldReceive('find')->andReturn($this->mock);
     }
 
     public function testListRoute()
@@ -58,6 +58,7 @@ class CrudRoutesTest extends TestCase
     {
         $this->mock
             ->shouldReceive('getAttribute');
+        $this->mock->shouldReceive('find')->andReturn($this->mock);
 
         $this->app->instance(TestModel::class, $this->mock);
 
@@ -147,5 +148,25 @@ class CrudRoutesTest extends TestCase
 
         $this->assertInstanceOf(RedirectResponse::class, $controller->update($request, $this->mock->id));
     }
+
+
+    public function testModelNotFoundCase()
+    {
+        $this->expectException(ModelNotFoundException::class);
+
+        $this->mock
+            ->shouldReceive('getAttribute');
+
+        $this->mock->shouldReceive('find')->andReturn(null);
+
+        $this->app->instance(TestModel::class, $this->mock);
+
+        $controller = new TestController($this->mock);
+
+        $controller->edit(12);
+    }
+
+//    Todo: add here test for list item buttons
+//    Todo: add here tests for add where/orderBy clauses
 
 }
