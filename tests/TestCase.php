@@ -10,6 +10,9 @@ use Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider;
 
 abstract class TestCase extends Orchestra
 {
+    const MODEL_DEFAULT_ID = 12;
+    const MEDIA_DEFAULT_ID = 12;
+
     public function setUp()
     {
         $this->loadEnvironmentVariables();

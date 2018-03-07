@@ -319,6 +319,8 @@ abstract class CrudController extends Controller
         $filesSaver = new FilesSaver($entity, $this->columnsExtractor, request());
 
         $filesSaver->deleteFile($field);
+
+        return redirect(UrlManager::listRoute($this->url));
     }
 
 
