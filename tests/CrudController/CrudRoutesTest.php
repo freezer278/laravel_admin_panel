@@ -166,7 +166,50 @@ class CrudRoutesTest extends TestCase
         $controller->edit(12);
     }
 
-//    Todo: add here test for list item buttons
-//    Todo: add here tests for add where/orderBy clauses
+    public function testListItemButtonsNoExceptions()
+    {
+        $this->mock
+            ->shouldReceive('paginate')
+            ->andReturn(new Paginator(collect([$this->mock, $this->mock, $this->mock]), 22, 1));
 
+        $this->app->instance(TestModel::class, $this->mock);
+
+        $controller = new TestController($this->mock);
+
+        $this->invokeMethod($controller, 'addListItemButton', ['url', 'text']);
+
+        $this->assertCount(1, $this->getPrivatePropertyValue($controller, 'listItemButtons'));
+
+        $this->assertInstanceOf(View::class, $controller->index(request()));
+    }
+
+    public function testWhereClausesAddingNoExceptions()
+    {
+        $this->mock
+            ->shouldReceive('paginate')
+            ->andReturn(new Paginator(collect([$this->mock, $this->mock, $this->mock]), 22, 1));
+
+        $this->app->instance(TestModel::class, $this->mock);
+
+        $controller = new TestController($this->mock);
+
+        $this->invokeMethod($controller, 'addDefaultWhereClause', ['title', '=', 'test']);
+
+        $this->assertInstanceOf(View::class, $controller->index(request()));
+    }
+
+    public function testOrderByClausesAddingNoExceptions()
+    {
+        $this->mock
+            ->shouldReceive('paginate')
+            ->andReturn(new Paginator(collect([$this->mock, $this->mock, $this->mock]), 22, 1));
+
+        $this->app->instance(TestModel::class, $this->mock);
+
+        $controller = new TestController($this->mock);
+
+        $this->invokeMethod($controller, 'addDefaultOrderByClause', ['title', 'desc']);
+
+        $this->assertInstanceOf(View::class, $controller->index(request()));
+    }
 }
