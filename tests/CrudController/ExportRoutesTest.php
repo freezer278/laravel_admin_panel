@@ -39,6 +39,8 @@ class ExportRoutesTest extends TestCase
         $this->mock->shouldReceive('chunk')->andReturn($this->mock);
 
         $this->mock->id = self::MODEL_DEFAULT_ID;
+
+        $this->disableConsoleOutput();
     }
 
     public function testDownloadExcelRoute()

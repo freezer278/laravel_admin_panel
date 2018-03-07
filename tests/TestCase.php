@@ -114,4 +114,9 @@ abstract class TestCase extends Orchestra
 
         return $property->getValue($object);
     }
+
+    protected function disableConsoleOutput()
+    {
+        $this->setOutputCallback(function() {});
+    }
 }
