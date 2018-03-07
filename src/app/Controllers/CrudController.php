@@ -299,7 +299,7 @@ abstract class CrudController extends Controller
 
     public function downloadExcel()
     {
-        $exporter = new DataExporter($this->model, new XlsCsvStrategy($this->model));
+        $exporter = new DataExporter(new XlsCsvStrategy($this->modelInstance));
 
         return $exporter->export();
     }
@@ -307,7 +307,7 @@ abstract class CrudController extends Controller
 
     public function downloadCsv()
     {
-        $exporter = new DataExporter($this->model, new XlsCsvStrategy($this->model, 'csv'));
+        $exporter = new DataExporter(new XlsCsvStrategy($this->modelInstance, 'csv'));
 
         return $exporter->export();
     }
