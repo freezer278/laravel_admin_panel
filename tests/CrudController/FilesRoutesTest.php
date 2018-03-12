@@ -96,7 +96,7 @@ class FilesRoutesTest extends TestCase
 
         $controller = new TestController($this->mock);
 
-        $request = request()->merge(['file' => UploadedFile::fake()->image('avatar.jpg')]);
+        $request = (new Request())->merge(['file' => UploadedFile::fake()->image('avatar.jpg')]);
 
         $response = $controller->uploadMedialibraryFile(self::MODEL_DEFAULT_ID, 'collection', $request);
 
