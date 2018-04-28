@@ -9,7 +9,9 @@ class UrlManager
 {
     protected static function getUrlPrefix()
     {
-        return request()->route()->getPrefix();
+        $route = request()->route();
+
+        return $route !== null ? $route->getPrefix() : 'admin';
     }
 
 

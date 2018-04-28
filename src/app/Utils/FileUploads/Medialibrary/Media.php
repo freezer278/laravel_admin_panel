@@ -17,10 +17,10 @@ class Media extends BaseMedia
         return isset($this->custom_properties['load_confirmed']) && $this->custom_properties['load_confirmed'] || !isset($this->custom_properties['load_confirmed']);
     }
 
-    public function getDeleteUrlAttribute(): string
-    {
-        return UrlManager::deleteMedialibraryFileRoute($this->getUrl(), $this);
-    }
+//    public function getDeleteUrlAttribute(): string
+//    {
+//        return UrlManager::deleteMedialibraryFileRoute($this->getUrl(), $this);
+//    }
 
 
 

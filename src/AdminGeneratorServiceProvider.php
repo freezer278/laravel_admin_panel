@@ -4,6 +4,11 @@ namespace Vmorozov\LaravelAdminGenerator;
 
 use Illuminate\Support\ServiceProvider;
 
+/**
+ * Class AdminGeneratorServiceProvider
+ * @package Vmorozov\LaravelAdminGenerator
+ * @codeCoverageIgnore
+ */
 class AdminGeneratorServiceProvider extends ServiceProvider
 {
     const VIEWS_NAME = 'laravel_admin_generator';
@@ -16,7 +21,10 @@ class AdminGeneratorServiceProvider extends ServiceProvider
     public function boot()
     {
 
-        $this->loadViewsFrom(resource_path('views/vendor/vmorozov/laravel_admin_generator'), self::VIEWS_NAME);
+        if (is_dir(resource_path('views/vendor/vmorozov/laravel_admin_generator')))
+            $this->loadViewsFrom(resource_path('views/vendor/vmorozov/laravel_admin_generator'), self::VIEWS_NAME);
+        else
+            $this->loadViewsFrom(__DIR__.'/resources/views', self::VIEWS_NAME);
 
         $this->loadTranslationsFrom(resource_path('lang/vendor/vmorozov/laravel_admin_generator'), self::VIEWS_NAME);
 

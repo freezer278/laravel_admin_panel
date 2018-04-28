@@ -2,16 +2,15 @@
 
 namespace Vmorozov\LaravelAdminGenerator\App\Utils\Export;
 
+use Illuminate\Database\Eloquent\Model;
 use Vmorozov\LaravelAdminGenerator\App\Utils\Export\Strategies\ExportStrategy;
 
 class DataExporter
 {
     private $strategy;
-    private $modelClass;
 
-    public function __construct(string $modelClass, ExportStrategy $strategy)
+    public function __construct(ExportStrategy $strategy)
     {
-        $this->modelClass = $modelClass;
         $this->strategy = $strategy;
     }
 

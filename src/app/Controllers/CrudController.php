@@ -23,6 +23,7 @@ abstract class CrudController extends Controller
     protected $entitiesExtractor;
 
     protected $model;
+    protected $modelInstance;
 
     protected $url = '';
 
@@ -34,9 +35,17 @@ abstract class CrudController extends Controller
 
     protected $listItemButtons = [];
 
-    public function __construct()
+    public function __construct(Model $model = null)
     {
-        $this->columnsExtractor = new ColumnsExtractor($this->model, $this->columnParams);
+        if ($model != null) {
+            $this->model = get_class($model);
+            $this->modelInstance = $model;
+        }
+        else {
+            $this->modelInstance = new $this->model; // @codeCoverageIgnore
+        }
+
+        $this->columnsExtractor = new ColumnsExtractor($this->modelInstance, $this->columnParams);
         $this->entitiesExtractor = new EntitiesExtractor($this->columnsExtractor);
 
         $this->setup();
@@ -146,7 +155,7 @@ abstract class CrudController extends Controller
         $titlePlural = $this->titlePlural;
         $url = $this->getUrl();
 
-        $mediaExtractor = new MediaExtractor(new $this->model());
+        $mediaExtractor = new MediaExtractor($this->modelInstance);
 
         return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.create')
             ->with(compact('columns', 'titleSingular', 'titlePlural', 'url', 'mediaExtractor'));
@@ -197,6 +206,7 @@ abstract class CrudController extends Controller
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
+     * @codeCoverageIgnore
      */
     public function show($id)
     {
@@ -289,7 +299,7 @@ abstract class CrudController extends Controller
 
     public function downloadExcel()
     {
-        $exporter = new DataExporter($this->model, new XlsCsvStrategy($this->model));
+        $exporter = new DataExporter(new XlsCsvStrategy($this->modelInstance));
 
         return $exporter->export();
     }
@@ -297,7 +307,7 @@ abstract class CrudController extends Controller
 
     public function downloadCsv()
     {
-        $exporter = new DataExporter($this->model, new XlsCsvStrategy($this->model, 'csv'));
+        $exporter = new DataExporter(new XlsCsvStrategy($this->modelInstance, 'csv'));
 
         return $exporter->export();
     }
@@ -309,6 +319,8 @@ abstract class CrudController extends Controller
         $filesSaver = new FilesSaver($entity, $this->columnsExtractor, request());
 
         $filesSaver->deleteFile($field);
+
+        return redirect(UrlManager::listRoute($this->url));
     }
 
 

@@ -159,4 +159,9 @@ class Field
     {
         return isset($this->params[self::PARAM_KEY_LABEL]) ? $this->params[self::PARAM_KEY_LABEL] : title_case($this->fieldName);
     }
+
+    public function getName(): string
+    {
+        return $this->fieldName;
+    }
 }
