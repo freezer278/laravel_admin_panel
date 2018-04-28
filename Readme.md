@@ -1,4 +1,6 @@
 # Laravel Admin Panel Generator
+[![Build Status](https://travis-ci.org/freezer278/laravel_admin_panel.svg?branch=master)](https://travis-ci.org/freezer278/laravel_admin_panel)  
+
 This package is made for speeding up development of admin panel for your Laravel project.  
 It helps you to handle common tasks in admin panel development for your project.
 
