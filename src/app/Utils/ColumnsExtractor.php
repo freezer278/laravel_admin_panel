@@ -20,10 +20,10 @@ class ColumnsExtractor
     private $columnParams;
 
 
-    public function __construct(string $modelClass, array $columnParams = [])
+    public function __construct(Model $model, array $columnParams = [])
     {
-        $this->modelClass = $modelClass;
-        $this->model = new $this->modelClass;
+        $this->model = $model;
+        $this->modelClass = get_class($model);
 
         if ($columnParams !== [])
             $this->setColumnParams($columnParams);
@@ -58,6 +58,11 @@ class ColumnsExtractor
     public function getModelClass(): string
     {
         return $this->modelClass;
+    }
+
+    public function getModel(): Model
+    {
+        return $this->model;
     }
 
     public function getActiveListColumns(array $columnParams = []): array

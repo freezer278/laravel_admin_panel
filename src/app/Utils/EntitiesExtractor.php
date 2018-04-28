@@ -34,7 +34,7 @@ class EntitiesExtractor
     public function __construct(ColumnsExtractor $columnsExtractor, int $perPage = 0)
     {
         $this->modelClass = $columnsExtractor->getModelClass();
-        $this->model = new $this->modelClass;
+        $this->model = $columnsExtractor->getModel();
         $this->columnsExtractor = $columnsExtractor;
 
         $this->setPerPage($perPage);
@@ -63,13 +63,16 @@ class EntitiesExtractor
 
         return $entities;
     }
-
+    /**
+     * @codeCoverageIgnore
+     */
     protected function addSearchQuery($query, string $search)
     {
         $searchableColumns = $this->columnsExtractor->getSearchableColumns();
 
         if (count($searchableColumns) > 0) {
             $search = '%'.$search.'%';
+
 
             $query = $query->where(function ($q) use ($search, $searchableColumns) {
                 foreach ($searchableColumns as $column) {
@@ -81,6 +84,9 @@ class EntitiesExtractor
         return $query;
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     protected function useQueryClauses($query)
     {
         $query = $query->where(function ($q) {

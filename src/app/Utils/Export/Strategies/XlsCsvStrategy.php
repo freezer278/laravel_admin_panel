@@ -4,19 +4,21 @@ namespace Vmorozov\LaravelAdminGenerator\App\Utils\Export\Strategies;
 
 use Box\Spout\Writer\WriterFactory;
 use Box\Spout\Common\Type;
+use Illuminate\Database\Eloquent\Model;
 
 class XlsCsvStrategy implements ExportStrategy
 {
+    const MEMORY_LIMIT = '512M';
+
     private $acceptableFormats = [
         Type::XLSX, Type::CSV, Type::ODS
     ];
-
     private $format;
-    private $modelClass;
+    private $model;
 
-    public function __construct(string $modelClass, string $format = Type::XLSX)
+    public function __construct(Model $model, string $format = Type::XLSX)
     {
-        $this->modelClass = $modelClass;
+        $this->model = $model;
 
         if (in_array($format, $this->acceptableFormats))
             $this->format = $format;
@@ -26,13 +28,13 @@ class XlsCsvStrategy implements ExportStrategy
 
     public function export()
     {
-        ini_set('memory_limit', '512M');
+        ini_set('memory_limit', self::MEMORY_LIMIT);
         set_time_limit(0);
 
         $writer = WriterFactory::create($this->format);
         $writer->openToBrowser('Export.'.$this->format); // stream data directly to the browser
 
-        (new $this->modelClass())->select($this->getColumns())->chunk(500, function ($models) use (&$writer) {
+        $this->model->select($this->getColumns())->chunk(500, function ($models) use (&$writer) {
             $writer->addRows($models->toArray());
             unset($models);
         });
@@ -42,6 +44,6 @@ class XlsCsvStrategy implements ExportStrategy
 
     protected function getColumns(): array
     {
-        return (new $this->modelClass())->getFillable();
+        return $this->model->getFillable();
     }
 }
