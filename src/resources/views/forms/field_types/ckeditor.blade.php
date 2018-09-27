@@ -15,7 +15,7 @@
         </span>
     @endif
 
-    <script> //test for commit
+    <script>
         CKEDITOR.replace( '{{ $fieldName }}' );
     </script>
 </div>
