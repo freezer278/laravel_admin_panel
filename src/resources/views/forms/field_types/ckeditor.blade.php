@@ -14,8 +14,11 @@
             <strong>{{ $errors->first($fieldName) }}</strong>
         </span>
     @endif
+
+</div>
+@section('scripts')
     <script src="{{asset('ckeditor/ckeditor.js')}}"></script>
     <script>
         CKEDITOR.replace( '{{ $fieldName }}' );
     </script>
-</div>
+@endsection
