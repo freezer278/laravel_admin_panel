@@ -17,6 +17,7 @@ class Field
     const FIELD_TYPE_DATE = 'select_date';
     const FIELD_TYPE_DATE_TIME = 'select_date_time';
     const FIELD_TYPE_FILE_UPLOAD_TO_DB_FIELD = 'file_upload_to_db_field';
+    const FIELD_TYPE_CKEDITOR = 'ckeditor';
 
     const PARAM_KEY_LABEL = 'label';
     const PARAM_KEY_FIELD_TYPE = 'field_type';
@@ -66,7 +67,6 @@ class Field
                 'field' => AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.field_types.email',
             ],
 
-
             self::FIELD_TYPE_SELECT => [
                 'column' => AdminGeneratorServiceProvider::VIEWS_NAME.'::list.column_types.text',
                 'field' => AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.field_types.select',
@@ -91,6 +91,11 @@ class Field
             self::FIELD_TYPE_FILE_UPLOAD_TO_DB_FIELD => [
                 'column' => AdminGeneratorServiceProvider::VIEWS_NAME.'::list.column_types.text',
                 'field' => AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.field_types.single_file_upload',
+            ],
+
+            self::FIELD_TYPE_CKEDITOR => [
+                'column' => AdminGeneratorServiceProvider::VIEWS_NAME.'::list.column_types.text',
+                'field' => AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.field_types.ckeditor',
             ],
 //            'file' => [
 //                'column' => '',
