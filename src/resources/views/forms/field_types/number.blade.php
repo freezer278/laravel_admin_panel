@@ -4,7 +4,7 @@
     <input type="number"
            name="{{ $fieldName }}"
            id="{{ $fieldName }}"
-           value="{{ $entity->$fieldName or old($fieldName) }}"
+           value="{{ old($fieldName) ?? $entity->$fieldName }}"
            class="form-control"
            {{ $field->required() ? 'required' : '' }}
            min="{{ isset($params[\Vmorozov\LaravelAdminGenerator\App\Utils\Field::PARAM_KEY_MIN]) ? $params[\Vmorozov\LaravelAdminGenerator\App\Utils\Field::PARAM_KEY_MIN] : '' }}"

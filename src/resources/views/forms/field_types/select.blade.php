@@ -7,7 +7,7 @@
             {{ $field->required() ? 'required' : '' }}
     >
         @foreach($relationModels as $relationModel)
-            <option value="{{ $relationModel->getKey() }}" {{ $entity->$fieldName == $relationModel->getKey() ? 'selected' : '' }}>
+            <option value="{{ $relationModel->getKey() }}" {{ (old($fieldName) ?? $entity->$fieldName) == $relationModel->getKey() ? 'selected' : '' }}>
                 {{ $relationModel->$relationModelFieldName }}
             </option>
         @endforeach
