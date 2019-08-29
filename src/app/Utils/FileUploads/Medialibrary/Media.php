@@ -3,7 +3,7 @@
 namespace Vmorozov\LaravelAdminGenerator\App\Utils\FileUploads\Medialibrary;
 
 use Illuminate\Database\Eloquent\Model;
-use Spatie\MediaLibrary\Media as BaseMedia;
+use Spatie\MediaLibrary\Models\Media as BaseMedia;
 use Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager;
 
 class Media extends BaseMedia

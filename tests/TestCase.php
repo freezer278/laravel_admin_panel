@@ -13,14 +13,14 @@ abstract class TestCase extends Orchestra
     const MODEL_DEFAULT_ID = 12;
     const MEDIA_DEFAULT_ID = 12;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->loadEnvironmentVariables();
         parent::setUp();
         $this->setUpDatabase($this->app);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Mockery::close();
     }
