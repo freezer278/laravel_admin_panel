@@ -31,6 +31,11 @@ class EntitiesExtractor
     private $orderByClauses = [];
 
 
+    /**
+     * EntitiesExtractor constructor.
+     * @param ColumnsExtractor $columnsExtractor
+     * @param int $perPage
+     */
     public function __construct(ColumnsExtractor $columnsExtractor, int $perPage = 0)
     {
         $this->modelClass = $columnsExtractor->getModelClass();
@@ -40,12 +45,20 @@ class EntitiesExtractor
         $this->setPerPage($perPage);
     }
 
+    /**
+     * @param int $perPage
+     */
     public function setPerPage(int $perPage)
     {
         if ($perPage > 0)
             $this->model->setPerPage($perPage);
     }
 
+    /**
+     * @param array $params
+     * @param string $pageParam
+     * @return Model|mixed
+     */
     public function getEntities(array $params = [], $pageParam = 'page')
     {
         $entities = $this->model;
@@ -100,11 +113,20 @@ class EntitiesExtractor
         return $query;
     }
 
+    /**
+     * @param string $column
+     * @param string $operator
+     * @param $value
+     */
     public function addWhereClause(string $column, string $operator, $value)
     {
         $this->clauses[] = [$column, $operator, $value];
     }
 
+    /**
+     * @param string $column
+     * @param string $direction
+     */
     public function addOrderByClause(string $column, string $direction)
     {
         $this->orderByClauses[] = [
@@ -113,6 +135,10 @@ class EntitiesExtractor
         ];
     }
 
+    /**
+     * @param int $id
+     * @return mixed
+     */
     public function getSingleEntity(int $id)
     {
         $entity = $this->model->find($id);

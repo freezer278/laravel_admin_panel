@@ -7,7 +7,7 @@
               {{ $field->required() ? 'required' : '' }}
               minlength="{{ isset($params[\Vmorozov\LaravelAdminGenerator\App\Utils\Field::PARAM_KEY_MIN]) ? $params[\Vmorozov\LaravelAdminGenerator\App\Utils\Field::PARAM_KEY_MIN] : '' }}"
               maxlength="{{ isset($params[\Vmorozov\LaravelAdminGenerator\App\Utils\Field::PARAM_KEY_MAX]) ? $params[\Vmorozov\LaravelAdminGenerator\App\Utils\Field::PARAM_KEY_MAX] : '' }}"
-    >{{ $entity->$fieldName or old($fieldName) }}</textarea>
+    >{{ old($fieldName) ?? $entity->$fieldName }}</textarea>
 
     @if ($errors->has($fieldName))
         <span class="help-block">

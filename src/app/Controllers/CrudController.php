@@ -2,9 +2,14 @@
 
 namespace Vmorozov\LaravelAdminGenerator\App\Controllers;
 
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Routing\Redirector;
 use Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider;
 use Vmorozov\LaravelAdminGenerator\App\Utils\ColumnsExtractor;
 use Vmorozov\LaravelAdminGenerator\App\Utils\EntitiesExtractor;
@@ -19,29 +24,73 @@ use Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager;
 
 abstract class CrudController extends Controller
 {
+    /**
+     * @var ColumnsExtractor
+     */
     protected $columnsExtractor;
+    /**
+     * @var EntitiesExtractor
+     */
     protected $entitiesExtractor;
-
+    /**
+     * @var string
+     */
     protected $model;
+    /**
+     * @var Model
+     */
     protected $modelInstance;
-
+    /**
+     * @var string
+     */
     protected $url = '';
-
+    /**
+     * @var string
+     */
     protected $titleSingular = '';
-
+    /**
+     * @var string
+     */
     protected $titlePlural = '';
-
+    /**
+     * @var array
+     */
     protected $columnParams = [];
-
+    /**
+     * @var array
+     */
     protected $listItemButtons = [];
+    /**
+     * @var bool
+     */
+    protected $enableCreate = true;
+    /**
+     * @var bool
+     */
+    protected $enableEdit = true;
+    /**
+     * @var bool
+     */
+    protected $enableDelete = true;
+    /**
+     * @var bool
+     */
+    protected $enableSearch = true;
+    /**
+     * @var bool
+     */
+    protected $enableExport = true;
 
+    /**
+     * CrudController constructor.
+     * @param Model|null $model
+     */
     public function __construct(Model $model = null)
     {
         if ($model != null) {
             $this->model = get_class($model);
             $this->modelInstance = $model;
-        }
-        else {
+        } else {
             $this->modelInstance = new $this->model; // @codeCoverageIgnore
         }
 
@@ -51,6 +100,9 @@ abstract class CrudController extends Controller
         $this->setup();
     }
 
+    /**
+     *
+     */
     protected function setup()
     {
 
@@ -86,11 +138,20 @@ abstract class CrudController extends Controller
         ];
     }
 
+    /**
+     * @param string $column
+     * @param string $operator
+     * @param $value
+     */
     protected function addDefaultWhereClause(string $column, string $operator, $value)
     {
         $this->entitiesExtractor->addWhereClause($column, $operator, $value);
     }
 
+    /**
+     * @param string $column
+     * @param string $direction
+     */
     protected function addDefaultOrderByClause(string $column, string $direction)
     {
         $this->entitiesExtractor->addOrderByClause($column, $direction);
@@ -107,6 +168,10 @@ abstract class CrudController extends Controller
     }
 
 
+    /**
+     * @param int $id
+     * @return Model
+     */
     protected function getEntity(int $id): Model
     {
         $entity = $this->entitiesExtractor->getSingleEntity($id);
@@ -122,7 +187,7 @@ abstract class CrudController extends Controller
      * Display a listing of the resource.
      *
      * @param Request $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index(Request $request)
     {
@@ -131,41 +196,48 @@ abstract class CrudController extends Controller
         $columns = $this->columnsExtractor->getActiveListColumns();
         $entities = $this->entitiesExtractor->getEntities($requestParams);
 
-        $titleSingular = $this->titleSingular;
-        $titlePlural = $this->titlePlural;
-        $url = $this->getUrl();
-
-        $search = (isset($requestParams['search']) ? $requestParams['search'] : '');
-        $listItemButtons = $this->listItemButtons;
-
-        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::list.list')
-            ->with(compact('columns', 'entities', 'titleSingular', 'titlePlural', 'url', 'search', 'listItemButtons'));
+        return view(AdminGeneratorServiceProvider::VIEWS_NAME . '::list.list')
+            ->with([
+                'columns' => $columns,
+                'entities' => $entities,
+                'titleSingular' => $this->titleSingular,
+                'titlePlural' => $this->titlePlural,
+                'url' => $this->getUrl(),
+                'search' => $request->input('search', ''),
+                'listItemButtons' => $this->listItemButtons,
+                'enableCreate' => $this->enableCreate,
+                'enableEdit' => $this->enableEdit,
+                'enableDelete' => $this->enableDelete,
+                'enableSearch' => $this->enableSearch,
+                'enableExport' => $this->enableExport,
+            ]);
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
         $columns = $this->columnsExtractor->getActiveAddEditFields();
-
-        $titleSingular = $this->titleSingular;
-        $titlePlural = $this->titlePlural;
-        $url = $this->getUrl();
-
         $mediaExtractor = new MediaExtractor($this->modelInstance);
 
-        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.create')
-            ->with(compact('columns', 'titleSingular', 'titlePlural', 'url', 'mediaExtractor'));
+        return view(AdminGeneratorServiceProvider::VIEWS_NAME . '::forms.create')
+            ->with([
+                'columns' => $columns,
+                'titleSingular' => $this->titleSingular,
+                'titlePlural' => $this->titlePlural,
+                'url' => $this->getUrl(),
+                'mediaExtractor' => $mediaExtractor,
+            ]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -191,11 +263,17 @@ abstract class CrudController extends Controller
         return redirect(UrlManager::listRoute($this->url));
     }
 
+    /**
+     *
+     */
     protected function beforeCreate()
     {
 
     }
 
+    /**
+     *
+     */
     protected function afterCreate()
     {
 
@@ -204,8 +282,8 @@ abstract class CrudController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return Response
      * @codeCoverageIgnore
      */
     public function show($id)
@@ -216,30 +294,32 @@ abstract class CrudController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return Response
      */
     public function edit($id)
     {
         $columns = $this->columnsExtractor->getActiveAddEditFields();
         $entity = $this->getEntity($id);
-
-        $titleSingular = $this->titleSingular;
-        $titlePlural = $this->titlePlural;
-        $url = $this->getUrl();
-
         $mediaExtractor = new MediaExtractor($entity);
 
-        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.edit')
-            ->with(compact('columns', 'entity', 'titleSingular', 'titlePlural', 'url', 'mediaExtractor'));
+        return view(AdminGeneratorServiceProvider::VIEWS_NAME . '::forms.edit')
+            ->with([
+                'columns' => $columns,
+                'entity' => $entity,
+                'titleSingular' => $this->titleSingular,
+                'titlePlural' => $this->titlePlural,
+                'url' => $this->getUrl(),
+                'mediaExtractor' => $mediaExtractor,
+            ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param int $id
+     * @return Response
      */
     public function update(Request $request, $id)
     {
@@ -266,11 +346,17 @@ abstract class CrudController extends Controller
         return redirect(UrlManager::listRoute($this->url));
     }
 
+    /**
+     *
+     */
     protected function beforeUpdate()
     {
 
     }
 
+    /**
+     *
+     */
     protected function afterUpdate()
     {
 
@@ -279,8 +365,9 @@ abstract class CrudController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return Response
+     * @throws Exception
      */
     public function destroy($id)
     {
@@ -297,6 +384,10 @@ abstract class CrudController extends Controller
     }
 
 
+    /**
+     * @return mixed
+     * @throws Exception
+     */
     public function downloadExcel()
     {
         $exporter = new DataExporter(new XlsCsvStrategy($this->modelInstance));
@@ -305,6 +396,10 @@ abstract class CrudController extends Controller
     }
 
 
+    /**
+     * @return mixed
+     * @throws Exception
+     */
     public function downloadCsv()
     {
         $exporter = new DataExporter(new XlsCsvStrategy($this->modelInstance, 'csv'));
@@ -312,6 +407,11 @@ abstract class CrudController extends Controller
         return $exporter->export();
     }
 
+    /**
+     * @param $id
+     * @param $field
+     * @return RedirectResponse|Redirector
+     */
     public function deleteFile($id, $field)
     {
         $entity = $this->getEntity($id);
@@ -324,6 +424,12 @@ abstract class CrudController extends Controller
     }
 
 
+    /**
+     * @param $id
+     * @param string $collection
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function uploadMedialibraryFile($id, $collection = Media::TEMP_LOADED_FILES_COLLECTION_NAME, Request $request)
     {
         $this->validate($request, [
@@ -345,6 +451,11 @@ abstract class CrudController extends Controller
         ]);
     }
 
+    /**
+     * @param $id
+     * @param Media $media
+     * @return JsonResponse
+     */
     public function deleteMedialibraryFile($id, Media $media)
     {
         MediaSaver::deleteMedia($media);
@@ -352,6 +463,11 @@ abstract class CrudController extends Controller
         return response()->json();
     }
 
+    /**
+     * @param $id
+     * @param string $collection
+     * @return JsonResponse
+     */
     public function clearMedialibraryCollection($id, string $collection)
     {
         $mediaSaver = new MediaSaver($this->getEntity($id));

@@ -17,7 +17,7 @@ class ColumnsExtractor
     /**
      * @var array
      */
-    private $columnParams;
+    private $columnParams = [];
 
 
     public function __construct(Model $model, array $columnParams = [])
@@ -50,8 +50,6 @@ class ColumnsExtractor
 
     public function setColumnParams(array $columnParams)
     {
-        $this->setColumnParamsFromModel();
-
         $this->columnParams = array_merge($this->columnParams, $columnParams);
     }
 
