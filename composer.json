@@ -13,7 +13,7 @@
         }
     ],
     "require": {
-        "php": ">=7.1",
+        "php": ">=7.2",
         "almasaeed2010/adminlte": "2.4.*",
         "box/spout": "^2.7",
         "illuminate/http": "^5.3",
