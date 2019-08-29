@@ -17,18 +17,18 @@
             <ul class="nav navbar-nav">
                 <!-- Control Sidebar Toggle Button -->
                 @if(Auth::check())
-                <li>
-                    <a href="{{ url()->route('logout') }}"
-                       onclick="event.preventDefault();
+                    <li>
+                        <a href="{{ url()->route('admin_logout') }}"
+                           onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                        <i class="fa fa-sign-out" aria-hidden="true"></i>
-                        {{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.auth.logout') }}
-                    </a>
+                            <i class="fa fa-sign-out" aria-hidden="true"></i>
+                            {{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.auth.logout') }}
+                        </a>
 
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                        {{ csrf_field() }}
-                    </form>
-                </li>
+                        <form id="logout-form" action="{{ route('admin_logout') }}" method="POST" style="display: none;">
+                            {{ csrf_field() }}
+                        </form>
+                    </li>
                 @else
                     <li>
                         <a href="{{ url()->route('admin_login') }}">

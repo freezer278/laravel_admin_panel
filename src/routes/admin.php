@@ -11,16 +11,16 @@
 |
 */
 
+use Illuminate\Support\Facades\Route;
 use Vmorozov\LaravelAdminGenerator\App\Utils\AdminRoute;
 
 $routePrefix = AdminRoute::getRoutePrefix();
 
 Route::group(['prefix' => $routePrefix, 'middleware' => ['web']], function () {
 
-    AdminRoute::home();
+    Route::group(['middleware' => 'auth:web'], function () {
+        AdminRoute::home();
+    });
+
     AdminRoute::auth();
-
-    //    Todo: add your admin panel routes here
-
-
 });
