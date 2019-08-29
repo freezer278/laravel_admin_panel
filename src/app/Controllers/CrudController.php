@@ -32,7 +32,6 @@ abstract class CrudController extends Controller
      * @var EntitiesExtractor
      */
     protected $entitiesExtractor;
-
     /**
      * @var string
      */
@@ -41,31 +40,46 @@ abstract class CrudController extends Controller
      * @var Model
      */
     protected $modelInstance;
-
     /**
      * @var string
      */
     protected $url = '';
-
     /**
      * @var string
      */
     protected $titleSingular = '';
-
     /**
      * @var string
      */
     protected $titlePlural = '';
-
     /**
      * @var array
      */
     protected $columnParams = [];
-
     /**
      * @var array
      */
     protected $listItemButtons = [];
+    /**
+     * @var bool
+     */
+    protected $enableCreate = true;
+    /**
+     * @var bool
+     */
+    protected $enableEdit = true;
+    /**
+     * @var bool
+     */
+    protected $enableDelete = true;
+    /**
+     * @var bool
+     */
+    protected $enableSearch = true;
+    /**
+     * @var bool
+     */
+    protected $enableExport = true;
 
     /**
      * CrudController constructor.
@@ -76,8 +90,7 @@ abstract class CrudController extends Controller
         if ($model != null) {
             $this->model = get_class($model);
             $this->modelInstance = $model;
-        }
-        else {
+        } else {
             $this->modelInstance = new $this->model; // @codeCoverageIgnore
         }
 
@@ -183,15 +196,21 @@ abstract class CrudController extends Controller
         $columns = $this->columnsExtractor->getActiveListColumns();
         $entities = $this->entitiesExtractor->getEntities($requestParams);
 
-        $titleSingular = $this->titleSingular;
-        $titlePlural = $this->titlePlural;
-        $url = $this->getUrl();
-
-        $search = (isset($requestParams['search']) ? $requestParams['search'] : '');
-        $listItemButtons = $this->listItemButtons;
-
-        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::list.list')
-            ->with(compact('columns', 'entities', 'titleSingular', 'titlePlural', 'url', 'search', 'listItemButtons'));
+        return view(AdminGeneratorServiceProvider::VIEWS_NAME . '::list.list')
+            ->with([
+                'columns' => $columns,
+                'entities' => $entities,
+                'titleSingular' => $this->titleSingular,
+                'titlePlural' => $this->titlePlural,
+                'url' => $this->getUrl(),
+                'search' => $request->input('search', ''),
+                'listItemButtons' => $this->listItemButtons,
+                'enableCreate' => $this->enableCreate,
+                'enableEdit' => $this->enableEdit,
+                'enableDelete' => $this->enableDelete,
+                'enableSearch' => $this->enableSearch,
+                'enableExport' => $this->enableExport,
+            ]);
     }
 
     /**
@@ -202,15 +221,16 @@ abstract class CrudController extends Controller
     public function create()
     {
         $columns = $this->columnsExtractor->getActiveAddEditFields();
-
-        $titleSingular = $this->titleSingular;
-        $titlePlural = $this->titlePlural;
-        $url = $this->getUrl();
-
         $mediaExtractor = new MediaExtractor($this->modelInstance);
 
-        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.create')
-            ->with(compact('columns', 'titleSingular', 'titlePlural', 'url', 'mediaExtractor'));
+        return view(AdminGeneratorServiceProvider::VIEWS_NAME . '::forms.create')
+            ->with([
+                'columns' => $columns,
+                'titleSingular' => $this->titleSingular,
+                'titlePlural' => $this->titlePlural,
+                'url' => $this->getUrl(),
+                'mediaExtractor' => $mediaExtractor,
+            ]);
     }
 
     /**
@@ -262,7 +282,7 @@ abstract class CrudController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return Response
      * @codeCoverageIgnore
      */
@@ -274,29 +294,31 @@ abstract class CrudController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return Response
      */
     public function edit($id)
     {
         $columns = $this->columnsExtractor->getActiveAddEditFields();
         $entity = $this->getEntity($id);
-
-        $titleSingular = $this->titleSingular;
-        $titlePlural = $this->titlePlural;
-        $url = $this->getUrl();
-
         $mediaExtractor = new MediaExtractor($entity);
 
-        return view(AdminGeneratorServiceProvider::VIEWS_NAME.'::forms.edit')
-            ->with(compact('columns', 'entity', 'titleSingular', 'titlePlural', 'url', 'mediaExtractor'));
+        return view(AdminGeneratorServiceProvider::VIEWS_NAME . '::forms.edit')
+            ->with([
+                'columns' => $columns,
+                'entity' => $entity,
+                'titleSingular' => $this->titleSingular,
+                'titlePlural' => $this->titlePlural,
+                'url' => $this->getUrl(),
+                'mediaExtractor' => $mediaExtractor,
+            ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param  int  $id
+     * @param int $id
      * @return Response
      */
     public function update(Request $request, $id)
