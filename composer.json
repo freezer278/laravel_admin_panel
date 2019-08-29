@@ -42,6 +42,13 @@
     "scripts": {
         "test": "phpunit"
     },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Vmorozov\\LaravelAdminGenerator\\AdminGeneratorServiceProvider"
+            ]
+        }
+    },
     "config": {
         "sort-packages": true
     },
