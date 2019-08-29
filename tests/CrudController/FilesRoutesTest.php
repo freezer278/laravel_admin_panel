@@ -21,7 +21,7 @@ class FilesRoutesTest extends TestCase
 {
     private $mock;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -76,7 +76,7 @@ class FilesRoutesTest extends TestCase
 
     public function testUploadMedialibraryFile()
     {
-        $mediaMock = Mockery::mock(\Spatie\MediaLibrary\Media::class);
+        $mediaMock = Mockery::mock(\Spatie\MediaLibrary\Models\Media::class);
         $mediaMock->shouldReceive('getAttribute')->with('id')->andReturn(self::MEDIA_DEFAULT_ID);
         $mediaMock->shouldReceive('getAttribute')->with('disk')->andReturn('public');
         $mediaMock->shouldReceive('getUrl')->andReturn('url');

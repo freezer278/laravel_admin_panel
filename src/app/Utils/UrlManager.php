@@ -3,7 +3,7 @@
 namespace Vmorozov\LaravelAdminGenerator\App\Utils;
 
 
-use Spatie\MediaLibrary\Media;
+use Spatie\MediaLibrary\Models\Media;
 
 class UrlManager
 {

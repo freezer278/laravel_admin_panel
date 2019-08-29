@@ -2,13 +2,7 @@
 
 namespace Vmorozov\LaravelAdminGenerator\Tests\Field;
 
-use Illuminate\Database\Eloquent\Model;
-use Spatie\MediaLibrary\Media;
-use Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider;
-use Vmorozov\LaravelAdminGenerator\App\Controllers\CrudController;
-use Vmorozov\LaravelAdminGenerator\App\Utils\AdminRoute;
-use Vmorozov\LaravelAdminGenerator\App\Utils\ColumnsExtractor;
-use Vmorozov\LaravelAdminGenerator\App\Utils\Field;
+use Spatie\MediaLibrary\Models\Media;
 use Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager;
 use Vmorozov\LaravelAdminGenerator\Tests\TestCase;
 
@@ -23,7 +17,7 @@ class UrlManagerTest extends TestCase
     private $id = 123;
     private $collection = 'collection';
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
     }

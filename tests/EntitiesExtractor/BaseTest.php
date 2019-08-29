@@ -25,7 +25,7 @@ class BaseTest extends TestCase
 
     const PER_PAGE = 25;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->model = Mockery::mock(Model::class, [
             'getFillable' => [
