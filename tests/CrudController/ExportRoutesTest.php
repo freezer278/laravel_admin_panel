@@ -2,15 +2,10 @@
 
 namespace Vmorozov\LaravelAdminGenerator\Tests\CrudController;
 
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Pagination\Paginator;
-use Illuminate\View\View;
+use Exception;
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Database\Eloquent\Builder;
 use Mockery;
-use Vmorozov\LaravelAdminGenerator\App\Utils\FileUploads\Medialibrary\Media;
 use Vmorozov\LaravelAdminGenerator\Tests\TestCase;
 use Vmorozov\LaravelAdminGenerator\Tests\TestModel;
 
@@ -21,41 +16,59 @@ use Vmorozov\LaravelAdminGenerator\Tests\TestModel;
  */
 class ExportRoutesTest extends TestCase
 {
-    private $mock;
+    /**
+     * @var
+     */
+    private $modelMock;
+    /**
+     * @var
+     */
+    private $queryBuilderMock;
 
+    /**
+     *
+     */
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->mock = Mockery::mock(TestModel::class);
+        $this->queryBuilderMock = Mockery::mock(Builder::class);
+        $this->queryBuilderMock->shouldReceive('chunk');
 
-        $this->mock->shouldReceive('__construct');
-        $this->mock->shouldReceive('where')->andReturn($this->mock);
-        $this->mock->shouldReceive('orderBy')->andReturn($this->mock);
-        $this->mock->shouldReceive('find')->andReturn($this->mock);
-        $this->mock->shouldReceive('select')->andReturn($this->mock);
-        $this->mock->shouldReceive('setAttribute')->andReturn($this->mock);
-        $this->mock->shouldReceive('getFillable')->andReturn([]);
-        $this->mock->shouldReceive('chunk')->andReturn($this->mock);
-
-        $this->mock->id = self::MODEL_DEFAULT_ID;
-
-        $this->disableConsoleOutput();
+        $this->modelMock = Mockery::mock(TestModel::class);
+        $this->modelMock->shouldReceive('__construct');
+        $this->modelMock->shouldReceive('setAttribute')->andReturn($this->modelMock);
+        $this->modelMock->shouldReceive('newQuery')->andReturn($this->queryBuilderMock);
+        $this->modelMock->id = self::MODEL_DEFAULT_ID;
     }
 
+    /**
+     * @throws BindingResolutionException
+     * @throws Exception
+     */
     public function testDownloadExcelRoute()
     {
-        $controller = new TestController($this->mock);
+        $controller = new TestController($this->modelMock);
 
-        $controller->downloadExcel();
-        $this->assertTrue(true);
+        $result = $controller->downloadExcel();
+        $this->assertNotNull($result);
+        $this->assertNotNull($result->getFile());
+
+        //        todo: add here asserts for file contents
     }
 
+    /**
+     * @throws BindingResolutionException
+     * @throws Exception
+     */
     public function testDownloadCsvRoute()
     {
-        $controller = new TestController($this->mock);
+        $controller = new TestController($this->modelMock);
 
-        $controller->downloadCsv();
-        $this->assertTrue(true);
+        $result = $controller->downloadCsv();
+        $this->assertNotNull($result);
+        $this->assertNotNull($result->getFile());
+
+//        todo: add here asserts for file contents
     }
 }

@@ -3,6 +3,7 @@
 namespace Vmorozov\LaravelAdminGenerator;
 
 use Illuminate\Support\ServiceProvider;
+use Maatwebsite\Excel\ExcelServiceProvider;
 
 /**
  * Class AdminGeneratorServiceProvider
@@ -59,7 +60,7 @@ class AdminGeneratorServiceProvider extends ServiceProvider
      */
     public function register()
     {
-
+        $this->app->registerDeferredProvider(ExcelServiceProvider::class);
     }
 
     private function publishFiles()
