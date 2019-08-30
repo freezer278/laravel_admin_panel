@@ -3,8 +3,8 @@
 
 namespace Vmorozov\LaravelAdminGenerator\App\Utils\Export;
 
-use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Response;
+use Iterator;
 use Maatwebsite\Excel\Exceptions\NoFilenameGivenException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -21,7 +21,7 @@ interface ModelExportInterface
     public function download(string $fileName, string $writerType = null, array $headers = null);
 
     /**
-     * @return Builder
+     * @return Iterator
      */
-    public function query();
+    public function iterator(): Iterator;
 }

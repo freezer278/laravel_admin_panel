@@ -33,7 +33,9 @@ class ExportRoutesTest extends TestCase
         parent::setUp();
 
         $this->queryBuilderMock = Mockery::mock(Builder::class);
-        $this->queryBuilderMock->shouldReceive('chunk');
+        $this->queryBuilderMock->shouldReceive('cursor')->andReturn(function () {
+            yield new TestModel();
+        });
 
         $this->modelMock = Mockery::mock(TestModel::class);
         $this->modelMock->shouldReceive('__construct');

@@ -4,13 +4,13 @@
 namespace Vmorozov\LaravelAdminGenerator\App\Utils\Export;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Query\Builder;
+use Iterator;
 use Maatwebsite\Excel\Concerns\Exportable;
-use Maatwebsite\Excel\Concerns\FromQuery;
+use Maatwebsite\Excel\Concerns\FromIterator;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class ModelExport implements FromQuery, ModelExportInterface, WithHeadings, ShouldAutoSize
+class ModelExport implements FromIterator, ModelExportInterface, WithHeadings, ShouldAutoSize
 {
     use Exportable;
 
@@ -18,22 +18,22 @@ class ModelExport implements FromQuery, ModelExportInterface, WithHeadings, Shou
      * @var Model
      */
     private $model;
+    /**
+     * @var array
+     */
+    private $columnParams;
 
     /**
      * ModelExport constructor.
      * @param Model $model
+     * @param array $columnParams
      */
-    public function __construct(Model $model)
+    public function __construct(Model $model, array $columnParams)
     {
         $this->model = $model;
-    }
-
-    /**
-     * @return Builder
-     */
-    public function query()
-    {
-        return $this->model->newQuery()->select($this->model->getFillable());
+        $this->columnParams = array_filter($columnParams, function (array $params) {
+            return $params['displayInList'] ?? false;
+        });
     }
 
     /**
@@ -41,6 +41,39 @@ class ModelExport implements FromQuery, ModelExportInterface, WithHeadings, Shou
      */
     public function headings(): array
     {
-        return $this->model->getFillable();
+        $headings = array_map(function (array $params) {
+            return $params['label'];
+        }, $this->columnParams);
+
+        array_unshift($headings, 'id');
+
+        return $headings;
+    }
+
+    /**
+     * @return Iterator
+     */
+    public function iterator(): Iterator
+    {
+        foreach ($this->model->newQuery()->cursor() as $model) {
+            yield $this->createExportDataFromModel($model);
+        }
+    }
+
+    /**
+     * @param Model $model
+     * @return array
+     */
+    private function createExportDataFromModel(Model $model): array
+    {
+        $res = [
+            $model->getKey(),
+        ];
+
+        foreach ($this->columnParams as $column => $params) {
+            $res[$column] = $model->$column;
+        }
+
+        return $res;
     }
 }

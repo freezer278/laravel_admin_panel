@@ -411,7 +411,7 @@ abstract class CrudController extends Controller
      */
     public function downloadExcel()
     {
-        return $this->excelExportStrategy->export($this->modelExportFactory->createForModel($this->modelInstance));
+        return $this->excelExportStrategy->export($this->modelExportFactory->createForModel($this->modelInstance, $this->columnParams));
     }
 
 
@@ -421,7 +421,7 @@ abstract class CrudController extends Controller
      */
     public function downloadCsv()
     {
-        return $this->csvExportStrategy->export($this->modelExportFactory->createForModel($this->modelInstance));
+        return $this->csvExportStrategy->export($this->modelExportFactory->createForModel($this->modelInstance, $this->columnParams));
     }
 
     /**
