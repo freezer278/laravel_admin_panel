@@ -2,91 +2,15 @@
 
 namespace Vmorozov\LaravelAdminGenerator\App\Utils;
 
-use Illuminate\Database\Eloquent\Model;
 use Vmorozov\LaravelAdminGenerator\App\Utils\Columns\AbstractColumn;
 use Vmorozov\LaravelAdminGenerator\App\Utils\Columns\Column;
 
 /**
- * @deprecated
  * Class ColumnsExtractor
  * @package Vmorozov\LaravelAdminGenerator\App\Utils
  */
 class ColumnsExtractor
 {
-    /**
-     * @var string
-     */
-    private $modelClass;
-    /**
-     * @var Model
-     */
-    private $model;
-    /**
-     * @var array
-     */
-    private $columnParams = [];
-
-
-    /**
-     * ColumnsExtractor constructor.
-     * @param Model $model
-     * @param array $columnParams
-     */
-    public function __construct(Model $model, array $columnParams = [])
-    {
-        $this->model = $model;
-        $this->modelClass = get_class($model);
-
-        if ($columnParams !== [])
-            $this->setColumnParams($columnParams);
-        else
-            $this->setColumnParamsFromModel();
-    }
-
-    /**
-     *
-     */
-    protected function setColumnParamsFromModel()
-    {
-        $this->columnParams = $this->model->adminFields;
-
-        if ($this->columnParams === null) {
-            $columns = $this->model->getFillable();
-
-            foreach ($columns as $column) {
-                $this->columnParams[$column] = [
-                    'displayInForm' => true,
-                    'displayInList' => true,
-                    'searchable' => true,
-                ];
-            }
-        }
-    }
-
-    /**
-     * @param array $columnParams
-     */
-    public function setColumnParams(array $columnParams)
-    {
-        $this->columnParams = array_merge($this->columnParams, $columnParams);
-    }
-
-    /**
-     * @return string
-     */
-    public function getModelClass(): string
-    {
-        return $this->modelClass;
-    }
-
-    /**
-     * @return Model
-     */
-    public function getModel(): Model
-    {
-        return $this->model;
-    }
-
     /**
      * @param Column[] $columnParams
      * @return array
@@ -95,7 +19,7 @@ class ColumnsExtractor
     {
         $activeColumns = [];
 
-        foreach ($this->columnParams as $key => $column) {
+        foreach ($columnParams as $key => $column) {
             if (isset($column['displayInList']) && $column['displayInList'] == true) {
                 $column['name'] = $key;
                 $activeColumns[] = AbstractColumn::create($column);
@@ -113,7 +37,7 @@ class ColumnsExtractor
     {
         $activeColumns = [];
 
-        foreach ($this->columnParams as $key => $column) {
+        foreach ($columnParams as $key => $column) {
             if (isset($column['displayInForm']) && $column['displayInForm'] == true) {
                 $column['name'] = $key;
                 $activeColumns[] = AbstractColumn::create($column);
@@ -124,14 +48,14 @@ class ColumnsExtractor
     }
 
     /**
-     * @param array $validationRules
+     * @param array $columnParams
      * @return array
      */
-    public function getValidationRules(array $validationRules = []): array
+    public function getValidationRules(array $columnParams = []): array
     {
         $validationRules = [];
 
-        foreach ($this->columnParams as $key => $column) {
+        foreach ($columnParams as $key => $column) {
             $validationRules[$key] = '';
 
             foreach ($column as $paramName => $paramValue) {
@@ -151,13 +75,14 @@ class ColumnsExtractor
     }
 
     /**
+     * @param array $columnParams
      * @return array
      */
-    public function getSearchableColumns(): array
+    public function getSearchableColumns(array $columnParams = []): array
     {
         $searchable = [];
 
-        foreach ($this->columnParams as $key => $column) {
+        foreach ($columnParams as $key => $column) {
             if (isset($column['searchable']) && $column['searchable'] == true)
                 $searchable[] = $key;
         }
@@ -166,13 +91,14 @@ class ColumnsExtractor
     }
 
     /**
+     * @param array $columnParams
      * @return array
      */
-    public function getFileUploadColumns(): array
+    public function getFileUploadColumns(array $columnParams = []): array
     {
         $results = [];
 
-        foreach ($this->columnParams as $key => $column) {
+        foreach ($columnParams as $key => $column) {
             if (isset($column[Field::PARAM_KEY_FIELD_TYPE]) && in_array($column[Field::PARAM_KEY_FIELD_TYPE], Field::FILE_UPLOAD_TYPES) == true)
                 $results[] = $key;
         }

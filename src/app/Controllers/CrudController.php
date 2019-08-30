@@ -111,7 +111,7 @@ abstract class CrudController extends Controller
             $this->modelInstance = new $this->model; // @codeCoverageIgnore
         }
 
-        $this->columnsExtractor = new ColumnsExtractor($this->modelInstance, $this->columnParams);
+        $this->columnsExtractor = app()->make(ColumnsExtractor::class);
         $this->entitiesExtractor = new EntitiesExtractor($this->columnsExtractor);
 
         $this->modelExportFactory = app()->make(ModelExportFactory::class);
@@ -214,7 +214,7 @@ abstract class CrudController extends Controller
     {
         $requestParams = $request->all();
 
-        $columns = $this->columnsExtractor->getActiveListColumns();
+        $columns = $this->columnsExtractor->getActiveListColumns($this->columnParams);
         $entities = $this->entitiesExtractor->getEntities($requestParams);
 
         return view(AdminGeneratorServiceProvider::VIEWS_NAME . '::list.list')
@@ -241,7 +241,7 @@ abstract class CrudController extends Controller
      */
     public function create()
     {
-        $columns = $this->columnsExtractor->getActiveAddEditFields();
+        $columns = $this->columnsExtractor->getActiveAddEditFields($this->columnParams);
         $mediaExtractor = new MediaExtractor($this->modelInstance);
 
         return view(AdminGeneratorServiceProvider::VIEWS_NAME . '::forms.create')
@@ -321,7 +321,7 @@ abstract class CrudController extends Controller
      */
     public function edit($id)
     {
-        $columns = $this->columnsExtractor->getActiveAddEditFields();
+        $columns = $this->columnsExtractor->getActiveAddEditFields($this->columnParams);
         $entity = $this->getEntity($id);
         $mediaExtractor = new MediaExtractor($entity);
 
