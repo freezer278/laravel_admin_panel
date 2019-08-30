@@ -246,6 +246,7 @@ abstract class CrudController extends Controller
 
         return view(AdminGeneratorServiceProvider::VIEWS_NAME . '::forms.create')
             ->with([
+                'entity' => $this->modelInstance,
                 'columns' => $columns,
                 'titleSingular' => $this->titleSingular,
                 'titlePlural' => $this->titlePlural,

@@ -5,6 +5,11 @@ namespace Vmorozov\LaravelAdminGenerator\App\Utils;
 use Illuminate\Database\Eloquent\Model;
 use Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider;
 
+/**
+ * @deprecated
+ * Class Field
+ * @package Vmorozov\LaravelAdminGenerator\App\Utils
+ */
 class Field
 {
 

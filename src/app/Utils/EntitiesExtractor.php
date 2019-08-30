@@ -4,6 +4,11 @@ namespace Vmorozov\LaravelAdminGenerator\App\Utils;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @deprecated
+ * Class EntitiesExtractor
+ * @package Vmorozov\LaravelAdminGenerator\App\Utils
+ */
 class EntitiesExtractor
 {
     /**

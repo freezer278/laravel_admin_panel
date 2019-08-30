@@ -32,7 +32,7 @@
                     </div>
                     <div class="box-body row">
                         @foreach($columns as $column)
-                            {!! $column->renderField() !!}
+                            {!! $column->renderFormField($entity) !!}
                         @endforeach
                     </div><!-- /.box-body -->
 

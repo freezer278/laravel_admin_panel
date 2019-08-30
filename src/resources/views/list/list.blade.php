@@ -50,7 +50,7 @@
                 @foreach($entities as $entity)
                     <tr>
                         @foreach($columns as $column)
-                            {!! $column->renderColumn($entity) !!}
+                            {!! $column->renderListColumn($entity) !!}
                         @endforeach
                         <td>
                             @if($enableEdit)
