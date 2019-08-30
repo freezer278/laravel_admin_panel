@@ -3,6 +3,7 @@
 namespace Vmorozov\LaravelAdminGenerator\App\Controllers;
 
 use Exception;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -10,11 +11,14 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider;
 use Vmorozov\LaravelAdminGenerator\App\Utils\ColumnsExtractor;
 use Vmorozov\LaravelAdminGenerator\App\Utils\EntitiesExtractor;
-use Vmorozov\LaravelAdminGenerator\App\Utils\Export\DataExporter;
-use Vmorozov\LaravelAdminGenerator\App\Utils\Export\Strategies\XlsCsvStrategy;
+use Vmorozov\LaravelAdminGenerator\App\Utils\Export\ModelExportFactory;
+use Vmorozov\LaravelAdminGenerator\App\Utils\Export\Strategies\CsvExportStrategy;
+use Vmorozov\LaravelAdminGenerator\App\Utils\Export\Strategies\ExcelExportStrategy;
+use Vmorozov\LaravelAdminGenerator\App\Utils\Export\Strategies\ExportStrategy;
 use Vmorozov\LaravelAdminGenerator\App\Utils\FileUploads\FilesSaver;
 use Vmorozov\LaravelAdminGenerator\App\Utils\FileUploads\Medialibrary\Media;
 use Vmorozov\LaravelAdminGenerator\App\Utils\FileUploads\Medialibrary\MediaExtractor;
@@ -80,10 +84,23 @@ abstract class CrudController extends Controller
      * @var bool
      */
     protected $enableExport = true;
+    /**
+     * @var ModelExportFactory
+     */
+    private $modelExportFactory;
+    /**
+     * @var ExportStrategy
+     */
+    private $excelExportStrategy;
+    /**
+     * @var ExportStrategy
+     */
+    private $csvExportStrategy;
 
     /**
      * CrudController constructor.
      * @param Model|null $model
+     * @throws BindingResolutionException
      */
     public function __construct(Model $model = null)
     {
@@ -96,6 +113,10 @@ abstract class CrudController extends Controller
 
         $this->columnsExtractor = new ColumnsExtractor($this->modelInstance, $this->columnParams);
         $this->entitiesExtractor = new EntitiesExtractor($this->columnsExtractor);
+
+        $this->modelExportFactory = app()->make(ModelExportFactory::class);
+        $this->excelExportStrategy = app()->make(ExcelExportStrategy::class);
+        $this->csvExportStrategy = app()->make(CsvExportStrategy::class);
 
         $this->setup();
     }
@@ -385,26 +406,22 @@ abstract class CrudController extends Controller
 
 
     /**
-     * @return mixed
+     * @return BinaryFileResponse
      * @throws Exception
      */
     public function downloadExcel()
     {
-        $exporter = new DataExporter(new XlsCsvStrategy($this->modelInstance));
-
-        return $exporter->export();
+        return $this->excelExportStrategy->export($this->modelExportFactory->createForModel($this->modelInstance, $this->columnParams));
     }
 
 
     /**
-     * @return mixed
+     * @return BinaryFileResponse
      * @throws Exception
      */
     public function downloadCsv()
     {
-        $exporter = new DataExporter(new XlsCsvStrategy($this->modelInstance, 'csv'));
-
-        return $exporter->export();
+        return $this->csvExportStrategy->export($this->modelExportFactory->createForModel($this->modelInstance, $this->columnParams));
     }
 
     /**
