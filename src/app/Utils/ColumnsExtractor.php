@@ -13,9 +13,9 @@ class ColumnsExtractor
 {
     /**
      * @param Column[] $columnParams
-     * @return array
+     * @return Column[]
      */
-    public function getActiveListColumns(array $columnParams = []): array
+    public function getActiveListColumns(array $columnParams): array
     {
         $activeColumns = [];
 
@@ -31,9 +31,9 @@ class ColumnsExtractor
 
     /**
      * @param Column[] $columnParams
-     * @return array
+     * @return Column[]
      */
-    public function getActiveAddEditFields(array $columnParams = []): array
+    public function getActiveAddEditFields(array $columnParams): array
     {
         $activeColumns = [];
 
@@ -49,9 +49,9 @@ class ColumnsExtractor
 
     /**
      * @param array $columnParams
-     * @return array
+     * @return array[]
      */
-    public function getValidationRules(array $columnParams = []): array
+    public function getValidationRules(array $columnParams): array
     {
         $validationRules = [];
 
@@ -76,9 +76,9 @@ class ColumnsExtractor
 
     /**
      * @param array $columnParams
-     * @return array
+     * @return string[]
      */
-    public function getSearchableColumns(array $columnParams = []): array
+    public function getSearchableColumnNames(array $columnParams): array
     {
         $searchable = [];
 
@@ -92,9 +92,9 @@ class ColumnsExtractor
 
     /**
      * @param array $columnParams
-     * @return array
+     * @return string[]
      */
-    public function getFileUploadColumns(array $columnParams = []): array
+    public function getFileUploadColumnNames(array $columnParams): array
     {
         $results = [];
 

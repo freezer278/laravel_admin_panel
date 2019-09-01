@@ -3,6 +3,7 @@
 namespace Vmorozov\LaravelAdminGenerator\App\Controllers;
 
 use Exception;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -97,19 +98,14 @@ abstract class CrudController extends Controller
 
     /**
      * CrudController constructor.
-     * @param Model|null $model
+     * @throws BindingResolutionException
      */
-    public function __construct(Model $model = null)
+    public function __construct()
     {
-        if ($model != null) {
-            $this->model = get_class($model);
-            $this->modelInstance = $model;
-        } else {
-            $this->modelInstance = new $this->model; // @codeCoverageIgnore
-        }
+        $this->modelInstance = app()->make($this->model);
 
         $this->columnsExtractor = app()->make(ColumnsExtractor::class);
-        $this->entitiesExtractor = app()->make(EntitiesExtractor::class, [$this->modelInstance, $this->columnParams]);
+        $this->entitiesExtractor = app()->make(EntitiesExtractor::class, ['model' => $this->modelInstance, 'columnParams' => $this->columnParams]);
 
         $this->modelExportFactory = app()->make(ModelExportFactory::class);
         $this->excelExportStrategy = app()->make(ExcelExportStrategy::class);
@@ -182,7 +178,7 @@ abstract class CrudController extends Controller
      */
     protected function getValidationRules(): array
     {
-        return $this->columnsExtractor->getValidationRules();
+        return $this->columnsExtractor->getValidationRules($this->columnParams);
     }
 
 
@@ -251,6 +247,7 @@ abstract class CrudController extends Controller
      *
      * @param Request $request
      * @return Response
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request)
     {
@@ -260,14 +257,14 @@ abstract class CrudController extends Controller
 
         $this->beforeCreate();
 
-        $entity = (new $this->model($data));
-        $entity->save();
+        $entity = $this->modelInstance->create($data);
 
         $relationsResolver = new RelationResolver($entity);
         $relationsResolver->saveAllRelations($request);
 
-        $filesSaver = new FilesSaver($entity, $this->columnsExtractor, $request);
-        $filesSaver->saveFiles();
+//        todo: uncomment this after FilesSaver refactor
+//        $filesSaver = new FilesSaver($entity, $this->columnsExtractor, $request);
+//        $filesSaver->saveFiles();
 
         $this->afterCreate();
 
@@ -337,8 +334,9 @@ abstract class CrudController extends Controller
         $relationsResolver = new RelationResolver($entity);
         $relationsResolver->saveAllRelations($request);
 
-        $filesSaver = new FilesSaver($entity, $this->columnsExtractor, $request);
-        $filesSaver->saveFiles();
+//        todo: uncomment this after FilesSaver refactor
+//        $filesSaver = new FilesSaver($entity, $this->columnsExtractor, $request);
+//        $filesSaver->saveFiles();
 
         $this->afterUpdate();
 
@@ -374,8 +372,9 @@ abstract class CrudController extends Controller
     {
         $entity = $this->getEntity($id);
 
-        $filesSaver = new FilesSaver($entity, $this->columnsExtractor, request());
-        $filesSaver->deleteAllModelFiles();
+//        todo: enable files saver after it`s refactor
+//        $filesSaver = new FilesSaver($entity, $this->columnsExtractor, request());
+//        $filesSaver->deleteAllModelFiles();
 
         $entity->delete();
 

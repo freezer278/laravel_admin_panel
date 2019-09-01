@@ -2,6 +2,7 @@
 
 namespace Vmorozov\LaravelAdminGenerator\App\Utils;
 
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -46,13 +47,14 @@ class EntitiesExtractor
      * EntitiesExtractor constructor.
      * @param Model $model
      * @param array $columnParams
+     * @throws BindingResolutionException
      */
     public function __construct(Model $model, array $columnParams)
     {
         $this->model = $model;
         $this->columnsExtractor = app()->make(ColumnsExtractor::class);
         $this->columnParams = $columnParams;
-        $this->searchableColumns = $this->columnsExtractor->getSearchableColumns($columnParams);
+        $this->searchableColumns = $this->columnsExtractor->getSearchableColumnNames($columnParams);
     }
 
     /**

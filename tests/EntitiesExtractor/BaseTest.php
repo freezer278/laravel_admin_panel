@@ -2,31 +2,51 @@
 
 namespace Vmorozov\LaravelAdminGenerator\Tests\EntitiesExtractor;
 
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\Paginator;
 use Mockery;
-use Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider;
 use Vmorozov\LaravelAdminGenerator\App\Utils\ColumnsExtractor;
 use Vmorozov\LaravelAdminGenerator\App\Utils\EntitiesExtractor;
-use Vmorozov\LaravelAdminGenerator\App\Utils\Field;
+use Vmorozov\LaravelAdminGenerator\Tests\ColumnsExtractor\TestColumnParamsFactory;
 use Vmorozov\LaravelAdminGenerator\Tests\TestCase;
 
-/**
- * @coversDefaultClass \Vmorozov\LaravelAdminGenerator\App\Utils\EntitiesExtractor
- */
 class BaseTest extends TestCase
 {
+    /**
+     * @var Model
+     */
     private $model;
-
+    /**
+     * @var ColumnsExtractor
+     */
     private $columnsExtractor;
+    /**
+     * @var EntitiesExtractor
+     */
     private $entitiesExtractor;
-
+    /**
+     * @var \Illuminate\Contracts\Pagination\Paginator
+     */
     private $testPaginationOutput;
+    /**
+     * @var array
+     */
+    private $columnParams;
+    /**
+     * @var Builder|Mockery\LegacyMockInterface|Mockery\MockInterface
+     */
+    private $queryBuilderMock;
 
-    const PER_PAGE = 25;
-
+    /**
+     * @throws BindingResolutionException
+     */
     public function setUp(): void
     {
+        parent::setUp();
+
+        $this->queryBuilderMock = Mockery::mock(Builder::class);
         $this->model = Mockery::mock(Model::class, [
             'getFillable' => [
                 'title',
@@ -34,44 +54,46 @@ class BaseTest extends TestCase
             ]
         ]);
 
-        $this->model
-            ->shouldReceive('getAttribute')
-            ->shouldReceive('setPerPage');
+        $this->testPaginationOutput = new Paginator(collect([$this->model, $this->model, $this->model, $this->model]), 15, 1);
 
-        $this->columnsExtractor = new ColumnsExtractor($this->model);
-        $this->entitiesExtractor = new EntitiesExtractor($this->columnsExtractor, self::PER_PAGE);
+        $this->model->shouldReceive('newQuery')->andReturn($this->queryBuilderMock);
+        $this->model->shouldReceive('getAttribute');
 
-        $this->testPaginationOutput = new Paginator(collect([$this->model, $this->model, $this->model, $this->model]), self::PER_PAGE, 1);
+        $this->queryBuilderMock->shouldReceive('where')->andReturn($this->queryBuilderMock);
+        $this->queryBuilderMock->shouldReceive('orderBy')->andReturn($this->queryBuilderMock);
+        $this->queryBuilderMock
+            ->shouldReceive('paginate')
+            ->andReturn($this->testPaginationOutput);
+        $this->queryBuilderMock
+            ->shouldReceive('findOrFail')
+            ->andReturn($this->model);
+
+        $this->columnParams = TestColumnParamsFactory::create();
+
+        $this->columnsExtractor = app()->make(ColumnsExtractor::class);
+        $this->entitiesExtractor = new EntitiesExtractor($this->model, $this->columnParams);
+
     }
 
+    /**
+     *
+     */
     public function testSimpleGetEntities()
     {
-        $this->model->shouldReceive('where')
-            ->andReturn($this->model);
-
-        $this->model->shouldReceive('orderBy')
-            ->andReturn($this->model);
-
-        $this->model->shouldReceive('paginate')
-            ->andReturn($this->testPaginationOutput);
-
-        $this->assertEquals($this->entitiesExtractor->getEntities(), $this->testPaginationOutput);
+        $this->assertEquals($this->entitiesExtractor->getPaginated(), $this->testPaginationOutput);
     }
 
+    /**
+     *
+     */
     public function testSearchGetEntities()
     {
-        $this->model->shouldReceive('where')
-            ->andReturn($this->model);
-
-        $this->model->shouldReceive('orderBy')
-            ->andReturn($this->model);
-
-        $this->model->shouldReceive('paginate')
-            ->andReturn($this->testPaginationOutput);
-
-        $this->assertEquals($this->entitiesExtractor->getEntities(['search' => 'search_query', 'page' => 1]), $this->testPaginationOutput);
+        $this->assertEquals($this->entitiesExtractor->getPaginated(['search' => 'search_query', 'page' => 1]), $this->testPaginationOutput);
     }
 
+    /**
+     *
+     */
     public function testAddOrderByClause()
     {
         $this->entitiesExtractor->addOrderByClause('title', 'asc');
@@ -79,6 +101,9 @@ class BaseTest extends TestCase
         $this->assertTrue(true);
     }
 
+    /**
+     *
+     */
     public function testAddWhereClause()
     {
         $this->entitiesExtractor->addWhereClause('title', '=', 'test');
@@ -86,30 +111,23 @@ class BaseTest extends TestCase
         $this->assertTrue(true);
     }
 
+    /**
+     *
+     */
     public function testGetEntitiesWithClauses()
     {
-        $this->model->shouldReceive('where')
-            ->andReturn($this->model);
-
-        $this->model->shouldReceive('orderBy')
-            ->andReturn($this->model);
-
-        $this->model->shouldReceive('paginate')
-            ->andReturn($this->testPaginationOutput);
-
         $this->entitiesExtractor->addOrderByClause('title', 'asc');
         $this->entitiesExtractor->addWhereClause('title', '=', 'test');
 
-        $this->assertEquals($this->entitiesExtractor->getEntities(['search' => 'search_query', 'page' => 1]), $this->testPaginationOutput);
+        $this->assertEquals($this->entitiesExtractor->getPaginated(['search' => 'search_query', 'page' => 1]), $this->testPaginationOutput);
     }
 
 
-
+    /**
+     *
+     */
     public function testGetSingleEntity()
     {
-        $this->model->shouldReceive('find')
-            ->andReturn($this->model);
-
         $this->assertEquals($this->entitiesExtractor->getSingleEntity(123), $this->model);
     }
 }

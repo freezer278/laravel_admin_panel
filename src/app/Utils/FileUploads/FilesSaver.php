@@ -10,6 +10,7 @@ use Vmorozov\LaravelAdminGenerator\App\Utils\ColumnsExtractor;
 /**
  * Class FilesSaver
  * @package Vmorozov\LaravelAdminGenerator\App\Utils\FileUploads
+ * @deprecated
  */
 class FilesSaver
 {
@@ -25,7 +26,7 @@ class FilesSaver
         $this->columnsExtractor = $columnsExtractor;
         $this->request = $request;
 
-        $fileFields = $this->columnsExtractor->getFileUploadColumns();
+        $fileFields = $this->columnsExtractor->getFileUploadColumnNames();
 
         foreach ($fileFields as $fileField) {
             $this->fileFields[$fileField] = $this->columnsExtractor->getColumnParams($fileField);
