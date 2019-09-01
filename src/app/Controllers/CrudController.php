@@ -3,9 +3,7 @@
 namespace Vmorozov\LaravelAdminGenerator\App\Controllers;
 
 use Exception;
-use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -100,7 +98,6 @@ abstract class CrudController extends Controller
     /**
      * CrudController constructor.
      * @param Model|null $model
-     * @throws BindingResolutionException
      */
     public function __construct(Model $model = null)
     {
@@ -112,7 +109,7 @@ abstract class CrudController extends Controller
         }
 
         $this->columnsExtractor = app()->make(ColumnsExtractor::class);
-        $this->entitiesExtractor = new EntitiesExtractor($this->columnsExtractor);
+        $this->entitiesExtractor = app()->make(EntitiesExtractor::class, [$this->modelInstance, $this->columnParams]);
 
         $this->modelExportFactory = app()->make(ModelExportFactory::class);
         $this->excelExportStrategy = app()->make(ExcelExportStrategy::class);
@@ -195,13 +192,7 @@ abstract class CrudController extends Controller
      */
     protected function getEntity(int $id): Model
     {
-        $entity = $this->entitiesExtractor->getSingleEntity($id);
-
-        if ($entity === null) {
-            throw new ModelNotFoundException();
-        }
-
-        return $entity;
+        return  $this->entitiesExtractor->getSingleEntity($id);
     }
 
     /**
@@ -215,7 +206,7 @@ abstract class CrudController extends Controller
         $requestParams = $request->all();
 
         $columns = $this->columnsExtractor->getActiveListColumns($this->columnParams);
-        $entities = $this->entitiesExtractor->getEntities($requestParams);
+        $entities = $this->entitiesExtractor->getPaginated($requestParams);
 
         return view(AdminGeneratorServiceProvider::VIEWS_NAME . '::list.list')
             ->with([
@@ -299,18 +290,6 @@ abstract class CrudController extends Controller
     protected function afterCreate()
     {
 
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return Response
-     * @codeCoverageIgnore
-     */
-    public function show($id)
-    {
-        //
     }
 
     /**

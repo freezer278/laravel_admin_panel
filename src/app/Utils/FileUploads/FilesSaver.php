@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 use Vmorozov\FileUploads\Uploader;
 use Vmorozov\LaravelAdminGenerator\App\Utils\ColumnsExtractor;
 
+/**
+ * Class FilesSaver
+ * @package Vmorozov\LaravelAdminGenerator\App\Utils\FileUploads
+ */
 class FilesSaver
 {
     private $model;

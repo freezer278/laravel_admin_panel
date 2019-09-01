@@ -51,7 +51,7 @@ class ModelFromControllerParamsTest extends TestCase
     {
         $columns = $this->columnsExtractor->getActiveListColumns();
 
-//        $this->assertTrue(is_array($columns));
+        $this->assertTrue(is_array($columns));
         $this->assertEquals('title' ,  $columns[0]->getName());
         $this->assertEquals('description' ,  $columns[1]->getName());
         $this->assertEquals('price' ,  $columns[2]->getName());
@@ -62,7 +62,7 @@ class ModelFromControllerParamsTest extends TestCase
     {
         $columns = $this->columnsExtractor->getActiveAddEditFields();
 
-//        $this->assertTrue(is_array($columns));
+        $this->assertTrue(is_array($columns));
         $this->assertEquals('title' ,  $columns[0]->getName());
         $this->assertEquals('description' ,  $columns[1]->getName());
         $this->assertEquals('price' ,  $columns[2]->getName());
@@ -128,10 +128,5 @@ class ModelFromControllerParamsTest extends TestCase
         ]);
 
         $this->assertEquals($titleEditParams ,  $this->columnsExtractor->getColumnParams('title'));
-    }
-
-    public function testGetModelClass()
-    {
-        $this->assertEquals($this->columnsExtractor->getModelClass() ,  get_class($this->model));
     }
 }
