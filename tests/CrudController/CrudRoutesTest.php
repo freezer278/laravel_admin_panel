@@ -10,6 +10,7 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\View\View;
 use Mockery;
 use ReflectionException;
+use Vmorozov\LaravelAdminGenerator\Tests\ModelMockTrait;
 use Vmorozov\LaravelAdminGenerator\Tests\TestCase;
 use Vmorozov\LaravelAdminGenerator\Tests\TestModel;
 
@@ -18,14 +19,7 @@ use Vmorozov\LaravelAdminGenerator\Tests\TestModel;
  */
 class CrudRoutesTest extends TestCase
 {
-    /**
-     * @var
-     */
-    private $modelMock;
-    /**
-     * @var Mockery\LegacyMockInterface|Mockery\MockInterface|TestModel
-     */
-    private $queryBuilderMock;
+    use ModelMockTrait;
 
     /**
      *
@@ -34,26 +28,7 @@ class CrudRoutesTest extends TestCase
     {
         parent::setUp();
 
-        $this->modelMock = Mockery::mock(TestModel::class);
-        $this->queryBuilderMock = Mockery::mock(Builder::class);
-
-        $this->modelMock->shouldReceive('__construct');
-        $this->modelMock->shouldReceive('newQuery')->andReturn($this->queryBuilderMock);
-        $this->modelMock->shouldReceive('getAttribute');
-        $this->modelMock->shouldReceive('setAttribute');
-        $this->modelMock->shouldReceive('create')->andReturn($this->modelMock);;
-
-        $this->queryBuilderMock->shouldReceive('where')->andReturn($this->queryBuilderMock);
-        $this->queryBuilderMock->shouldReceive('orderBy')->andReturn($this->queryBuilderMock);
-        $this->queryBuilderMock
-            ->shouldReceive('paginate')
-            ->andReturn(new Paginator(collect([$this->modelMock, $this->modelMock, $this->modelMock]), 15, 1));
-        $this->queryBuilderMock
-            ->shouldReceive('findOrFail')
-            ->andReturn($this->modelMock);
-
-        $this->app->instance(TestModel::class, $this->modelMock);
-        $this->app->instance(Builder::class, $this->queryBuilderMock);
+        $this->setUpModelMock();
     }
 
     /**
@@ -141,17 +116,14 @@ class CrudRoutesTest extends TestCase
         $this->modelMock->id = 12;
 
         $request = Mockery::mock(Request::class);
-
         $request->shouldReceive('all')
             ->andReturn([
                 'title' => 'title',
                 'description' => 'description',
                 'price' => 'price',
             ]);
-        $request->shouldReceive('only')
-            ->andReturn([]);
-        $request->shouldReceive('file')
-            ->andReturn(null);
+        $request->shouldReceive('only')->andReturn([]);
+        $request->shouldReceive('file')->andReturn(null);
 
         $controller = new TestController();
         $this->assertInstanceOf(RedirectResponse::class, $controller->update($request, 12));
