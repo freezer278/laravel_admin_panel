@@ -1,3 +1,13 @@
+@php
+    /**
+     * @var \Vmorozov\LaravelAdminGenerator\App\Utils\Columns\Column[] $columns
+     * @var string $titleSingular
+     * @var string $titlePlural
+     * @var string $url
+     * @var \Vmorozov\LaravelAdminGenerator\App\Utils\FileUploads\Medialibrary\MediaExtractor $mediaExtractor
+     */
+@endphp
+
 @extends(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::layouts.app')
 
 @section('styles')

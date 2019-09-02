@@ -1,5 +1,16 @@
+@php
+    /**
+     * @var string $collection
+     * @var string $url
+     * @var \Spatie\MediaLibrary\Models\Media[] $files
+     * @var \Vmorozov\LaravelAdminGenerator\App\Utils\FileUploads\Medialibrary\MediaExtractor $mediaExtractor
+     * @var \Illuminate\Database\Eloquent\Model $entity
+     */
+@endphp
+
+
 <div class="col-md-12">
-    <h3>{{ $mediaExtractor->getMediaCollectionParam($collection, 'name', title_case($collection)) }}</h3>
+    <h3>{{ $mediaExtractor->getMediaCollectionParam($collection, 'name', \Illuminate\Support\Str::title($collection)) }}</h3>
 
     <a class="dz-clear-all" href="{{ \Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager::clearMedialibraryCollectionRoute($url, $entity->id, $collection) }}">
         {{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.medialibrary.clear_all') }}
