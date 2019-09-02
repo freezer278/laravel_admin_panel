@@ -29,6 +29,10 @@ use Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager;
 abstract class CrudController extends Controller
 {
     /**
+     * @var Request
+     */
+    protected $request;
+    /**
      * @var ColumnsExtractor
      */
     protected $columnsExtractor;
@@ -107,6 +111,7 @@ abstract class CrudController extends Controller
      */
     public function __construct()
     {
+        $this->request = app()->make(Request::class);
         $this->modelInstance = app()->make($this->model);
 
         $this->columnsExtractor = app()->make(ColumnsExtractor::class);
@@ -206,10 +211,8 @@ abstract class CrudController extends Controller
      */
     public function index(Request $request)
     {
-        $requestParams = $request->all();
-
         $columns = $this->columnsExtractor->getActiveListColumns($this->columnParams);
-        $entities = $this->entitiesExtractor->getPaginated($requestParams);
+        $entities = $this->entitiesExtractor->getPaginated($this->request->all());
 
         return view(AdminGeneratorServiceProvider::VIEWS_NAME . '::list.list')
             ->with([
@@ -252,22 +255,21 @@ abstract class CrudController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
      * @return Response
      * @throws ValidationException
      */
-    public function store(Request $request)
+    public function store()
     {
-        $this->validate($request, $this->getValidationRules());
-
-        $data = $request->all();
+        $this->validate($this->request, $this->getValidationRules());
 
         $this->beforeCreate();
+
+        $data = $this->request->all();
 
         $entity = $this->modelInstance->create($data);
 
         $relationsResolver = new RelationResolver($entity);
-        $relationsResolver->saveAllRelations($request);
+        $relationsResolver->saveAllRelations($this->request);
 
         $this->fileSaver->saveFiles($entity, $this->columnParams);
 
@@ -325,21 +327,18 @@ abstract class CrudController extends Controller
      * @return Response
      * @throws ValidationException
      */
-    public function update(Request $request, $id)
+    public function update($id)
     {
         $entity = $this->getEntity($id);
-
-        $this->validate($request, $this->getValidationRules());
-
-        $data = $request->all();
+        $this->validate($this->request, $this->getValidationRules());
 
         $this->beforeUpdate();
 
+        $data = $this->request->all();
         $entity->update($data);
 
         $relationsResolver = new RelationResolver($entity);
-        $relationsResolver->saveAllRelations($request);
-
+        $relationsResolver->saveAllRelations($this->request);
         $this->fileSaver->saveFiles($entity, $this->columnParams);
 
         $this->afterUpdate();
@@ -425,15 +424,15 @@ abstract class CrudController extends Controller
      * @return JsonResponse
      * @throws ValidationException
      */
-    public function uploadMedialibraryFile($id, $collection = Media::TEMP_LOADED_FILES_COLLECTION_NAME, Request $request)
+    public function uploadMedialibraryFile($id, $collection = Media::TEMP_LOADED_FILES_COLLECTION_NAME)
     {
-        $this->validate($request, [
+        $this->validate($this->request, [
             'file' => 'file'
         ]);
 
         $model = $this->getEntity($id);
 
-        $model->addMedia($request->file('file'))
+        $model->addMedia($this->request->file('file'))
             ->withCustomProperties(['load_confirmed' => false])
             ->toMediaCollection($collection);
 
