@@ -17,7 +17,8 @@ class TestColumnParamsFactory
         return [
             'title' => [
                 'label' => 'Title',
-                'displayInForm' => true,
+                'display_in_create_form' => true,
+                'display_in_update_form' => true,
                 'displayInList' => true,
                 'searchable' => true,
                 'min' => 2,
@@ -27,7 +28,8 @@ class TestColumnParamsFactory
             ],
             'description' => [
                 'label' => 'Description',
-                'displayInForm' => true,
+                'display_in_create_form' => true,
+                'display_in_update_form' => true,
                 'displayInList' => true,
                 'searchable' => false,
                 'min' => 2,
@@ -37,7 +39,8 @@ class TestColumnParamsFactory
             ],
             'price' => [
                 'label' => 'Price',
-                'displayInForm' => true,
+                'display_in_create_form' => true,
+                'display_in_update_form' => true,
                 'displayInList' => true,
                 'min' => 0,
                 'max' => 100000,
@@ -45,7 +48,8 @@ class TestColumnParamsFactory
             ],
             'file_upload' => [
                 'label' => 'file_upload',
-                'displayInForm' => true,
+                'display_in_create_form' => true,
+                'display_in_update_form' => true,
                 'displayInList' => true,
                 'min' => 0,
                 'max' => 100000,

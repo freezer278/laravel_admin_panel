@@ -47,12 +47,30 @@ class ColumnsExtractor
      * @param Column[] $columnParams
      * @return Column[]
      */
-    public function getActiveAddEditFields(array $columnParams): array
+    public function getCreateFormFields(array $columnParams): array
     {
         $activeColumns = [];
 
         foreach ($columnParams as $key => $column) {
-            if (isset($column['displayInForm']) && $column['displayInForm'] == true) {
+            if ($this->displayInCreateForm($column)) {
+                $column['name'] = $key;
+                $activeColumns[] = $this->columnFactory->create($column);
+            }
+        }
+
+        return $activeColumns;
+    }
+
+    /**
+     * @param Column[] $columnParams
+     * @return Column[]
+     */
+    public function getUpdateFormFields(array $columnParams): array
+    {
+        $activeColumns = [];
+
+        foreach ($columnParams as $key => $column) {
+            if ($this->displayInUpdateForm($column)) {
                 $column['name'] = $key;
                 $activeColumns[] = $this->columnFactory->create($column);
             }
@@ -65,27 +83,61 @@ class ColumnsExtractor
      * @param array $columnParams
      * @return array[]
      */
-    public function getValidationRules(array $columnParams): array
+    public function getCreateFormValidationRules(array $columnParams): array
     {
         $validationRules = [];
 
         foreach ($columnParams as $key => $column) {
-            $validationRules[$key] = '';
-
-            foreach ($column as $paramName => $paramValue) {
-                switch ($paramName) {
-                    case 'min':
-                    case 'max':
-                        $validationRules[$key] .= $paramName . ':' . $paramValue . '|';
-                        break;
-                    case 'required':
-                        $validationRules[$key] .= 'required|';
-                        break;
-                }
+            if (!$this->displayInCreateForm($column)) {
+                continue;
             }
+
+            $validationRules[$key] = $this->getValidationRulesForSingleColumn($column);
         }
 
         return $validationRules;
+    }
+
+    /**
+     * @param array $columnParams
+     * @return array[]
+     */
+    public function getUpdateFormValidationRules(array $columnParams): array
+    {
+        $validationRules = [];
+
+        foreach ($columnParams as $key => $column) {
+            if (!$this->displayInUpdateForm($column)) {
+                continue;
+            }
+
+            $validationRules[$key] = $this->getValidationRulesForSingleColumn($column);
+        }
+
+        return $validationRules;
+    }
+
+    /**
+     * @param array $params
+     * @return array[]
+     */
+    public function getValidationRulesForSingleColumn(array $params): array
+    {
+        $rules = [];
+
+        foreach ($params as $paramName => $paramValue) {
+            switch ($paramName) {
+                case 'min':
+                case 'max':
+                    $rules[] = $paramName . ':' . $paramValue;
+                    break;
+                case 'required':
+                    $rules[] = 'required';
+                    break;
+            }
+        }
+
+        return $rules;
     }
 
     /**
@@ -105,9 +157,9 @@ class ColumnsExtractor
     }
 
     /**
-     * @deprecated use getFileUploadColumnParams
      * @param array $columnParams
      * @return string[]
+     * @deprecated use getFileUploadColumnParams
      */
     public function getFileUploadColumnNames(array $columnParams): array
     {
@@ -131,11 +183,20 @@ class ColumnsExtractor
     }
 
     /**
-     * @param string $column
-     * @return array
+     * @param array $singleColumnParams
+     * @return bool
      */
-    public function getColumnParams(string $column): array
+    private function displayInCreateForm(array $singleColumnParams): bool
     {
-        return $this->columnParams[$column] ?? [];
+        return ($singleColumnParams['display_in_create_form'] ?? false);
+    }
+
+    /**
+     * @param array $singleColumnParams
+     * @return bool
+     */
+    private function displayInUpdateForm(array $singleColumnParams): bool
+    {
+        return ($singleColumnParams['display_in_update_form'] ?? false);
     }
 }

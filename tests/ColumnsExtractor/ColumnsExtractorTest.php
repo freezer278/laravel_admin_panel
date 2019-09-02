@@ -45,9 +45,9 @@ class ColumnsExtractorTest extends TestCase
     /**
      *
      */
-    public function testGetActiveAddEditFields()
+    public function testGetCreateFormFields()
     {
-        $columns = $this->columnsExtractor->getActiveAddEditFields($this->columnParams);
+        $columns = $this->columnsExtractor->getCreateFormFields($this->columnParams);
 
 //        $this->assertTrue(is_array($columns));
         $this->assertTrue('title' == $columns[0]->getName());
@@ -73,22 +73,5 @@ class ColumnsExtractorTest extends TestCase
         $columns = $this->columnsExtractor->getFileUploadColumnNames($this->columnParams);
 
         $this->assertTrue('file_upload' == $columns[0] && count($columns) === 1);
-    }
-
-    /**
-     *
-     */
-    public function testGetValidationRules()
-    {
-        $expectedRules = [
-            'title' => 'min:2|max:50|required|',
-            'description' => 'min:2|max:5000|',
-            'price' => 'min:0|max:100000|',
-            'file_upload' => 'min:0|max:100000|',
-        ];
-
-        $rules = $this->columnsExtractor->getValidationRules($this->columnParams);
-
-        $this->assertEquals($expectedRules ,  $rules);
     }
 }

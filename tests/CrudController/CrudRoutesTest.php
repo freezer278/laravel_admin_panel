@@ -87,6 +87,7 @@ class CrudRoutesTest extends TestCase
 
     /**
      *
+     * @throws ValidationException
      */
     public function testStoreRoute()
     {
@@ -97,15 +98,14 @@ class CrudRoutesTest extends TestCase
                 'description' => 'description',
                 'price' => 'price',
             ]);
-        $request->shouldReceive('only')
-            ->andReturn([]);
-        $request->shouldReceive('file')
-            ->andReturn(null);
+        $request->shouldReceive('only')->andReturn([]);
+        $request->shouldReceive('file')->andReturn(null);
+        $this->app->instance(Request::class, $request);
 
 //        $this->modelMock->shouldReceive('save')->once();
 
         $controller = new TestController();
-        $this->assertInstanceOf(RedirectResponse::class, $controller->store($request));
+        $this->assertInstanceOf(RedirectResponse::class, $controller->store());
     }
 
     /**
@@ -123,9 +123,10 @@ class CrudRoutesTest extends TestCase
             ]);
         $request->shouldReceive('only')->andReturn([]);
         $request->shouldReceive('file')->andReturn(null);
+        $this->app->instance(Request::class, $request);
 
         $controller = new TestController();
-        $this->assertInstanceOf(RedirectResponse::class, $controller->update($request, 12));
+        $this->assertInstanceOf(RedirectResponse::class, $controller->update(12));
     }
 
     /**

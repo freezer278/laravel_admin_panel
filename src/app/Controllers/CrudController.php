@@ -188,9 +188,19 @@ abstract class CrudController extends Controller
      *
      * @return array
      */
-    protected function getValidationRules(): array
+    protected function getCreateValidationRules(): array
     {
-        return $this->columnsExtractor->getValidationRules($this->columnParams);
+        return $this->columnsExtractor->getCreateFormValidationRules($this->columnParams);
+    }
+
+    /**
+     * Get validation rules for create and edit actions.
+     *
+     * @return array
+     */
+    protected function getUpdateValidationRules(): array
+    {
+        return $this->columnsExtractor->getUpdateFormValidationRules($this->columnParams);
     }
 
 
@@ -238,7 +248,7 @@ abstract class CrudController extends Controller
      */
     public function create()
     {
-        $columns = $this->columnsExtractor->getActiveAddEditFields($this->columnParams);
+        $columns = $this->columnsExtractor->getCreateFormFields($this->columnParams);
         $mediaExtractor = new MediaExtractor($this->modelInstance);
 
         return view(AdminGeneratorServiceProvider::VIEWS_NAME . '::forms.create')
@@ -260,7 +270,7 @@ abstract class CrudController extends Controller
      */
     public function store()
     {
-        $this->validate($this->request, $this->getValidationRules());
+        $this->validate($this->request, $this->getCreateValidationRules());
 
         $this->beforeCreate();
 
@@ -304,7 +314,7 @@ abstract class CrudController extends Controller
      */
     public function edit($id)
     {
-        $columns = $this->columnsExtractor->getActiveAddEditFields($this->columnParams);
+        $columns = $this->columnsExtractor->getUpdateFormFields($this->columnParams);
         $entity = $this->getEntity($id);
         $mediaExtractor = new MediaExtractor($entity);
 
@@ -330,7 +340,7 @@ abstract class CrudController extends Controller
     public function update($id)
     {
         $entity = $this->getEntity($id);
-        $this->validate($this->request, $this->getValidationRules());
+        $this->validate($this->request, $this->getUpdateValidationRules());
 
         $this->beforeUpdate();
 
