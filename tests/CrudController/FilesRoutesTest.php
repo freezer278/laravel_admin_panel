@@ -2,6 +2,7 @@
 
 namespace Vmorozov\LaravelAdminGenerator\Tests\CrudController;
 
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -11,6 +12,7 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\View\View;
 use Mockery;
 use Vmorozov\LaravelAdminGenerator\App\Utils\FileUploads\Medialibrary\Media;
+use Vmorozov\LaravelAdminGenerator\Tests\ModelMockTrait;
 use Vmorozov\LaravelAdminGenerator\Tests\TestCase;
 use Vmorozov\LaravelAdminGenerator\Tests\TestModel;
 
@@ -19,61 +21,57 @@ use Vmorozov\LaravelAdminGenerator\Tests\TestModel;
  */
 class FilesRoutesTest extends TestCase
 {
-    private $mock;
+    use ModelMockTrait;
 
+    /**
+     *
+     */
     public function setUp(): void
     {
         parent::setUp();
-
-        $this->mock = Mockery::mock(TestModel::class);
-
-        $this->mock->shouldReceive('__construct');
-        $this->mock->shouldReceive('where')->andReturn($this->mock);
-        $this->mock->shouldReceive('orderBy')->andReturn($this->mock);
+        $this->setUpModelMock();
     }
 
+    /**
+     * @throws BindingResolutionException
+     */
     public function testDeleteFileRoute()
     {
-
-        $this->mock->shouldReceive('find')->andReturn($this->mock);
-
-        $this->app->instance(TestModel::class, $this->mock);
-
-        $controller = new TestController($this->mock);
+        $controller = new TestController();
 
         $this->assertInstanceOf(RedirectResponse::class, $controller->deleteFile(12, 'file_upload'));
     }
 
+    /**
+     * @throws BindingResolutionException
+     */
     public function testDeleteMedialibraryFile()
     {
-        $this->mock->shouldReceive('find')->andReturn($this->mock);
-
-
         $mediaMock = $this->getMockBuilder(Media::class)
             ->setMethods(['update', 'find'])
             ->setConstructorArgs([['id' => 12]])
             ->getMock();
-
         $mediaMock->id = 12;
 
-        $this->app->instance(TestModel::class, $this->mock);
-
-        $controller = new TestController($this->mock);
+        $controller = new TestController();
 
         $this->assertInstanceOf(JsonResponse::class, $controller->deleteMedialibraryFile(12, $mediaMock));
     }
 
+    /**
+     * @throws BindingResolutionException
+     */
     public function testClearMedialibraryCollection()
     {
-        $this->mock->shouldReceive('find')->andReturn($this->mock);
-
-        $this->app->instance(TestModel::class, $this->mock);
-
-        $controller = new TestController($this->mock);
+        $controller = new TestController();
 
         $this->assertInstanceOf(JsonResponse::class, $controller->clearMedialibraryCollection(12, 'collection'));
     }
 
+    /**
+     * @throws BindingResolutionException
+     * @throws \Illuminate\Validation\ValidationException
+     */
     public function testUploadMedialibraryFile()
     {
         $mediaMock = Mockery::mock(\Spatie\MediaLibrary\Models\Media::class);
@@ -83,18 +81,18 @@ class FilesRoutesTest extends TestCase
         $mediaMock->shouldReceive('withCustomProperties')->andReturn($mediaMock);
         $mediaMock->shouldReceive('toMediaCollection')->andReturn(collect([$mediaMock]));
 
-        $this->mock->shouldReceive('find')->andReturn($this->mock);
-        $this->mock->shouldReceive('addMedia')->andReturn($mediaMock);
-        $this->mock->shouldReceive('withCustomProperties')->andReturn($this->mock);
-        $this->mock->shouldReceive('toMediaCollection')->andReturn($this->mock);
-        $this->mock->shouldReceive('getMedia')->andReturn(collect([$mediaMock]));
-        $this->mock->shouldReceive('last')->andReturn($mediaMock);
-        $this->mock->shouldReceive('getAttribute')->with('id')->andReturn(self::MODEL_DEFAULT_ID);
-        $this->mock->shouldReceive('getUrl')->andReturn('url');
+        $this->modelMock->shouldReceive('find')->andReturn($this->modelMock);
+        $this->modelMock->shouldReceive('addMedia')->andReturn($mediaMock);
+        $this->modelMock->shouldReceive('withCustomProperties')->andReturn($this->modelMock);
+        $this->modelMock->shouldReceive('toMediaCollection')->andReturn($this->modelMock);
+        $this->modelMock->shouldReceive('getMedia')->andReturn(collect([$mediaMock]));
+        $this->modelMock->shouldReceive('last')->andReturn($mediaMock);
+        $this->modelMock->shouldReceive('getAttribute')->with('id')->andReturn(self::MODEL_DEFAULT_ID);
+        $this->modelMock->shouldReceive('getUrl')->andReturn('url');
 
-        $this->app->instance(TestModel::class, $this->mock);
+        $this->app->instance(TestModel::class, $this->modelMock);
 
-        $controller = new TestController($this->mock);
+        $controller = new TestController();
 
         $request = (new Request());
         $request->merge(['file' => UploadedFile::fake()->image('avatar.jpg')]);

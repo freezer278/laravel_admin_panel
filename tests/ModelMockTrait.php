@@ -37,7 +37,8 @@ trait ModelMockTrait
         $this->modelMock->shouldReceive('newQuery')->andReturn($this->queryBuilderMock);
         $this->modelMock->shouldReceive('getAttribute');
         $this->modelMock->shouldReceive('setAttribute');
-        $this->modelMock->shouldReceive('create')->andReturn($this->modelMock);;
+        $this->modelMock->shouldReceive('create')->andReturn($this->modelMock);
+        $this->modelMock->shouldReceive('update');
 
         $this->queryBuilderMock->shouldReceive('where')->andReturn($this->queryBuilderMock);
         $this->queryBuilderMock->shouldReceive('orderBy')->andReturn($this->queryBuilderMock);

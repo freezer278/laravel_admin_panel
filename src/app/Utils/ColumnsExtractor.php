@@ -91,16 +91,26 @@ class ColumnsExtractor
     }
 
     /**
+     * @deprecated use getFileUploadColumnParams
      * @param array $columnParams
      * @return string[]
      */
     public function getFileUploadColumnNames(array $columnParams): array
     {
+        return array_keys($this->getFileUploadColumnParams($columnParams));
+    }
+
+    /**
+     * @param array $columnParams
+     * @return string[]
+     */
+    public function getFileUploadColumnParams(array $columnParams): array
+    {
         $results = [];
 
         foreach ($columnParams as $key => $column) {
             if (isset($column[Field::PARAM_KEY_FIELD_TYPE]) && in_array($column[Field::PARAM_KEY_FIELD_TYPE], Field::FILE_UPLOAD_TYPES) == true)
-                $results[] = $key;
+                $results[$key] = $column;
         }
 
         return $results;

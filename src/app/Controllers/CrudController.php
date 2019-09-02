@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider;
 use Vmorozov\LaravelAdminGenerator\App\Utils\ColumnsExtractor;
@@ -95,6 +96,10 @@ abstract class CrudController extends Controller
      * @var ExportStrategy
      */
     private $csvExportStrategy;
+    /**
+     * @var FilesSaver
+     */
+    private $fileSaver;
 
     /**
      * CrudController constructor.
@@ -110,6 +115,8 @@ abstract class CrudController extends Controller
         $this->modelExportFactory = app()->make(ModelExportFactory::class);
         $this->excelExportStrategy = app()->make(ExcelExportStrategy::class);
         $this->csvExportStrategy = app()->make(CsvExportStrategy::class);
+
+        $this->fileSaver = app()->make(FilesSaver::class);
 
         $this->setup();
     }
@@ -247,7 +254,7 @@ abstract class CrudController extends Controller
      *
      * @param Request $request
      * @return Response
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
      */
     public function store(Request $request)
     {
@@ -262,9 +269,7 @@ abstract class CrudController extends Controller
         $relationsResolver = new RelationResolver($entity);
         $relationsResolver->saveAllRelations($request);
 
-//        todo: uncomment this after FilesSaver refactor
-//        $filesSaver = new FilesSaver($entity, $this->columnsExtractor, $request);
-//        $filesSaver->saveFiles();
+        $this->fileSaver->saveFiles($entity, $this->columnParams);
 
         $this->afterCreate();
 
@@ -318,6 +323,7 @@ abstract class CrudController extends Controller
      * @param Request $request
      * @param int $id
      * @return Response
+     * @throws ValidationException
      */
     public function update(Request $request, $id)
     {
@@ -334,9 +340,7 @@ abstract class CrudController extends Controller
         $relationsResolver = new RelationResolver($entity);
         $relationsResolver->saveAllRelations($request);
 
-//        todo: uncomment this after FilesSaver refactor
-//        $filesSaver = new FilesSaver($entity, $this->columnsExtractor, $request);
-//        $filesSaver->saveFiles();
+        $this->fileSaver->saveFiles($entity, $this->columnParams);
 
         $this->afterUpdate();
 
@@ -372,10 +376,7 @@ abstract class CrudController extends Controller
     {
         $entity = $this->getEntity($id);
 
-//        todo: enable files saver after it`s refactor
-//        $filesSaver = new FilesSaver($entity, $this->columnsExtractor, request());
-//        $filesSaver->deleteAllModelFiles();
-
+        $this->fileSaver->deleteAllModelFiles($entity, $this->columnParams);
         $entity->delete();
 
         session()->flash('message', 'Entity deleted successfully');
@@ -411,10 +412,7 @@ abstract class CrudController extends Controller
     public function deleteFile($id, $field)
     {
         $entity = $this->getEntity($id);
-
-        $filesSaver = new FilesSaver($entity, $this->columnsExtractor, request());
-
-        $filesSaver->deleteFile($field);
+        $this->fileSaver->deleteFile($entity, $this->columnParams, $field);
 
         return redirect(UrlManager::listRoute($this->url));
     }
@@ -425,6 +423,7 @@ abstract class CrudController extends Controller
      * @param string $collection
      * @param Request $request
      * @return JsonResponse
+     * @throws ValidationException
      */
     public function uploadMedialibraryFile($id, $collection = Media::TEMP_LOADED_FILES_COLLECTION_NAME, Request $request)
     {

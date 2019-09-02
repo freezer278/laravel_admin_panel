@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Mockery;
 use ReflectionException;
@@ -109,6 +110,7 @@ class CrudRoutesTest extends TestCase
 
     /**
      * @throws BindingResolutionException
+     * @throws ValidationException
      */
     public function testUpdateRoute()
     {

@@ -5,64 +5,81 @@ namespace Vmorozov\LaravelAdminGenerator\App\Utils\FileUploads;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Vmorozov\FileUploads\Uploader;
+use Vmorozov\LaravelAdminGenerator\App\Utils\Columns\Column;
 use Vmorozov\LaravelAdminGenerator\App\Utils\ColumnsExtractor;
+use Vmorozov\LaravelAdminGenerator\App\Utils\Field;
 
 /**
  * Class FilesSaver
  * @package Vmorozov\LaravelAdminGenerator\App\Utils\FileUploads
- * @deprecated
  */
 class FilesSaver
 {
-    private $model;
+    /**
+     * @var ColumnsExtractor
+     */
     private $columnsExtractor;
+    /**
+     * @var Request
+     */
     private $request;
 
-    private $fileFields = [];
-
-    public function __construct(Model $model, ColumnsExtractor $columnsExtractor, Request $request)
+    /**
+     * FilesSaver constructor.
+     * @param ColumnsExtractor $columnsExtractor
+     * @param Request $request
+     */
+    public function __construct(ColumnsExtractor $columnsExtractor, Request $request)
     {
-        $this->model = $model;
         $this->columnsExtractor = $columnsExtractor;
         $this->request = $request;
-
-        $fileFields = $this->columnsExtractor->getFileUploadColumnNames();
-
-        foreach ($fileFields as $fileField) {
-            $this->fileFields[$fileField] = $this->columnsExtractor->getColumnParams($fileField);
-        }
     }
 
-    public function saveFiles()
+    /**
+     * @param Model $model
+     * @param array $columnParams
+     */
+    public function saveFiles(Model $model, array $columnParams): void
     {
         $modelUpdateParams = [];
 
-        foreach ($this->fileFields as $fileField => $params) {
+        foreach ($this->columnsExtractor->getFileUploadColumnParams($columnParams) as $fileField => $params) {
             $file = $this->request->file($fileField);
 
             if ($file !== null) {
                 $modelUpdateParams[$fileField] = Uploader::uploadFile($file, $params['upload_folder'] ?? '');
-                $this->deleteFile($fileField);
+                $this->deleteFile($model, $columnParams, $fileField);
             }
         }
 
-        $this->model->update($modelUpdateParams);
+        $model->update($modelUpdateParams);
     }
 
-    public function deleteAllModelFiles()
+    /**
+     * @param Model $model
+     * @param array $columnParams
+     */
+    public function deleteAllModelFiles(Model $model, array $columnParams): void
     {
-        foreach ($this->fileFields as $fileField => $params) {
-            Uploader::deleteFile($this->model->$fileField);
+        foreach ($this->columnsExtractor->getFileUploadColumnParams($columnParams) as $fileField => $params) {
+            if($model->$fileField !== null) {
+                Uploader::deleteFile($model->$fileField);
+            }
         }
     }
 
-    public function deleteFile(string $field)
+    /**
+     * @param Model $model
+     * @param array $columnParams
+     * @param string $field
+     */
+    public function deleteFile(Model $model, array $columnParams, string $field): void
     {
-        $fieldType = $this->fileFields[$field]['type'] ?? '';
+        $type = $columnParams[$field]['type'] ?? '';
 
-        if ($fieldType === 'file_upload_to_db_field') {
-            Uploader::deleteFile($this->model->$field);
-            $this->model->update([$field => null]);
+        if ($type === Column::TYPE_FILE_UPLOAD_TO_DB_FIELD) {
+            Uploader::deleteFile($model->$field);
+            $model->update([$field => null]);
         }
     }
 }
