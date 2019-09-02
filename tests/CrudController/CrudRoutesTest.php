@@ -114,9 +114,6 @@ class CrudRoutesTest extends TestCase
      */
     public function testUpdateRoute()
     {
-        $this->modelMock->shouldReceive('update')->once();
-        $this->modelMock->id = 12;
-
         $request = Mockery::mock(Request::class);
         $request->shouldReceive('all')
             ->andReturn([

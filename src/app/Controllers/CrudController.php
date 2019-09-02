@@ -440,9 +440,9 @@ abstract class CrudController extends Controller
         $media = $model->getMedia($collection)->last();
 
         return response()->json([
-            'id' => $media->id,
+            'id' => $media->getKey(),
             'url' => $media->getUrl(),
-            'delete_url' => UrlManager::deleteMedialibraryFileRoute($this->getUrl(), $model->id, $media),
+            'delete_url' => UrlManager::deleteMedialibraryFileRoute($this->getUrl(), $model->getKey(), $media),
         ]);
     }
 
@@ -450,6 +450,7 @@ abstract class CrudController extends Controller
      * @param $id
      * @param Media $media
      * @return JsonResponse
+     * @throws Exception
      */
     public function deleteMedialibraryFile($id, Media $media)
     {

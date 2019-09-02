@@ -2,14 +2,13 @@
 
 namespace Vmorozov\LaravelAdminGenerator\Tests\CrudController;
 
+use Exception;
 use Illuminate\Contracts\Container\BindingResolutionException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Pagination\Paginator;
-use Illuminate\View\View;
+use Illuminate\Validation\ValidationException;
 use Mockery;
 use Vmorozov\LaravelAdminGenerator\App\Utils\FileUploads\Medialibrary\Media;
 use Vmorozov\LaravelAdminGenerator\Tests\ModelMockTrait;
@@ -44,6 +43,7 @@ class FilesRoutesTest extends TestCase
 
     /**
      * @throws BindingResolutionException
+     * @throws Exception
      */
     public function testDeleteMedialibraryFile()
     {
@@ -70,12 +70,13 @@ class FilesRoutesTest extends TestCase
 
     /**
      * @throws BindingResolutionException
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
      */
     public function testUploadMedialibraryFile()
     {
         $mediaMock = Mockery::mock(\Spatie\MediaLibrary\Models\Media::class);
         $mediaMock->shouldReceive('getAttribute')->with('id')->andReturn(self::MEDIA_DEFAULT_ID);
+        $mediaMock->shouldReceive('getKey')->andReturn(self::MEDIA_DEFAULT_ID);
         $mediaMock->shouldReceive('getAttribute')->with('disk')->andReturn('public');
         $mediaMock->shouldReceive('getUrl')->andReturn('url');
         $mediaMock->shouldReceive('withCustomProperties')->andReturn($mediaMock);
@@ -88,6 +89,7 @@ class FilesRoutesTest extends TestCase
         $this->modelMock->shouldReceive('getMedia')->andReturn(collect([$mediaMock]));
         $this->modelMock->shouldReceive('last')->andReturn($mediaMock);
         $this->modelMock->shouldReceive('getAttribute')->with('id')->andReturn(self::MODEL_DEFAULT_ID);
+        $this->modelMock->shouldReceive('getKey')->andReturn(self::MEDIA_DEFAULT_ID);
         $this->modelMock->shouldReceive('getUrl')->andReturn('url');
 
         $this->app->instance(TestModel::class, $this->modelMock);
