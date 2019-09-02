@@ -45,7 +45,9 @@ class ModelExport implements FromIterator, ModelExportInterface, WithHeadings, S
             return $params['label'];
         }, $this->columnParams);
 
-        array_unshift($headings, 'id');
+        if (!isset($headings['id'])) {
+            array_unshift($headings, 'id');
+        }
 
         return $headings;
     }
