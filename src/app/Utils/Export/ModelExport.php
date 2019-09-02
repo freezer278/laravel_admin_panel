@@ -68,9 +68,11 @@ class ModelExport implements FromIterator, ModelExportInterface, WithHeadings, S
      */
     private function createExportDataFromModel(Model $model): array
     {
-        $res = [
-            $model->getKey(),
-        ];
+        $res = [];
+
+        if (!isset($this->columnParams[$model->getKeyName()])) {
+            $res['id'] = $model->getKey();
+        }
 
         foreach ($this->columnParams as $column => $params) {
             $res[$column] = $model->$column;
