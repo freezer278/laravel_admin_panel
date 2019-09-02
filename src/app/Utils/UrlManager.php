@@ -2,7 +2,7 @@
 
 namespace Vmorozov\LaravelAdminGenerator\App\Utils;
 
-
+use Illuminate\Support\Str;
 use Spatie\MediaLibrary\Models\Media;
 
 class UrlManager
@@ -17,13 +17,12 @@ class UrlManager
         return $route !== null ? $route->getPrefix() : 'admin';
     }
 
-
     /**
      * @return string
      */
     public static function dashboardRoute(): string
     {
-        return url(self::getUrlPrefix().'/dashboard');
+        return url(self::getUrlPrefix() . '/dashboard');
     }
 
     /**
@@ -32,7 +31,7 @@ class UrlManager
      */
     public static function listRoute(string $route): string
     {
-        return url(self::getUrlPrefix().str_start($route, '/'));
+        return url(self::getUrlPrefix() . Str::start($route, '/'));
     }
 
     /**
@@ -41,7 +40,7 @@ class UrlManager
      */
     public static function createRoute(string $route): string
     {
-        return url(self::getUrlPrefix().str_start($route, '/').'/create');
+        return url(self::getUrlPrefix() . Str::start($route, '/') . '/create');
     }
 
     /**
@@ -51,7 +50,7 @@ class UrlManager
      */
     public static function editRoute(string $route, int $id): string
     {
-        return url(self::getUrlPrefix().str_start($route, '/').'/'.$id.'/edit');
+        return url(self::getUrlPrefix() . Str::start($route, '/') . '/' . $id . '/edit');
     }
 
     /**
@@ -61,9 +60,8 @@ class UrlManager
      */
     public static function deleteRoute(string $route, int $id): string
     {
-        return url(self::getUrlPrefix().str_start($route, '/').'/'.$id.'/delete');
+        return url(self::getUrlPrefix() . Str::start($route, '/') . '/' . $id . '/delete');
     }
-
 
     /**
      * @param string $route
@@ -71,7 +69,7 @@ class UrlManager
      */
     public static function exportXlsRoute(string $route): string
     {
-        return url(self::getUrlPrefix().str_start($route, '/').'/export/xls');
+        return url(self::getUrlPrefix() . Str::start($route, '/') . '/export/xls');
     }
 
     /**
@@ -80,9 +78,8 @@ class UrlManager
      */
     public static function exportCsvRoute(string $route): string
     {
-        return url(self::getUrlPrefix().str_start($route, '/').'/export/csv');
+        return url(self::getUrlPrefix() . Str::start($route, '/') . '/export/csv');
     }
-
 
     /**
      * @param string $route
@@ -92,7 +89,7 @@ class UrlManager
      */
     public static function uploadMedialibraryFileRoute(string $route, int $id, string $collection): string
     {
-        return url(self::getUrlPrefix().str_start($route, '/').'/'.$id.'/upload_medialibrary_file/'.$collection);
+        return url(self::getUrlPrefix() . Str::start($route, '/') . '/' . $id . '/upload_medialibrary_file/' . $collection);
     }
 
     /**
@@ -103,7 +100,7 @@ class UrlManager
      */
     public static function deleteMedialibraryFileRoute(string $route, int $id, Media $media): string
     {
-        return url(self::getUrlPrefix().str_start($route, '/').'/'.$id.'/delete_medialibrary_file/'.$media->id);
+        return url(self::getUrlPrefix() . Str::start($route, '/') . '/' . $id . '/delete_medialibrary_file/' . $media->id);
     }
 
     /**
@@ -114,6 +111,6 @@ class UrlManager
      */
     public static function clearMedialibraryCollectionRoute(string $route, int $id, string $collection): string
     {
-        return url(self::getUrlPrefix().str_start($route, '/').'/'.$id.'/clear_medialibrary_collection/'.$collection);
+        return url(self::getUrlPrefix() . Str::start($route, '/') . '/' . $id . '/clear_medialibrary_collection/' . $collection);
     }
 }

@@ -1,3 +1,14 @@
+@php
+    /**
+     * @var \Vmorozov\LaravelAdminGenerator\App\Utils\Columns\Column[] $columns
+     * @var string $titleSingular
+     * @var string $titlePlural
+     * @var string $url
+     * @var \Vmorozov\LaravelAdminGenerator\App\Utils\FileUploads\Medialibrary\MediaExtractor $mediaExtractor
+     * @var \Illuminate\Database\Eloquent\Model $entity
+     */
+@endphp
+
 @extends(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::layouts.app')
 
 @section('styles')
@@ -33,7 +44,7 @@
 
                     <div class="box-body row">
                         @foreach($columns as $column)
-                            {!! $column->renderField($entity) !!}
+                            {!! $column->renderFormField($entity) !!}
                         @endforeach
                     </div><!-- /.box-body -->
 
@@ -74,7 +85,10 @@
 
                             {{--</div>--}}
 
-                            <button class="btn btn-success" type="submit">{{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.save') }}</button>
+                            <button class="btn btn-success" type="submit">
+                                <i class="fa fa-save"></i>
+                                {{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.save') }}
+                            </button>
 
                             <a href="{{ \Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager::listRoute($url) }}" class="btn btn-default"><span class="fa fa-ban"></span> {{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.cancel') }}</a>
                         </div>

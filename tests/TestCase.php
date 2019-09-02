@@ -4,8 +4,11 @@ namespace Vmorozov\LaravelAdminGenerator\Tests;
 
 use Dotenv\Dotenv;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Application;
 use Mockery;
 use \Orchestra\Testbench\TestCase as Orchestra;
+use ReflectionClass;
+use ReflectionException;
 use Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider;
 
 abstract class TestCase extends Orchestra
@@ -35,7 +38,7 @@ abstract class TestCase extends Orchestra
     }
 
     /**
-     * @param \Illuminate\Foundation\Application $app
+     * @param Application $app
      *
      * @return array
      */
@@ -47,7 +50,7 @@ abstract class TestCase extends Orchestra
     }
 
     /**
-     * @param \Illuminate\Foundation\Application $app
+     * @param Application $app
      */
     protected function getEnvironmentSetUp($app)
     {
@@ -63,7 +66,7 @@ abstract class TestCase extends Orchestra
     }
 
     /**
-     * @param \Illuminate\Foundation\Application $app
+     * @param Application $app
      */
     protected function setUpDatabase($app)
     {
@@ -83,15 +86,16 @@ abstract class TestCase extends Orchestra
     /**
      * Call protected/private method of a class.
      *
-     * @param object &$object    Instantiated object that we will run method on.
+     * @param object &$object Instantiated object that we will run method on.
      * @param string $methodName Method name to call
-     * @param array  $parameters Array of parameters to pass into method.
+     * @param array $parameters Array of parameters to pass into method.
      *
      * @return mixed Method return.
+     * @throws ReflectionException
      */
     public function invokeMethod(&$object, $methodName, array $parameters = [])
     {
-        $reflection = new \ReflectionClass(get_class($object));
+        $reflection = new ReflectionClass(get_class($object));
         $method = $reflection->getMethod($methodName);
         $method->setAccessible(true);
 
@@ -101,14 +105,15 @@ abstract class TestCase extends Orchestra
     /**
      * Call protected/private method of a class.
      *
-     * @param object &$object    Instantiated object that we will run method on.
+     * @param object &$object Instantiated object that we will run method on.
      * @param string $propertyName Property name to call
      *
      * @return mixed Method return.
+     * @throws ReflectionException
      */
     public function getPrivatePropertyValue(&$object, $propertyName)
     {
-        $reflection = new \ReflectionClass(get_class($object));
+        $reflection = new ReflectionClass(get_class($object));
         $property = $reflection->getProperty($propertyName);
         $property->setAccessible(true);
 

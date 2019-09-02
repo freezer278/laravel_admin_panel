@@ -4,6 +4,8 @@ namespace Vmorozov\LaravelAdminGenerator;
 
 use Illuminate\Support\ServiceProvider;
 use Maatwebsite\Excel\ExcelServiceProvider;
+use Vmorozov\LaravelAdminGenerator\App\Utils\Columns\Factory\ColumnFactory;
+use Vmorozov\LaravelAdminGenerator\App\Utils\Columns\Factory\ColumnFactoryInterface;
 
 /**
  * Class AdminGeneratorServiceProvider
@@ -21,7 +23,6 @@ class AdminGeneratorServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-
         if (is_dir(resource_path('views/vendor/vmorozov/laravel_admin_generator')))
             $this->loadViewsFrom(resource_path('views/vendor/vmorozov/laravel_admin_generator'), self::VIEWS_NAME);
         else
@@ -33,9 +34,6 @@ class AdminGeneratorServiceProvider extends ServiceProvider
             $this->loadRoutesFrom(base_path('/routes/admin.php'));
         else
             $this->loadRoutesFrom(__DIR__.'/routes/admin.php');
-
-
-//        $this->publishFiles();
 
         $this->publishes([__DIR__.'/config' => config_path()], 'config');
         $this->publishes([__DIR__.'/resources/views' => resource_path('views/vendor/vmorozov/laravel_admin_generator')], 'views');
@@ -61,12 +59,7 @@ class AdminGeneratorServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->registerDeferredProvider(ExcelServiceProvider::class);
-    }
 
-    private function publishFiles()
-    {
-        // publish views
-        $this->publishes([__DIR__.'../resources/views' => resource_path('views/vendor/vmorozov/laravel_admin_generator')], 'views');
+        $this->app->bind(ColumnFactoryInterface::class, ColumnFactory::class);
     }
-
 }

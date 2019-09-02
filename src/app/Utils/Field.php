@@ -5,6 +5,11 @@ namespace Vmorozov\LaravelAdminGenerator\App\Utils;
 use Illuminate\Database\Eloquent\Model;
 use Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider;
 
+/**
+ * @deprecated
+ * Class Field
+ * @package Vmorozov\LaravelAdminGenerator\App\Utils
+ */
 class Field
 {
 
@@ -23,7 +28,7 @@ class Field
     const PARAM_KEY_FIELD_TYPE = 'field_type';
     const PARAM_KEY_REQUIRED = 'required';
     const PARAM_KEY_DISPLAY_IN_FORM = 'displayInForm';
-    const PARAM_KEY_DISPLAY_IN_LIST = 'displayInList';
+    const PARAM_KEY_DISPLAY_IN_LIST = 'display_in_list';
     const PARAM_KEY_MIN = 'min';
     const PARAM_KEY_MAX = 'max';
     const PARAM_ACCEPT_MIME_TYPE = 'accept_mime_type';

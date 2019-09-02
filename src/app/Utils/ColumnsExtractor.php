@@ -2,119 +2,153 @@
 
 namespace Vmorozov\LaravelAdminGenerator\App\Utils;
 
-use Illuminate\Database\Eloquent\Model;
+use Vmorozov\LaravelAdminGenerator\App\Utils\Columns\Column;
+use Vmorozov\LaravelAdminGenerator\App\Utils\Columns\Factory\ColumnFactoryInterface;
 
+/**
+ * Class ColumnsExtractor
+ * @package Vmorozov\LaravelAdminGenerator\App\Utils
+ */
 class ColumnsExtractor
 {
     /**
-     * @var string
+     * @var ColumnFactoryInterface
      */
-    private $modelClass;
-    /**
-     * @var Model
-     */
-    private $model;
-    /**
-     * @var array
-     */
-    private $columnParams = [];
+    private $columnFactory;
 
-
-    public function __construct(Model $model, array $columnParams = [])
+    /**
+     * ColumnsExtractor constructor.
+     * @param ColumnFactoryInterface $columnFactory
+     */
+    public function __construct(ColumnFactoryInterface $columnFactory)
     {
-        $this->model = $model;
-        $this->modelClass = get_class($model);
-
-        if ($columnParams !== [])
-            $this->setColumnParams($columnParams);
-        else
-            $this->setColumnParamsFromModel();
+        $this->columnFactory = $columnFactory;
     }
 
-    protected function setColumnParamsFromModel()
+    /**
+     * @param Column[] $columnParams
+     * @return Column[]
+     */
+    public function getActiveListColumns(array $columnParams): array
     {
-        $this->columnParams = $this->model->adminFields;
+        $activeColumns = [];
 
-        if ($this->columnParams === null) {
-            $columns = $this->model->getFillable();
-
-            foreach ($columns as $column) {
-                $this->columnParams[$column] = [
-                    'displayInForm' => true,
-                    'displayInList' => true,
-                    'searchable' => true,
-                ];
+        foreach ($columnParams as $key => $column) {
+            if (isset($column['display_in_list']) && $column['display_in_list'] == true) {
+                $column['name'] = $key;
+                $activeColumns[] = $this->columnFactory->create($column);
             }
         }
+
+        return $activeColumns;
     }
 
-    public function setColumnParams(array $columnParams)
-    {
-        $this->columnParams = array_merge($this->columnParams, $columnParams);
-    }
-
-    public function getModelClass(): string
-    {
-        return $this->modelClass;
-    }
-
-    public function getModel(): Model
-    {
-        return $this->model;
-    }
-
-    public function getActiveListColumns(array $columnParams = []): array
+    /**
+     * @param Column[] $columnParams
+     * @return Column[]
+     */
+    public function getCreateFormFields(array $columnParams): array
     {
         $activeColumns = [];
 
-        foreach ($this->columnParams as $key => $column) {
-            if (isset($column['displayInList']) && $column['displayInList'] == true)
-                $activeColumns[] = new Field($this->modelClass, $key, $column);
+        foreach ($columnParams as $key => $column) {
+            if ($this->displayInCreateForm($column)) {
+                $column['name'] = $key;
+                $activeColumns[] = $this->columnFactory->create($column);
+            }
         }
 
         return $activeColumns;
     }
 
-    public function getActiveAddEditFields(array $columnParams = []): array
+    /**
+     * @param Column[] $columnParams
+     * @return Column[]
+     */
+    public function getUpdateFormFields(array $columnParams): array
     {
         $activeColumns = [];
 
-        foreach ($this->columnParams as $key => $column) {
-            if (isset($column['displayInForm']) && $column['displayInForm'] == true)
-                $activeColumns[] = new Field($this->modelClass, $key, $column);
+        foreach ($columnParams as $key => $column) {
+            if ($this->displayInUpdateForm($column)) {
+                $column['name'] = $key;
+                $activeColumns[] = $this->columnFactory->create($column);
+            }
         }
 
         return $activeColumns;
     }
 
-    public function getValidationRules(array $validationRules = []): array
+    /**
+     * @param array $columnParams
+     * @return array[]
+     */
+    public function getCreateFormValidationRules(array $columnParams): array
     {
         $validationRules = [];
 
-        foreach ($this->columnParams as $key => $column) {
-            $validationRules[$key] = '';
-
-            foreach ($column as $paramName => $paramValue) {
-                switch ($paramName) {
-                    case 'min':
-                    case 'max':
-                        $validationRules[$key] .= $paramName.':'.$paramValue.'|';
-                        break;
-                    case 'required':
-                        $validationRules[$key] .= 'required|';
-                        break;
-                }
+        foreach ($columnParams as $key => $column) {
+            if (!$this->displayInCreateForm($column)) {
+                continue;
             }
+
+            $validationRules[$key] = $this->getValidationRulesForSingleColumn($column);
         }
 
         return $validationRules;
     }
 
-    public function getSearchableColumns(): array
+    /**
+     * @param array $columnParams
+     * @return array[]
+     */
+    public function getUpdateFormValidationRules(array $columnParams): array
+    {
+        $validationRules = [];
+
+        foreach ($columnParams as $key => $column) {
+            if (!$this->displayInUpdateForm($column)) {
+                continue;
+            }
+
+            $validationRules[$key] = $this->getValidationRulesForSingleColumn($column);
+        }
+
+        return $validationRules;
+    }
+
+    /**
+     * @param array $params
+     * @return array[]
+     */
+    public function getValidationRulesForSingleColumn(array $params): array
+    {
+        $rules = [];
+
+        foreach ($params as $paramName => $paramValue) {
+            switch ($paramName) {
+                case 'min':
+                case 'max':
+                    $rules[] = $paramName . ':' . $paramValue;
+                    break;
+                case 'required':
+                    $rules[] = 'required';
+                    break;
+            }
+        }
+
+        return $rules;
+    }
+
+    /**
+     * @param array $columnParams
+     * @return string[]
+     */
+    public function getSearchableColumnNames(array $columnParams): array
     {
         $searchable = [];
 
-        foreach ($this->columnParams as $key => $column) {
+        foreach ($columnParams as $key => $column) {
             if (isset($column['searchable']) && $column['searchable'] == true)
                 $searchable[] = $key;
         }
@@ -122,20 +156,47 @@ class ColumnsExtractor
         return $searchable;
     }
 
-    public function getFileUploadColumns(): array
+    /**
+     * @param array $columnParams
+     * @return string[]
+     * @deprecated use getFileUploadColumnParams
+     */
+    public function getFileUploadColumnNames(array $columnParams): array
+    {
+        return array_keys($this->getFileUploadColumnParams($columnParams));
+    }
+
+    /**
+     * @param array $columnParams
+     * @return string[]
+     */
+    public function getFileUploadColumnParams(array $columnParams): array
     {
         $results = [];
 
-        foreach ($this->columnParams as $key => $column) {
+        foreach ($columnParams as $key => $column) {
             if (isset($column[Field::PARAM_KEY_FIELD_TYPE]) && in_array($column[Field::PARAM_KEY_FIELD_TYPE], Field::FILE_UPLOAD_TYPES) == true)
-                $results[] = $key;
+                $results[$key] = $column;
         }
 
         return $results;
     }
 
-    public function getColumnParams(string $column): array
+    /**
+     * @param array $singleColumnParams
+     * @return bool
+     */
+    private function displayInCreateForm(array $singleColumnParams): bool
     {
-        return $this->columnParams[$column] ?? [];
+        return ($singleColumnParams['display_in_create_form'] ?? false);
+    }
+
+    /**
+     * @param array $singleColumnParams
+     * @return bool
+     */
+    private function displayInUpdateForm(array $singleColumnParams): bool
+    {
+        return ($singleColumnParams['display_in_update_form'] ?? false);
     }
 }

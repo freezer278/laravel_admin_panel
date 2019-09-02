@@ -2,47 +2,59 @@
 
 namespace Vmorozov\LaravelAdminGenerator\App\Utils;
 
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
+/**
+ * Class EntitiesExtractor
+ * @package Vmorozov\LaravelAdminGenerator\App\Utils
+ */
 class EntitiesExtractor
 {
-    /**
-     * @var string
-     */
-    protected $modelClass;
     /**
      * @var Model
      */
     protected $model;
-
     /**
      * @var ColumnsExtractor
      */
     protected $columnsExtractor;
-
     /**
      * @var array
      */
-    private $clauses = [];
-
+    private $whereClauses = [];
     /**
      * @var array
      */
     private $orderByClauses = [];
-
+    /**
+     * @var int
+     */
+    protected $perPage = 15;
+    /**
+     * @var array
+     */
+    private $columnParams;
+    /**
+     * @var array
+     */
+    private $searchableColumns;
 
     /**
      * EntitiesExtractor constructor.
-     * @param ColumnsExtractor $columnsExtractor
-     * @param int $perPage
+     * @param Model $model
+     * @param array $columnParams
+     * @throws BindingResolutionException
      */
-    public function __construct(ColumnsExtractor $columnsExtractor, int $perPage = 0)
+    public function __construct(Model $model, array $columnParams)
     {
-        $this->modelClass = $columnsExtractor->getModelClass();
-        $this->model = $columnsExtractor->getModel();
-        $this->columnsExtractor = $columnsExtractor;
-
-        $this->setPerPage($perPage);
+        $this->model = $model;
+        $this->columnsExtractor = app()->make(ColumnsExtractor::class);
+        $this->columnParams = $columnParams;
+        $this->searchableColumns = $this->columnsExtractor->getSearchableColumnNames($columnParams);
     }
 
     /**
@@ -50,45 +62,43 @@ class EntitiesExtractor
      */
     public function setPerPage(int $perPage)
     {
-        if ($perPage > 0)
-            $this->model->setPerPage($perPage);
+        $this->perPage = $perPage;
     }
 
     /**
-     * @param array $params
-     * @param string $pageParam
-     * @return Model|mixed
+     * @param array $getParams
+     * @return Paginator
      */
-    public function getEntities(array $params = [], $pageParam = 'page')
+    public function getPaginated(array $getParams = []): Paginator
     {
-        $entities = $this->model;
+        $entities = $this->model->newQuery();
 
-        if (isset($params['search']) && $params['search'] !== null  && $params['search'] !== '')
-            $entities = $this->addSearchQuery($entities, $params['search']);
+        if (isset($getParams['search']) && $getParams['search'] && $getParams['search'] !== '')
+            $entities = $this->useSearchInQuery($entities, $getParams['search']);
 
         $entities = $this->useQueryClauses($entities);
 
-        if (isset($params[$pageParam]))
-            unset($params[$pageParam]);
+        if (isset($getParams['page']))
+            unset($getParams['page']);
 
-        $entities = $entities->paginate();
-        $entities->appends($params);
+        $entities = $entities->paginate($this->perPage);
+        $entities->appends($getParams);
 
         return $entities;
     }
-    /**
-     * @codeCoverageIgnore
-     */
-    protected function addSearchQuery($query, string $search)
-    {
-        $searchableColumns = $this->columnsExtractor->getSearchableColumns();
 
-        if (count($searchableColumns) > 0) {
+    /**
+     * @param Builder $query
+     * @param string $search
+     * @return Builder
+     */
+    protected function useSearchInQuery(Builder $query, string $search): Builder
+    {
+        if (count($this->searchableColumns) > 0) {
             $search = '%'.$search.'%';
 
-
-            $query = $query->where(function ($q) use ($search, $searchableColumns) {
-                foreach ($searchableColumns as $column) {
+            $query = $query->where(function ($q) use ($search) {
+                foreach ($this->searchableColumns as $column) {
                     $q->orWhere($column, 'like', $search);
                 }
             });
@@ -98,12 +108,13 @@ class EntitiesExtractor
     }
 
     /**
-     * @codeCoverageIgnore
+     * @param Builder $query
+     * @return Builder
      */
-    protected function useQueryClauses($query)
+    protected function useQueryClauses(Builder $query): Builder
     {
         $query = $query->where(function ($q) {
-            $q->where($this->clauses);
+            $q->where($this->whereClauses);
         });
 
         foreach ($this->orderByClauses as $clause) {
@@ -120,7 +131,7 @@ class EntitiesExtractor
      */
     public function addWhereClause(string $column, string $operator, $value)
     {
-        $this->clauses[] = [$column, $operator, $value];
+        $this->whereClauses[] = [$column, $operator, $value];
     }
 
     /**
@@ -138,10 +149,11 @@ class EntitiesExtractor
     /**
      * @param int $id
      * @return mixed
+     * @throws ModelNotFoundException
      */
     public function getSingleEntity(int $id)
     {
-        $entity = $this->model->find($id);
+        $entity = $this->model->newQuery()->findOrFail($id);
 
         return $entity;
     }

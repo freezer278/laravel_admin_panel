@@ -32,7 +32,7 @@ class ModelExport implements FromIterator, ModelExportInterface, WithHeadings, S
     {
         $this->model = $model;
         $this->columnParams = array_filter($columnParams, function (array $params) {
-            return $params['displayInList'] ?? false;
+            return $params['display_in_list'] ?? false;
         });
     }
 
@@ -45,7 +45,9 @@ class ModelExport implements FromIterator, ModelExportInterface, WithHeadings, S
             return $params['label'];
         }, $this->columnParams);
 
-        array_unshift($headings, 'id');
+        if (!isset($headings['id'])) {
+            array_unshift($headings, 'id');
+        }
 
         return $headings;
     }
@@ -66,9 +68,11 @@ class ModelExport implements FromIterator, ModelExportInterface, WithHeadings, S
      */
     private function createExportDataFromModel(Model $model): array
     {
-        $res = [
-            $model->getKey(),
-        ];
+        $res = [];
+
+        if (!isset($this->columnParams[$model->getKeyName()])) {
+            $res['id'] = $model->getKey();
+        }
 
         foreach ($this->columnParams as $column => $params) {
             $res[$column] = $model->$column;

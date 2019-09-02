@@ -5,12 +5,12 @@ namespace Vmorozov\LaravelAdminGenerator\App\Controllers;
 use Exception;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider;
 use Vmorozov\LaravelAdminGenerator\App\Utils\ColumnsExtractor;
@@ -28,6 +28,10 @@ use Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager;
 
 abstract class CrudController extends Controller
 {
+    /**
+     * @var Request
+     */
+    protected $request;
     /**
      * @var ColumnsExtractor
      */
@@ -96,27 +100,28 @@ abstract class CrudController extends Controller
      * @var ExportStrategy
      */
     private $csvExportStrategy;
+    /**
+     * @var FilesSaver
+     */
+    private $fileSaver;
 
     /**
      * CrudController constructor.
-     * @param Model|null $model
      * @throws BindingResolutionException
      */
-    public function __construct(Model $model = null)
+    public function __construct()
     {
-        if ($model != null) {
-            $this->model = get_class($model);
-            $this->modelInstance = $model;
-        } else {
-            $this->modelInstance = new $this->model; // @codeCoverageIgnore
-        }
+        $this->request = app()->make(Request::class);
+        $this->modelInstance = app()->make($this->model);
 
-        $this->columnsExtractor = new ColumnsExtractor($this->modelInstance, $this->columnParams);
-        $this->entitiesExtractor = new EntitiesExtractor($this->columnsExtractor);
+        $this->columnsExtractor = app()->make(ColumnsExtractor::class);
+        $this->entitiesExtractor = app()->make(EntitiesExtractor::class, ['model' => $this->modelInstance, 'columnParams' => $this->columnParams]);
 
         $this->modelExportFactory = app()->make(ModelExportFactory::class);
         $this->excelExportStrategy = app()->make(ExcelExportStrategy::class);
         $this->csvExportStrategy = app()->make(CsvExportStrategy::class);
+
+        $this->fileSaver = app()->make(FilesSaver::class);
 
         $this->setup();
     }
@@ -183,9 +188,19 @@ abstract class CrudController extends Controller
      *
      * @return array
      */
-    protected function getValidationRules(): array
+    protected function getCreateValidationRules(): array
     {
-        return $this->columnsExtractor->getValidationRules();
+        return $this->columnsExtractor->getCreateFormValidationRules($this->columnParams);
+    }
+
+    /**
+     * Get validation rules for create and edit actions.
+     *
+     * @return array
+     */
+    protected function getUpdateValidationRules(): array
+    {
+        return $this->columnsExtractor->getUpdateFormValidationRules($this->columnParams);
     }
 
 
@@ -195,13 +210,7 @@ abstract class CrudController extends Controller
      */
     protected function getEntity(int $id): Model
     {
-        $entity = $this->entitiesExtractor->getSingleEntity($id);
-
-        if ($entity === null) {
-            throw new ModelNotFoundException();
-        }
-
-        return $entity;
+        return  $this->entitiesExtractor->getSingleEntity($id);
     }
 
     /**
@@ -212,10 +221,8 @@ abstract class CrudController extends Controller
      */
     public function index(Request $request)
     {
-        $requestParams = $request->all();
-
-        $columns = $this->columnsExtractor->getActiveListColumns();
-        $entities = $this->entitiesExtractor->getEntities($requestParams);
+        $columns = $this->columnsExtractor->getActiveListColumns($this->columnParams);
+        $entities = $this->entitiesExtractor->getPaginated($this->request->all());
 
         return view(AdminGeneratorServiceProvider::VIEWS_NAME . '::list.list')
             ->with([
@@ -241,11 +248,12 @@ abstract class CrudController extends Controller
      */
     public function create()
     {
-        $columns = $this->columnsExtractor->getActiveAddEditFields();
+        $columns = $this->columnsExtractor->getCreateFormFields($this->columnParams);
         $mediaExtractor = new MediaExtractor($this->modelInstance);
 
         return view(AdminGeneratorServiceProvider::VIEWS_NAME . '::forms.create')
             ->with([
+                'entity' => $this->modelInstance,
                 'columns' => $columns,
                 'titleSingular' => $this->titleSingular,
                 'titlePlural' => $this->titlePlural,
@@ -257,25 +265,23 @@ abstract class CrudController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
      * @return Response
+     * @throws ValidationException
      */
-    public function store(Request $request)
+    public function store()
     {
-        $this->validate($request, $this->getValidationRules());
-
-        $data = $request->all();
+        $this->validate($this->request, $this->getCreateValidationRules());
 
         $this->beforeCreate();
 
-        $entity = (new $this->model($data));
-        $entity->save();
+        $data = $this->request->all();
+
+        $entity = $this->modelInstance->create($data);
 
         $relationsResolver = new RelationResolver($entity);
-        $relationsResolver->saveAllRelations($request);
+        $relationsResolver->saveAllRelations($this->request);
 
-        $filesSaver = new FilesSaver($entity, $this->columnsExtractor, $request);
-        $filesSaver->saveFiles();
+        $this->fileSaver->saveFiles($entity, $this->columnParams);
 
         $this->afterCreate();
 
@@ -301,18 +307,6 @@ abstract class CrudController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return Response
-     * @codeCoverageIgnore
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param int $id
@@ -320,7 +314,7 @@ abstract class CrudController extends Controller
      */
     public function edit($id)
     {
-        $columns = $this->columnsExtractor->getActiveAddEditFields();
+        $columns = $this->columnsExtractor->getUpdateFormFields($this->columnParams);
         $entity = $this->getEntity($id);
         $mediaExtractor = new MediaExtractor($entity);
 
@@ -341,24 +335,21 @@ abstract class CrudController extends Controller
      * @param Request $request
      * @param int $id
      * @return Response
+     * @throws ValidationException
      */
-    public function update(Request $request, $id)
+    public function update($id)
     {
         $entity = $this->getEntity($id);
-
-        $this->validate($request, $this->getValidationRules());
-
-        $data = $request->all();
+        $this->validate($this->request, $this->getUpdateValidationRules());
 
         $this->beforeUpdate();
 
+        $data = $this->request->all();
         $entity->update($data);
 
         $relationsResolver = new RelationResolver($entity);
-        $relationsResolver->saveAllRelations($request);
-
-        $filesSaver = new FilesSaver($entity, $this->columnsExtractor, $request);
-        $filesSaver->saveFiles();
+        $relationsResolver->saveAllRelations($this->request);
+        $this->fileSaver->saveFiles($entity, $this->columnParams);
 
         $this->afterUpdate();
 
@@ -394,9 +385,7 @@ abstract class CrudController extends Controller
     {
         $entity = $this->getEntity($id);
 
-        $filesSaver = new FilesSaver($entity, $this->columnsExtractor, request());
-        $filesSaver->deleteAllModelFiles();
-
+        $this->fileSaver->deleteAllModelFiles($entity, $this->columnParams);
         $entity->delete();
 
         session()->flash('message', 'Entity deleted successfully');
@@ -432,10 +421,7 @@ abstract class CrudController extends Controller
     public function deleteFile($id, $field)
     {
         $entity = $this->getEntity($id);
-
-        $filesSaver = new FilesSaver($entity, $this->columnsExtractor, request());
-
-        $filesSaver->deleteFile($field);
+        $this->fileSaver->deleteFile($entity, $this->columnParams, $field);
 
         return redirect(UrlManager::listRoute($this->url));
     }
@@ -446,25 +432,26 @@ abstract class CrudController extends Controller
      * @param string $collection
      * @param Request $request
      * @return JsonResponse
+     * @throws ValidationException
      */
-    public function uploadMedialibraryFile($id, $collection = Media::TEMP_LOADED_FILES_COLLECTION_NAME, Request $request)
+    public function uploadMedialibraryFile($id, $collection = Media::TEMP_LOADED_FILES_COLLECTION_NAME)
     {
-        $this->validate($request, [
+        $this->validate($this->request, [
             'file' => 'file'
         ]);
 
         $model = $this->getEntity($id);
 
-        $model->addMedia($request->file('file'))
+        $model->addMedia($this->request->file('file'))
             ->withCustomProperties(['load_confirmed' => false])
             ->toMediaCollection($collection);
 
         $media = $model->getMedia($collection)->last();
 
         return response()->json([
-            'id' => $media->id,
+            'id' => $media->getKey(),
             'url' => $media->getUrl(),
-            'delete_url' => UrlManager::deleteMedialibraryFileRoute($this->getUrl(), $model->id, $media),
+            'delete_url' => UrlManager::deleteMedialibraryFileRoute($this->getUrl(), $model->getKey(), $media),
         ]);
     }
 
@@ -472,6 +459,7 @@ abstract class CrudController extends Controller
      * @param $id
      * @param Media $media
      * @return JsonResponse
+     * @throws Exception
      */
     public function deleteMedialibraryFile($id, Media $media)
     {

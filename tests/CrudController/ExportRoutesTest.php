@@ -9,11 +9,6 @@ use Mockery;
 use Vmorozov\LaravelAdminGenerator\Tests\TestCase;
 use Vmorozov\LaravelAdminGenerator\Tests\TestModel;
 
-/**
- * @runTestsInSeparateProcesses
- * @preserveGlobalState disabled
- * @coversDefaultClass \Vmorozov\LaravelAdminGenerator\App\Controllers\CrudController
- */
 class ExportRoutesTest extends TestCase
 {
     /**
@@ -42,6 +37,8 @@ class ExportRoutesTest extends TestCase
         $this->modelMock->shouldReceive('setAttribute')->andReturn($this->modelMock);
         $this->modelMock->shouldReceive('newQuery')->andReturn($this->queryBuilderMock);
         $this->modelMock->id = self::MODEL_DEFAULT_ID;
+
+        app()->instance(TestModel::class, $this->modelMock);
     }
 
     /**
@@ -50,7 +47,7 @@ class ExportRoutesTest extends TestCase
      */
     public function testDownloadExcelRoute()
     {
-        $controller = new TestController($this->modelMock);
+        $controller = new TestController();
 
         $result = $controller->downloadExcel();
         $this->assertNotNull($result);
@@ -65,7 +62,7 @@ class ExportRoutesTest extends TestCase
      */
     public function testDownloadCsvRoute()
     {
-        $controller = new TestController($this->modelMock);
+        $controller = new TestController();
 
         $result = $controller->downloadCsv();
         $this->assertNotNull($result);

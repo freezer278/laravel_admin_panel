@@ -8,7 +8,10 @@
             {{--<h3 class="box-title">--}}
 
             @if($enableCreate)
-                <a href="{{ \Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager::createRoute($url) }}" class="btn btn-success col-md-3">{{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.create') }}</a>
+                <a href="{{ \Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager::createRoute($url) }}" class="btn btn-success col-md-3">
+                    <i class="fa fa-plus"></i>
+                    {{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.create') }}
+                </a>
             @endif
             @if($enableSearch)
                 <form action="{{ \Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager::listRoute($url) }}" method="GET" class="col-md-6 col-md-offset-3">
@@ -16,7 +19,10 @@
                         <input type="search" name="search" placeholder="{{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.search') }}" class="form-control" value="{{ $search }}">
                     </div>
                     <div class="col-md-2">
-                        <button type="submit" class="btn btn-primary">{{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.search') }}</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-search"></i>
+                            {{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.search') }}
+                        </button>
                     </div>
                 </form>
             @endif
@@ -50,14 +56,20 @@
                 @foreach($entities as $entity)
                     <tr>
                         @foreach($columns as $column)
-                            {!! $column->renderColumn($entity) !!}
+                            {!! $column->renderListColumn($entity) !!}
                         @endforeach
                         <td>
                             @if($enableEdit)
-                                <a href="{{ \Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager::editRoute($url, $entity->id) }}" class="btn btn-warning">{{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.edit') }}</a>
+                                <a href="{{ \Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager::editRoute($url, $entity->id) }}" class="btn btn-warning">
+                                    <i class="fa fa-edit"></i>
+                                    {{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.edit') }}
+                                </a>
                             @endif
                             @if($enableDelete)
-                                <a href="{{ \Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager::deleteRoute($url, $entity->id) }}" class="btn btn-danger">{{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.delete') }}</a>
+                                <a href="{{ \Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager::deleteRoute($url, $entity->id) }}" class="btn btn-danger">
+                                    <i class="fa fa-trash"></i>
+                                    {{ __(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::base.delete') }}
+                                </a>
                             @endif
                             @foreach($listItemButtons as $button)
                                 @include(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::list.buttons.list_item_button')
