@@ -32,7 +32,7 @@ class ModelExport implements FromIterator, ModelExportInterface, WithHeadings, S
     {
         $this->model = $model;
         $this->columnParams = array_filter($columnParams, function (array $params) {
-            return $params['displayInList'] ?? false;
+            return $params['display_in_list'] ?? false;
         });
     }
 

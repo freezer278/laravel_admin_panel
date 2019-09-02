@@ -69,7 +69,7 @@ public $adminFields = [
         'name' => [
             'label' => 'Name',
             'displayInForm' => true,
-            'displayInList' => true,
+            'display_in_list' => true,
             'searchable' => true,
             'min' => 2,
             'max' => 50,
@@ -78,7 +78,7 @@ public $adminFields = [
         'description' => [
             'label' => 'Description',
             'displayInForm' => true,
-            'displayInList' => true,
+            'display_in_list' => true,
             'searchable' => false,
             'min' => 2,
             'max' => 5000,
@@ -86,16 +86,18 @@ public $adminFields = [
         ],
         'price' => [
             'label' => 'Price',
-            'displayInForm' => true,
-            'displayInList' => true,
+            'display_in_create_form' => true,
+            'display_in_update_form' => true,
+            'display_in_list' => true,
             'field_type' => 'number',
             'min' => 0,
             'max' => 100000,
         ],
         'user_id' => [
             'label' => 'User Id',
-            'displayInForm' => true,
-            'displayInList' => true,
+            'display_in_create_form' => true,
+                        'display_in_update_form' => true,
+            'display_in_list' => true,
             'min' => 0,
 
             'field_type' => 'select',
@@ -105,7 +107,8 @@ public $adminFields = [
         ],
         'users' => [
             'label' => 'Users Many To Many',
-            'displayInForm' => true,
+            'display_in_create_form' => true,
+            'display_in_update_form' => true,
             'min' => 0,
 
             'field_type' => 'select_multiple',
@@ -115,8 +118,9 @@ public $adminFields = [
         ],
         
         'updated_at' => [
-            'displayInForm' => true,
-            'displayInList' => false,
+            'display_in_create_form' => true,
+            'display_in_update_form' => true,
+            'display_in_list' => false,
         
             'field_type' => 'date_time',
         ]
@@ -141,8 +145,9 @@ class ProductsController extends CrudController
     protected $columnParams = [
         'name' => [
                     'label' => 'Name',
-                    'displayInForm' => true,
-                    'displayInList' => true,
+                    'display_in_create_form' => true,
+                    'display_in_update_form' => true,
+                    'display_in_list' => true,
                     'searchable' => true,
                     'min' => 2,
                     'max' => 50,
@@ -150,8 +155,9 @@ class ProductsController extends CrudController
                 ],
                 'description' => [
                     'label' => 'Description',
-                    'displayInForm' => true,
-                    'displayInList' => true,
+                    'display_in_create_form' => true,
+                    'display_in_update_form' => true,
+                    'display_in_list' => true,
                     'searchable' => false,
                     'min' => 2,
                     'max' => 5000,

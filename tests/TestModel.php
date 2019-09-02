@@ -16,7 +16,7 @@ class TestModel extends Model
         'title' => [
             'label' => 'Title',
             'displayInForm' => true,
-            'displayInList' => true,
+            'display_in_list' => true,
             'searchable' => true,
             'min' => 2,
             'max' => 50,
@@ -26,7 +26,7 @@ class TestModel extends Model
         'description' => [
             'label' => 'Description',
             'displayInForm' => true,
-            'displayInList' => true,
+            'display_in_list' => true,
             'searchable' => false,
             'min' => 2,
             'max' => 5000,
@@ -36,7 +36,7 @@ class TestModel extends Model
         'price' => [
             'label' => 'Price',
             'displayInForm' => true,
-            'displayInList' => true,
+            'display_in_list' => true,
             'min' => 0,
             'max' => 100000,
             'field_type' => 'number',
@@ -44,7 +44,7 @@ class TestModel extends Model
         'file_upload' => [
             'label' => 'file_upload',
             'displayInForm' => true,
-            'displayInList' => true,
+            'display_in_list' => true,
             'min' => 0,
             'max' => 100000,
             'field_type' => 'file_upload_to_db_field',

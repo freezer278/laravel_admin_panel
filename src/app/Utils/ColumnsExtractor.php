@@ -34,7 +34,7 @@ class ColumnsExtractor
         $activeColumns = [];
 
         foreach ($columnParams as $key => $column) {
-            if (isset($column['displayInList']) && $column['displayInList'] == true) {
+            if (isset($column['display_in_list']) && $column['display_in_list'] == true) {
                 $column['name'] = $key;
                 $activeColumns[] = $this->columnFactory->create($column);
             }
