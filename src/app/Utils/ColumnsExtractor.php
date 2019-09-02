@@ -2,8 +2,8 @@
 
 namespace Vmorozov\LaravelAdminGenerator\App\Utils;
 
-use Vmorozov\LaravelAdminGenerator\App\Utils\Columns\AbstractColumn;
 use Vmorozov\LaravelAdminGenerator\App\Utils\Columns\Column;
+use Vmorozov\LaravelAdminGenerator\App\Utils\Columns\Factory\ColumnFactoryInterface;
 
 /**
  * Class ColumnsExtractor
@@ -11,6 +11,20 @@ use Vmorozov\LaravelAdminGenerator\App\Utils\Columns\Column;
  */
 class ColumnsExtractor
 {
+    /**
+     * @var ColumnFactoryInterface
+     */
+    private $columnFactory;
+
+    /**
+     * ColumnsExtractor constructor.
+     * @param ColumnFactoryInterface $columnFactory
+     */
+    public function __construct(ColumnFactoryInterface $columnFactory)
+    {
+        $this->columnFactory = $columnFactory;
+    }
+
     /**
      * @param Column[] $columnParams
      * @return Column[]
@@ -22,7 +36,7 @@ class ColumnsExtractor
         foreach ($columnParams as $key => $column) {
             if (isset($column['displayInList']) && $column['displayInList'] == true) {
                 $column['name'] = $key;
-                $activeColumns[] = AbstractColumn::create($column);
+                $activeColumns[] = $this->columnFactory->create($column);
             }
         }
 
@@ -40,7 +54,7 @@ class ColumnsExtractor
         foreach ($columnParams as $key => $column) {
             if (isset($column['displayInForm']) && $column['displayInForm'] == true) {
                 $column['name'] = $key;
-                $activeColumns[] = AbstractColumn::create($column);
+                $activeColumns[] = $this->columnFactory->create($column);
             }
         }
 

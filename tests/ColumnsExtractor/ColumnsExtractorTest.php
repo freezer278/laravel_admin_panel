@@ -24,7 +24,7 @@ class ColumnsExtractorTest extends TestCase
         parent::setUp();
 
         $this->columnParams = TestColumnParamsFactory::create();
-        $this->columnsExtractor = new ColumnsExtractor();
+        $this->columnsExtractor = $this->app->make(ColumnsExtractor::class);
     }
 
 
