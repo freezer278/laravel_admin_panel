@@ -59,7 +59,7 @@ class AdminRoute
     public static function home(string $controller = AdminHomeController::class)
     {
         Route::get('/dashboard', $controller.'@showDashboard')->name('admin_dashboard');
-        Route::redirect('/', Redirect::to(self::getRoutePrefix() . '/dashboard'));
+        Route::redirect('/', self::getRoutePrefix() . '/dashboard');
     }
 
     /**
