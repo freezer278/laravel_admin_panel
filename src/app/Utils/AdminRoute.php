@@ -4,6 +4,7 @@ namespace Vmorozov\LaravelAdminGenerator\App\Utils;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Redirect;
 use Symfony\Component\Debug\Exception\ClassNotFoundException;
 use Vmorozov\LaravelAdminGenerator\App\Controllers\AdminHomeController;
 use Vmorozov\LaravelAdminGenerator\App\Controllers\Auth\AdminAuthController;
@@ -57,8 +58,8 @@ class AdminRoute
      */
     public static function home(string $controller = AdminHomeController::class)
     {
-        Route::get('/', Redirect::route('admin_dashboard'));
         Route::get('/dashboard', $controller.'@showDashboard')->name('admin_dashboard');
+        Route::redirect('/', Redirect::to(self::getRoutePrefix() . '/dashboard'));
     }
 
     /**
