@@ -1,0 +1,43 @@
+{
+  "name": "admin_panel_generator",
+  "version": "1.0.0",
+  "description": "[![Build Status](https://travis-ci.org/freezer278/laravel_admin_panel.svg?branch=master)](https://travis-ci.org/freezer278/laravel_admin_panel)",
+  "main": "admin.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "build": "webpack --mode production -o src/resources/assets/js/dist/admin.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/freezer278/laravel_admin_panel.git"
+  },
+  "author": "Vladimir Morozov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/freezer278/laravel_admin_panel/issues"
+  },
+  "homepage": "https://github.com/freezer278/laravel_admin_panel#readme",
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@mdi/font": "^4.2.95",
+    "babel-loader": "^8.0.6",
+    "css-loader": "^3.2.0",
+    "html-webpack-plugin": "^3.2.0",
+    "rimraf": "^3.0.0",
+    "vue": "^2.6.10",
+    "vue-loader": "^15.7.1",
+    "vue-style-loader": "^4.1.2",
+    "vue-template-compiler": "^2.6.10",
+    "webpack": "^4.39.3",
+    "webpack-cli": "^3.3.7",
+    "webpack-dev-server": "^3.8.0"
+  },
+  "dependencies": {
+    "laravel-mix": "^4.1.2",
+    "vuetify": "^2.0.12"
+  }
+}

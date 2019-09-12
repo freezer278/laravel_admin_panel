@@ -17,18 +17,22 @@
     <!-- AdminLTE Skins. Choose a skin from the css/skins
          folder instead of downloading all of them to reduce the load. -->
     <link rel="stylesheet" href="{{ url('adminlte/css/skins/_all-skins.min.css') }}">
-    {{--<!-- Morris chart -->--}}
-    {{--<link rel="stylesheet" href="{{ url('adminlte/bower_components/morris.js/morris.css') }}">--}}
-    {{--<!-- jvectormap -->--}}
-    {{--<link rel="stylesheet" href="{{ url('adminlte/bower_components/jvectormap/jquery-jvectormap.css') }}">--}}
-    {{--<!-- Date Picker -->--}}
-    {{--<link rel="stylesheet" href="{{ url('adminlte/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css') }}">--}}
-    {{--<!-- Daterange picker -->--}}
-    {{--<link rel="stylesheet" href="{{ url('adminlte/bower_components/bootstrap-daterangepicker/daterangepicker.css') }}">--}}
-    {{--<!-- bootstrap wysihtml5 - text editor -->--}}
-    {{--<link rel="stylesheet" href="{{ url('adminlte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css') }}">--}}
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@3.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+{{--<!-- Morris chart -->--}}
+{{--<link rel="stylesheet" href="{{ url('adminlte/bower_components/morris.js/morris.css') }}">--}}
+{{--<!-- jvectormap -->--}}
+{{--<link rel="stylesheet" href="{{ url('adminlte/bower_components/jvectormap/jquery-jvectormap.css') }}">--}}
+{{--<!-- Date Picker -->--}}
+{{--<link rel="stylesheet" href="{{ url('adminlte/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css') }}">--}}
+{{--<!-- Daterange picker -->--}}
+{{--<link rel="stylesheet" href="{{ url('adminlte/bower_components/bootstrap-daterangepicker/daterangepicker.css') }}">--}}
+{{--<!-- bootstrap wysihtml5 - text editor -->--}}
+{{--<link rel="stylesheet" href="{{ url('adminlte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css') }}">--}}
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -61,7 +65,7 @@
         </section>
 
         <!-- Main content -->
-        <section class="content">
+        <section class="content" id="app">
 
             @include(\Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider::VIEWS_NAME.'::layouts.messages_place')
 
@@ -84,6 +88,10 @@
 </div>
 <!-- ./wrapper -->
 
+<!-- development version, includes helpful console warnings -->
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+<script src="{{ url('laravel_admin_generator/js/admin.js') }}"></script>
 <!-- jQuery 3 -->
 <script src="{{ url('adminlte/bower_components/jquery/dist/jquery.min.js') }}"></script>
 <!-- jQuery UI 1.11.4 -->
