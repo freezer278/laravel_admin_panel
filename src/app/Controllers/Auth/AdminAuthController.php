@@ -3,11 +3,11 @@
 namespace Vmorozov\LaravelAdminGenerator\App\Controllers\Auth;
 
 use Illuminate\Contracts\Auth\StatefulGuard;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Vmorozov\LaravelAdminGenerator\AdminGeneratorServiceProvider;
+use Vmorozov\LaravelAdminGenerator\App\Controllers\Auth\Traits\AuthenticatesUsers;
 use Vmorozov\LaravelAdminGenerator\App\Controllers\Controller;
 use Vmorozov\LaravelAdminGenerator\App\Utils\UrlManager;
 
