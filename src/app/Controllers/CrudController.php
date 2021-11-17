@@ -210,7 +210,7 @@ abstract class CrudController extends Controller
      */
     protected function getEntity(int $id): Model
     {
-        return  $this->entitiesExtractor->getSingleEntity($id);
+        return $this->entitiesExtractor->getSingleEntity($id);
     }
 
     /**
@@ -283,7 +283,7 @@ abstract class CrudController extends Controller
 
         $this->fileSaver->saveFiles($entity, $this->columnParams);
 
-        $this->afterCreate();
+        $this->afterCreate($entity);
 
         session()->flash('message', 'Entity created successfully');
 
@@ -299,9 +299,9 @@ abstract class CrudController extends Controller
     }
 
     /**
-     *
+     * @param Model $entity
      */
-    protected function afterCreate()
+    protected function afterCreate(Model $entity)
     {
 
     }
@@ -342,7 +342,7 @@ abstract class CrudController extends Controller
         $entity = $this->getEntity($id);
         $this->validate($this->request, $this->getUpdateValidationRules());
 
-        $this->beforeUpdate();
+        $this->beforeUpdate($entity);
 
         $data = $this->request->all();
         $entity->update($data);
@@ -351,7 +351,7 @@ abstract class CrudController extends Controller
         $relationsResolver->saveAllRelations($this->request);
         $this->fileSaver->saveFiles($entity, $this->columnParams);
 
-        $this->afterUpdate();
+        $this->afterUpdate($entity);
 
         session()->flash('message', 'Entity changed successfully');
 
@@ -359,17 +359,17 @@ abstract class CrudController extends Controller
     }
 
     /**
-     *
+     * @param Model $entity
      */
-    protected function beforeUpdate()
+    protected function beforeUpdate(Model $entity)
     {
 
     }
 
     /**
-     *
+     * @param Model $entity
      */
-    protected function afterUpdate()
+    protected function afterUpdate(Model $entity)
     {
 
     }
